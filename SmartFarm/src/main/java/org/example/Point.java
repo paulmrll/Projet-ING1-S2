@@ -8,7 +8,7 @@ import java.util.Objects;
  * * @author YourName
  * @version 1.0
  */
-public class Point {
+public class Point{
 
     /**
      * Defines the functional type of the point.
