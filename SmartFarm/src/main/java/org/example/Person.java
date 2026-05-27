@@ -5,26 +5,39 @@ import java.util.Objects;
 /**
  * Represents a person with personal details such as name, age, email,
  * and a unique system identifier.
- * * @author YourName
+ * * @author Paul MORILLE
+ *
  * @version 1.0
  */
 public class Person {
-    /** The last name of the person. */
+    /**
+     * The last name of the person.
+     */
     private String name;
 
-    /** The first name of the person. */
+    /**
+     * The first name of the person.
+     */
     private String firstname;
 
-    /** The unique identifier assigned to this person. */
+    /**
+     * The unique identifier assigned to this person.
+     */
     private final int id;
 
-    /** The age of the person in years. */
+    /**
+     * The age of the person in years.
+     */
     private int age;
 
-    /** The email address of the person. */
+    /**
+     * The email address of the person.
+     */
     private String email;
 
-    /** Counter used to automatically generate unique identifiers for new instances. */
+    /**
+     * Counter used to automatically generate unique identifiers for new instances.
+     */
     private static int nbId = 0;
 
     /**
@@ -36,7 +49,7 @@ public class Person {
      * @param firstname the first name of the person
      * @param email     the email address of the person
      */
-    public Person(int age, String name, String firstname, String email){
+    public Person(int age, String name, String firstname, String email) {
         this.age = age;
         this.name = name;
         this.firstname = firstname;
@@ -50,7 +63,7 @@ public class Person {
      *
      * @return the email address
      */
-    public String getEmail(){
+    public String getEmail() {
         return this.email;
     }
 
@@ -59,7 +72,7 @@ public class Person {
      *
      * @return the first name
      */
-    public String getFirstname(){
+    public String getFirstname() {
         return this.firstname;
     }
 
@@ -68,7 +81,7 @@ public class Person {
      *
      * @return the last name
      */
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
@@ -77,7 +90,7 @@ public class Person {
      *
      * @return the unique ID
      */
-    public int getId(){
+    public int getId() {
         return this.id;
     }
 
@@ -86,7 +99,7 @@ public class Person {
      *
      * @return the age in years
      */
-    public int getAge(){
+    public int getAge() {
         return this.age;
     }
 
@@ -99,8 +112,8 @@ public class Person {
      */
     @Override
     public boolean equals(Object O) {
-        if (O instanceof Person p){
-            if (this.id == p.getId()){
+        if (O instanceof Person p) {
+            if (this.id == p.getId()) {
                 return true;
             }
         }
@@ -126,7 +139,7 @@ public class Person {
      * @return a formatted string representing the person's details
      */
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.id);
         sb.append("\n");

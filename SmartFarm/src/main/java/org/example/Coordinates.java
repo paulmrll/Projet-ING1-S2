@@ -8,15 +8,19 @@ import java.util.Objects;
  * This class is typically used to define a specific position in a 2D space.
  * </p>
  *
- * @author YourName
+ * @author Paul MORILLE
  * @version 1.0
  */
 public class Coordinates {
 
-    /** The horizontal X coordinate. */
+    /**
+     * The horizontal X coordinate.
+     */
     private final int x;
 
-    /** The vertical Y coordinate. */
+    /**
+     * The vertical Y coordinate.
+     */
     private final int y;
 
     /**

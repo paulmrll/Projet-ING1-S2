@@ -6,6 +6,8 @@ import java.util.Objects;
 /**
  * Represents a geographical or agricultural field defined by coordinate boundaries,
  * an area, a name, and a collection of water plants.
+ * @author Paul MORILLE
+ * @version 1.0
  */
 public class Field {
     private Point[] waterPlants;
@@ -26,7 +28,7 @@ public class Field {
      * @param yStop  the ending Y-coordinate boundary
      * @param area   the total area of the field
      */
-    public Field(String name, int xStart, int xStop, int yStart, int yStop, float area){
+    public Field(String name, int xStart, int xStop, int yStart, int yStop, float area) {
         this.name = name;
         this.xStart = xStart;
         this.xStop = xStop;
@@ -40,7 +42,7 @@ public class Field {
      *
      * @return the field name
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -49,7 +51,7 @@ public class Field {
      *
      * @return the starting X-coordinate
      */
-    public int getxStart(){
+    public int getxStart() {
         return xStart;
     }
 
@@ -58,7 +60,7 @@ public class Field {
      *
      * @return the ending X-coordinate
      */
-    public int getxStop(){
+    public int getxStop() {
         return xStop;
     }
 
@@ -67,7 +69,7 @@ public class Field {
      *
      * @return the starting Y-coordinate
      */
-    public int getyStart(){
+    public int getyStart() {
         return yStart;
     }
 
@@ -76,7 +78,7 @@ public class Field {
      *
      * @return the ending Y-coordinate
      */
-    public int getyStop(){
+    public int getyStop() {
         return yStop;
     }
 
@@ -85,7 +87,7 @@ public class Field {
      *
      * @return the field area
      */
-    public float getArea(){
+    public float getArea() {
         return area;
     }
 
@@ -94,7 +96,7 @@ public class Field {
      *
      * @return an array of {@link Point} objects representing the water plants
      */
-    public Point[] getWaterPlants(){
+    public Point[] getWaterPlants() {
         return this.waterPlants;
     }
 
@@ -108,13 +110,13 @@ public class Field {
      * @param O the object to compare with this field
      * @return {@code true} if the specified object is equal to this field; {@code false} otherwise
      */
-    public boolean equals(Object O){
-        if (O instanceof Field f){
-            if (this.name.equals(f.getName())){
-                if (xStop == f.getxStop() && xStart == f.getxStart() && yStart == f.getyStart() && yStop == f.getyStop() && f.getArea() == area){
-                    Point [] waterPlantsF = f.getWaterPlants();
-                    for (int i = 0; i < this.waterPlants.length; i++){
-                        if (!waterPlants[i].equals(waterPlantsF[i])){
+    public boolean equals(Object O) {
+        if (O instanceof Field f) {
+            if (this.name.equals(f.getName())) {
+                if (xStop == f.getxStop() && xStart == f.getxStart() && yStart == f.getyStart() && yStop == f.getyStop() && f.getArea() == area) {
+                    Point[] waterPlantsF = f.getWaterPlants();
+                    for (int i = 0; i < this.waterPlants.length; i++) {
+                        if (!waterPlants[i].equals(waterPlantsF[i])) {
                             return false;
                         }
                     }
@@ -141,9 +143,9 @@ public class Field {
      *
      * @return a string describing the water plants in this field
      */
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < waterPlants.length; i++){
+        for (int i = 0; i < waterPlants.length; i++) {
             sb.append(waterPlants[i].toString());
             sb.append("\n");
         }

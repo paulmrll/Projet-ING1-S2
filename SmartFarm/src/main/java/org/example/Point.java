@@ -5,38 +5,26 @@ import java.util.Objects;
 /**
  * Represents a specific point in a coordinate system, characterized by its
  * coordinates, a unique identifier, an internal type, and a state.
- * * @author YourName
+ * * @author Paul MORILLE
+ *
  * @version 1.0
  */
-public class Point{
+public class Point {
+
 
     /**
-     * Defines the functional type of the point.
+     * The geographic or grid coordinates of this point.
      */
-    private enum TYPE {
-        /** Represents a sprinkler device point. */
-        SPRINKLER,
-        /** Represents a natural environment point. */
-        NATURE;
-    }
-
-    /**
-     * Defines the moisture state of the point.
-     */
-    private enum STATE {
-        /** Indicates the point is currently dry. */
-        DRY,
-        /** Indicates the point is currently wet. */
-        WET;
-    }
-
-    /** The geographic or grid coordinates of this point. */
     private final Coordinates coordinates;
 
-    /** The unique identifier of this specific point instance. */
+    /**
+     * The unique identifier of this specific point instance.
+     */
     private final int id;
 
-    /** Counter used to generate unique identifiers for new points. */
+    /**
+     * Counter used to generate unique identifiers for new points.
+     */
     private static int nbId;
 
     /**
