@@ -24,6 +24,7 @@ public class DelaunayTriangle {
      */
     public DelaunayTriangle(WaterTank vertex1, WaterTank vertex2, WaterTank vertex3) {
         this.vertices = new WaterTank[]{vertex1, vertex2, vertex3};
+        calculateCircumcircle();
     }
 
     /**
@@ -94,4 +95,49 @@ public class DelaunayTriangle {
     public int hashCode() {
         return Arrays.hashCode(vertices);
     }
+
+    /**
+     * Calculates the circumcircle (circumcenter and circumradius) of the triangle.
+     * The circumcenter is the point equidistant from all three vertices.
+     * Uses the mathematical formulas derived from solving the system of distance equations.
+     */
+    public void calculateCircumcircle(){
+        // STEP 1: Extract coordinates from the three vertices
+        double x1 = vertices[0].getX();
+        double y1 = vertices[0].getY();
+        double x2 = vertices[1].getX();
+        double y2 = vertices[1].getY();
+        double x3 = vertices[2].getX();
+        double y3 = vertices[2].getY();
+
+        // STEP 2: Calculate the determinant (d) using Cramer's rule
+        // This value is used to solve the linear system for the circumcenter
+        double d = 2 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2));
+
+        // STEP 3: Check if the three points are collinear (d ≈ 0)
+        // If d is nearly zero, the points are on the same line and cannot form a valid triangle
+        if(Math.abs(d) < 1e-10){
+            // Set the circumcenter to the centroid of the triangle
+            this.circumcenter = new Point((x1 + x2 + x3) / 3, (y1 + y2 + y3) /3);
+            // Set circumradius to infinity since there's no valid circle
+            this.circumRadius = Double.MAX_VALUE;
+            return;
+        }
+
+        // STEP 4: Calculate the x-coordinate of the circumcenter (ux)
+        // Using the formula derived from the system of linear equations
+        double ux = ((x1*x1 + y1*y1) * (y2 - y3) + (x2*x2 + y2*y2) * (y3 - y1) + (x3*x3 + y3*y3) * (y1 - y2)) / d;
+    
+        // STEP 5: Calculate the y-coordinate of the circumcenter (uy)
+        // Using the formula derived from the system of linear equations
+        double uy = ((x1*x1 + y1*y1) * (x3 - x2) + (x2*x2 + y2*y2) * (x1 - x3) + (x3*x3 + y3*y3) * (x2 - x1)) / d;
+
+        // STEP 6: Create the circumcenter point with calculated coordinates
+        this.circumcenter = new Point(ux, uy);
+
+        // STEP 7: Calculate the circumradius (distance from circumcenter to any vertex)
+        // Using the Euclidean distance formula
+        this.circumRadius = Math.sqrt((ux - x1) * (ux - x1) + (uy - y1) * (uy - y1));
+    }
+
 }
