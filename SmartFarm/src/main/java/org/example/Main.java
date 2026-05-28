@@ -9,5 +9,8 @@ public class Main {
             System.out.println("i = " + i);
         }
         Sprinkler sprinkler = new Sprinkler(1.0,1.0,2.0,3.0);
+        WaterTank waterTank = new WaterTank(1.0,1.0,2.0,3.0);
+        System.out.println(sprinkler);
+        System.out.println(waterTank);
     }
 }

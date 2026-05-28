@@ -120,9 +120,10 @@ public class Sprinkler extends Point {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("radius = ").append(radius);
+        sb.append(" , flow = ").append(flow);
+        sb.append(", active = ").append(active).append(" ");
         sb.append(super.toString());
-        sb.append("flow = ").append(flow);
-        sb.append(", active = ").append(active);
         return sb.toString();
     }
 

@@ -107,12 +107,9 @@ public class WaterTank extends Point {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(capacity);
-        sb.append("\n");
-        sb.append(flow);
-        sb.append("\n");
-        sb.append(active);
-        sb.append("\n");
+        sb.append("capacity = ").append(capacity);
+        sb.append(" , flow = ").append(flow);
+        sb.append(", active = ").append(active).append(" ");
         sb.append(super.toString());
         return sb.toString();
     }
