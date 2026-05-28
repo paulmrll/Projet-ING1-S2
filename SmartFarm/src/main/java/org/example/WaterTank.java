@@ -29,7 +29,7 @@ public class WaterTank extends Point {
      * @param capacity the maximum capacity of the tank (must be > 0)
      * @param flow     the initial flow rate of the tank
      */
-    public WaterTank(int x, int y, float capacity, float flow) {
+    public WaterTank(double x, double y, float capacity, float flow) {
         super(x, y);
         if (capacity > 0) {
             this.capacity = capacity;
@@ -45,7 +45,7 @@ public class WaterTank extends Point {
      * @param y        the Y coordinate of the tank
      * @param capacity the maximum capacity of the tank
      */
-    public WaterTank(int x, int y, float capacity) {
+    public WaterTank(double x, double y, float capacity) {
         this(x, y, capacity, 0);
     }
 

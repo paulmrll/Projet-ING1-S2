@@ -24,12 +24,12 @@ public class Point {
     /**
      * The horizontal X coordinate.
      */
-    private final int x;
+    private final double x;
 
     /**
      * The vertical Y coordinate.
      */
-    private final int y;
+    private final double y;
 
     /**
      * Constructs a new {@code Point} with the specified x and y coordinates.
@@ -38,7 +38,7 @@ public class Point {
      * @param x the X-coordinate of the point
      * @param y the Y-coordinate of the point
      */
-    public Point(int x, int y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
         id = nbId;
@@ -59,7 +59,7 @@ public class Point {
      *
      * @return the X coordinate
      */
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -68,7 +68,7 @@ public class Point {
      *
      * @return the Y coordinate
      */
-    public int getY() {
+    public double getY() {
         return y;
     }
 

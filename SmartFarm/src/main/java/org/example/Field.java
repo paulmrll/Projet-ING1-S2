@@ -11,10 +11,10 @@ import java.util.Objects;
  */
 public class Field {
     private Point[] waterPlants;
-    private final int xStart;
-    private final int xStop;
-    private final int yStart;
-    private final int yStop;
+    private final double xStart;
+    private final double xStop;
+    private final double yStart;
+    private final double yStop;
     private String name;
     private float area;
 
@@ -28,7 +28,7 @@ public class Field {
      * @param yStop  the ending Y-coordinate boundary
      * @param area   the total area of the field
      */
-    public Field(String name, int xStart, int xStop, int yStart, int yStop, float area) {
+    public Field(String name, double xStart, double xStop, double yStart, double yStop, float area) {
         this.name = name;
         this.xStart = xStart;
         this.xStop = xStop;
@@ -51,7 +51,7 @@ public class Field {
      *
      * @return the starting X-coordinate
      */
-    public int getxStart() {
+    public double getxStart() {
         return xStart;
     }
 
@@ -60,7 +60,7 @@ public class Field {
      *
      * @return the ending X-coordinate
      */
-    public int getxStop() {
+    public double getxStop() {
         return xStop;
     }
 
@@ -69,7 +69,7 @@ public class Field {
      *
      * @return the starting Y-coordinate
      */
-    public int getyStart() {
+    public double getyStart() {
         return yStart;
     }
 
@@ -78,7 +78,7 @@ public class Field {
      *
      * @return the ending Y-coordinate
      */
-    public int getyStop() {
+    public double getyStop() {
         return yStop;
     }
 
@@ -145,8 +145,8 @@ public class Field {
      */
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < waterPlants.length; i++) {
-            sb.append(waterPlants[i].toString());
+        for (Point waterPlant : waterPlants) {
+            sb.append(waterPlant.toString());
             sb.append("\n");
         }
         return sb.toString();
