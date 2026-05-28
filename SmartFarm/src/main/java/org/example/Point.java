@@ -68,6 +68,17 @@ public class Point {
     }
 
     /**
+     * Returns a string representation of this point.
+     * The string includes the class name, its coordinates, and its unique ID.
+     *
+     * @return a string representation of this point
+     */
+    @Override
+    public String toString() {
+        return "Point{" + "coordinates=" + coordinates + ", id=" + id + '}';
+    }
+
+    /**
      * Returns a hash code value for this point.
      * The hash code is generated based on the point's ID and coordinates.
      *
