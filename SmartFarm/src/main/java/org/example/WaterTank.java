@@ -63,7 +63,7 @@ public class WaterTank extends Point {
      *
      * @return true if the tank is active, false otherwise
      */
-    public boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -129,7 +129,7 @@ public class WaterTank extends Point {
     @Override
     public boolean equals(Object O) {
         if (O instanceof WaterTank w) {
-            if (w.getActive() == active && w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
+            if (w.isActive() == active && w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
                 return true;
             }
         }
