@@ -16,7 +16,7 @@ public class Field {
     private final double yStart;
     private final double yStop;
     private String name;
-    private float area;
+    private double area;
 
     /**
      * Constructs a new Field with the specified name, coordinate boundaries, and area.
@@ -28,7 +28,7 @@ public class Field {
      * @param yStop  the ending Y-coordinate boundary
      * @param area   the total area of the field
      */
-    public Field(String name, double xStart, double xStop, double yStart, double yStop, float area) {
+    public Field(String name, double xStart, double xStop, double yStart, double yStop, double area) {
         this.name = name;
         this.xStart = xStart;
         this.xStop = xStop;
@@ -87,7 +87,7 @@ public class Field {
      *
      * @return the field area
      */
-    public float getArea() {
+    public double getArea() {
         return area;
     }
 

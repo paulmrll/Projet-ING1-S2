@@ -16,7 +16,7 @@ public class Ground {
     /**
      * The area of the ground in square units (typically in m²).
      */
-    private float area;
+    private double area;
     
     /**
      * List of fields present on the ground.
@@ -40,7 +40,7 @@ public class Ground {
      * 
      * @param area the area of the ground in square units
      */
-    public Ground(float area) {
+    public Ground(double area) {
         this.area = area;
         this.fields = new ArrayList<>();
         this.tanks = new ArrayList<>();
@@ -52,7 +52,7 @@ public class Ground {
      * 
      * @return the area of the ground
      */
-    public float getArea() {
+    public double getArea() {
         return area;
     }
 
@@ -88,7 +88,7 @@ public class Ground {
      * 
      * @param area the new area of the ground
      */
-    public void setArea(float area) {
+    public void setArea(double area) {
         this.area = area;
     }
 
@@ -145,7 +145,7 @@ public class Ground {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ground ground = (Ground) o;
-        return Float.compare(ground.area, area) == 0;
+        return ground.area == area;
     }
 
     /**

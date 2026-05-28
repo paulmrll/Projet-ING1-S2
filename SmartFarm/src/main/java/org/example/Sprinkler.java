@@ -14,10 +14,10 @@ import java.util.Objects;
 public class Sprinkler extends Point {
 
     /** The water flow rate of the sprinkler. */
-    private float flow;
+    private double flow;
 
     /** The final coverage radius of the sprinkler. */
-    private final float radius;
+    private final double radius;
 
     /** Specifies whether the sprinkler is currently active. */
     private boolean active;
@@ -35,7 +35,7 @@ public class Sprinkler extends Point {
      * @param radius the final coverage radius of the sprinkler
      * @param active the initial operational status of the sprinkler
      */
-    public Sprinkler(double x, double y, float flow, float radius, boolean active) {
+    public Sprinkler(double x, double y, double flow, double radius, boolean active) {
         super((int) x, (int) y); // Cast to int if your Point class requires integers
         if (flow >= 0 && radius >= 0) {
             this.flow = flow;
@@ -56,7 +56,7 @@ public class Sprinkler extends Point {
      * @param flow   the water flow rate of the sprinkler
      * @param radius the final coverage radius of the sprinkler
      */
-    public Sprinkler(double x, double y, float flow, float radius) {
+    public Sprinkler(double x, double y, double flow, double radius) {
         this(x, y, flow, radius, false);
     }
 
@@ -65,7 +65,7 @@ public class Sprinkler extends Point {
      *
      * @return the flow rate
      */
-    public float getFlow() {
+    public double getFlow() {
         return flow;
     }
 
@@ -74,7 +74,7 @@ public class Sprinkler extends Point {
      *
      * @return the radius
      */
-    public float getRadius() {
+    public double getRadius() {
         return radius;
     }
 
@@ -102,7 +102,7 @@ public class Sprinkler extends Point {
      *
      * @param flow the new flow rate to set
      */
-    public void setFlow(float flow) {
+    public void setFlow(double flow) {
         if (flow >= 0) {
             this.flow = flow;
         } else {

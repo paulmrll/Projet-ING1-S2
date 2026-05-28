@@ -8,5 +8,6 @@ public class Main {
         for (int i = 1; i <= 5; i++) {
             System.out.println("i = " + i);
         }
+        Sprinkler sprinkler = new Sprinkler(1.0,1.0,2.0,3.0);
     }
 }

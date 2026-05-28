@@ -12,10 +12,10 @@ import java.util.Objects;
 public class WaterTank extends Point {
 
     /** The maximum capacity of the water tank. */
-    private float capacity;
+    private double capacity;
 
     /** The current water flow rate of the tank. */
-    private float flow;
+    private double flow;
 
     /** Specifies whether the water tank is currently active. */
     private boolean active;
@@ -29,7 +29,7 @@ public class WaterTank extends Point {
      * @param capacity the maximum capacity of the tank (must be > 0)
      * @param flow     the initial flow rate of the tank
      */
-    public WaterTank(double x, double y, float capacity, float flow) {
+    public WaterTank(double x, double y, double capacity, double flow) {
         super(x, y);
         if (capacity > 0) {
             this.capacity = capacity;
@@ -45,7 +45,7 @@ public class WaterTank extends Point {
      * @param y        the Y coordinate of the tank
      * @param capacity the maximum capacity of the tank
      */
-    public WaterTank(double x, double y, float capacity) {
+    public WaterTank(double x, double y, double capacity) {
         this(x, y, capacity, 0);
     }
 
@@ -54,7 +54,7 @@ public class WaterTank extends Point {
      *
      * @return the capacity of the tank
      */
-    public float getCapacity() {
+    public double getCapacity() {
         return capacity;
     }
 
@@ -81,7 +81,7 @@ public class WaterTank extends Point {
      *
      * @return the flow rate of the tank
      */
-    public float getFlow() {
+    public double getFlow() {
         return flow;
     }
 
@@ -91,7 +91,7 @@ public class WaterTank extends Point {
      *
      * @param flow the amount to subtract from the current flow rate
      */
-    public void setFlow(float flow) {
+    public void setFlow(double flow) {
         if (this.flow - flow >= 0) {
             this.flow -= flow;
         }
