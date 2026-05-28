@@ -1,5 +1,8 @@
 package org.example;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Represents a Delaunay triangle.
  * 
@@ -66,5 +69,29 @@ public class DelaunayTriangle {
      */
     public void setCircumRadius(double circumRadius) {
         this.circumRadius = circumRadius;
+    }
+
+    /**
+     * Compares two DelaunayTriangle objects based on their vertices.
+     * 
+     * @param o the object to compare
+     * @return true if both triangles have the same vertices
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DelaunayTriangle that = (DelaunayTriangle) o;
+        return Arrays.equals(vertices, that.vertices);
+    }
+
+    /**
+     * Returns the hash code based on the vertices array.
+     * 
+     * @return the hash code
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(vertices);
     }
 }

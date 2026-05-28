@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class representing an agricultural ground.
@@ -133,5 +134,29 @@ public class Ground {
                 ", tanks=" + tanks.size() +
                 ", sprinklers=" + sprinklers.size() +
                 '}';
+    }
+
+    /**
+     * Compares two Ground objects based on their area.
+     * 
+     * @param o the object to compare
+     * @return true if both objects have the same area
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ground ground = (Ground) o;
+        return Float.compare(ground.area, area) == 0;
+    }
+
+    /**
+     * Returns the hash code based on the area.
+     * 
+     * @return the hash code
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(area);
     }
 }
