@@ -8,7 +8,7 @@ import java.util.Objects;
  * and its operational status (active or inactive).
  * It extends the {@link Point} class to inherit spatial coordinates.
  *
- * @author Paul MORILLE
+ * @author Oscar LUIGGI
  * @version 1.0
  */
 public class Sprinkler extends Point {
