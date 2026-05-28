@@ -4,9 +4,8 @@ import java.util.Objects;
 
 /**
  * Represents a water tank positioned at specific coordinates.
- * A water tank has a maximum capacity, a current flow rate, a radius,
- * and an active status. It extends the {@link Point} class to inherit spatial coordinates.
- *
+ * A water tank has a maximum capacity, a current flow rate and an active status.
+ * It extends the {@link Point} class to inherit spatial coordinates.
  * @author Paul MORILLE
  * @version 1.0
  */
@@ -18,42 +17,36 @@ public class WaterTank extends Point {
     /** The current water flow rate of the tank. */
     private float flow;
 
-    /** The physical radius of the water tank. */
-    private float radius;
-
     /** Specifies whether the water tank is currently active. */
     private boolean active;
 
     /**
-     * Constructs a new WaterTank with specified coordinates, capacity, flow, and radius.
-     * The capacity and radius must be strictly greater than 0 for the fields to be initialized.
+     * Constructs a new WaterTank with specified coordinates, capacity, and flow.
+     * The capacity must be strictly greater than 0 for the fields to be initialized.
      *
      * @param x        the X coordinate of the tank
      * @param y        the Y coordinate of the tank
      * @param capacity the maximum capacity of the tank (must be > 0)
      * @param flow     the initial flow rate of the tank
-     * @param radius   the radius of the tank (must be > 0)
      */
-    public WaterTank(int x, int y, float capacity, float flow, float radius) {
+    public WaterTank(int x, int y, float capacity, float flow) {
         super(x, y);
-        if (capacity > 0 && radius > 0) {
+        if (capacity > 0) {
             this.capacity = capacity;
             this.flow = flow;
-            this.radius = radius;
         }
     }
 
     /**
-     * Constructs a new WaterTank with specified coordinates, capacity, and radius.
+     * Constructs a new WaterTank with specified coordinates and capacity.
      * The initial flow rate is set to 0 by default.
      *
      * @param x        the X coordinate of the tank
      * @param y        the Y coordinate of the tank
      * @param capacity the maximum capacity of the tank
-     * @param radius   the radius of the tank
      */
-    public WaterTank(int x, int y, float capacity, float radius) {
-        this(x, y, capacity, 0, radius);
+    public WaterTank(int x, int y, float capacity) {
+        this(x, y, capacity, 0);
     }
 
     /**
@@ -63,15 +56,6 @@ public class WaterTank extends Point {
      */
     public float getCapacity() {
         return capacity;
-    }
-
-    /**
-     * Returns the radius of this water tank.
-     *
-     * @return the radius of the tank
-     */
-    public float getRadius() {
-        return radius;
     }
 
     /**
@@ -115,7 +99,7 @@ public class WaterTank extends Point {
 
     /**
      * Returns a string representation of the water tank.
-     * The string contains the capacity, flow, radius, active status,
+     * The string contains the capacity, flow, active status,
      * and the superclass data, each separated by a newline character.
      *
      * @return a string describing this water tank
@@ -127,8 +111,6 @@ public class WaterTank extends Point {
         sb.append("\n");
         sb.append(flow);
         sb.append("\n");
-        sb.append(radius);
-        sb.append("\n");
         sb.append(active);
         sb.append("\n");
         sb.append(super.toString());
@@ -138,7 +120,7 @@ public class WaterTank extends Point {
     /**
      * Compares this water tank to the specified object for equality.
      * The result is true if and only if the argument is not null, is a WaterTank object,
-     * and has the same active status, flow, capacity, radius, and spatial coordinates
+     * and has the same active status, flow, capacity, and spatial coordinates
      * as this object.
      *
      * @param O the object to compare this WaterTank against
@@ -147,7 +129,7 @@ public class WaterTank extends Point {
     @Override
     public boolean equals(Object O) {
         if (O instanceof WaterTank w) {
-            if (w.getActive() == active && w.getFlow() == flow && w.getCapacity() == capacity && w.getRadius() == radius && super.equals(w)) {
+            if (w.getActive() == active && w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
                 return true;
             }
         }
@@ -156,12 +138,12 @@ public class WaterTank extends Point {
 
     /**
      * Returns a hash code value for this water tank based on its attributes
-     * (active status, flow, capacity, radius) and its superclass state.
+     * (active status, flow, capacity) and its superclass state.
      *
      * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(active, flow, capacity, radius, super.hashCode());
+        return Objects.hash(active, flow, capacity, super.hashCode());
     }
 }
