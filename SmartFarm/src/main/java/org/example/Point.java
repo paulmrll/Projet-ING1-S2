@@ -4,18 +4,12 @@ import java.util.Objects;
 
 /**
  * Represents a specific point in a coordinate system, characterized by its
- * coordinates, a unique identifier, an internal type, and a state.
- * * @author Paul MORILLE
+ * x and y coordinates, a unique identifier, an internal type, and a state.
  *
+ * @author Paul MORILLE
  * @version 1.0
  */
 public class Point {
-
-
-    /**
-     * The geographic or grid coordinates of this point.
-     */
-    private final Coordinates coordinates;
 
     /**
      * The unique identifier of this specific point instance.
@@ -28,14 +22,25 @@ public class Point {
     private static int nbId;
 
     /**
-     * Constructs a new {@code Point} with the specified coordinates.
+     * The horizontal X coordinate.
+     */
+    private final int x;
+
+    /**
+     * The vertical Y coordinate.
+     */
+    private final int y;
+
+    /**
+     * Constructs a new {@code Point} with the specified x and y coordinates.
      * Automatically assigns a unique ID to the point.
      *
      * @param x the X-coordinate of the point
      * @param y the Y-coordinate of the point
      */
     public Point(int x, int y) {
-        coordinates = new Coordinates(x, y);
+        this.x = x;
+        this.y = y;
         id = nbId;
         nbId++;
     }
@@ -50,9 +55,27 @@ public class Point {
     }
 
     /**
+     * Returns the horizontal X coordinate.
+     *
+     * @return the X coordinate
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * Returns the vertical Y coordinate.
+     *
+     * @return the Y coordinate
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
      * Compares this point to the specified object for equality.
      * Two points are considered equal if they share both the same ID
-     * and the same coordinates.
+     * and the same x and y coordinates.
      *
      * @param O the object to compare with this point
      * @return {@code true} if the objects are equal; {@code false} otherwise
@@ -60,7 +83,7 @@ public class Point {
     @Override
     public boolean equals(Object O) {
         if (O instanceof Point p) {
-            if (p.getId() == this.id && p.coordinates.equals(this.coordinates)) {
+            if (p.getId() == this.id && p.getX() == this.x && p.getY() == this.y) {
                 return true;
             }
         }
@@ -69,23 +92,23 @@ public class Point {
 
     /**
      * Returns a string representation of this point.
-     * The string includes the class name, its coordinates, and its unique ID.
+     * The string includes the class name, its unique ID, and its x and y coordinates.
      *
      * @return a string representation of this point
      */
     @Override
     public String toString() {
-        return "Point{" + "coordinates=" + coordinates + ", id=" + id + '}';
+        return "Point{" + "id=" + id + ", x=" + x + ", y=" + y + '}';
     }
 
     /**
      * Returns a hash code value for this point.
-     * The hash code is generated based on the point's ID and coordinates.
+     * The hash code is generated based on the point's ID, x, and y coordinates.
      *
      * @return a hash code value for this point
      */
     @Override
     public int hashCode() {
-        return Objects.hash(id, coordinates);
+        return Objects.hash(id, x, y);
     }
 }
