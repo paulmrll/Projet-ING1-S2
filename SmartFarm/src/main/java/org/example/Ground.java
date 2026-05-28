@@ -6,11 +6,10 @@ import java.util.Objects;
 
 /**
  * Class representing an agricultural ground.
- * 
  * A ground has an area and contains fields, water tanks and sprinkler systems
  * for intelligent irrigation management.
  * 
- * @author SmartFarm Project
+ * @author Tom LEMENAND
  * @version 1.0
  */
 public class Ground {
@@ -36,7 +35,6 @@ public class Ground {
 
     /**
      * Constructor for the Ground class.
-     * 
      * Initializes a new ground with a given area and creates empty lists
      * for fields, tanks and sprinklers.
      * 

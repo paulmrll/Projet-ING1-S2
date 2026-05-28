@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Represents a Delaunay triangle.
  * 
- * @author SmartFarm Project
+ * @author Tom LEMENAND
  * @version 1.0
  */
 public class DelaunayTriangle {

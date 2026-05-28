@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Represents a Voronoi cell.
  * 
- * @author SmartFarm Project
+ * @author Tom LEMENAND
  * @version 1.0
  */
 public class CelluleVoronoi {
