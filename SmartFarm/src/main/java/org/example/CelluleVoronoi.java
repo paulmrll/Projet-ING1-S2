@@ -15,6 +15,7 @@ public class CelluleVoronoi {
     private WaterTank reservoir;
     /** List of the vertices of the cell */
     private List<Point> vertices;
+    private double area;
 
     /**
      * Constructs a new CelluleVoronoi associated with a water tank reservoir.
@@ -24,6 +25,7 @@ public class CelluleVoronoi {
     public CelluleVoronoi(WaterTank reservoir) {
         this.reservoir = reservoir;
         this.vertices = new ArrayList<>();
+        this.area = 0.0;
     }
 
     /**
@@ -42,6 +44,24 @@ public class CelluleVoronoi {
      */
     public List<Point> getVertices() {
         return vertices;
+    }
+
+    /**
+     * Gets the area.
+     *
+     * @return the area
+     */
+    public double getArea() {
+        return area;
+    }
+
+    /**
+     * Sets the area.
+     *
+     * @param area the area value
+     */
+    public void setArea(double area) {
+        this.area = area;
     }
 
     /**
