@@ -63,9 +63,8 @@ public class VoronoiBuilder {
                 return Double.compare(angle1, angle2);
             });
 
-            // Étape 4 : construire la cellule avec ces sommets
-            CelluleVoronoi cell = new CelluleVoronoi(tank);
-            cell.getVertices().addAll(polygonVertices);
+            // On construit la cellule avec ces sommets
+            CelluleVoronoi cell = new CelluleVoronoi(tank, polygonVertices);
             cells.add(cell);
         }
 

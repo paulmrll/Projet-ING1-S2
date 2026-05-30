@@ -16,21 +16,25 @@ import java.util.Objects;
  * @version 1.1
  */
 public class CelluleVoronoi {
-    /** The waterTank of the voronoi cell */
+    /** The water tank reservoir associated with this Voronoi cell. */
     private WaterTank reservoir;
-    /** List of the vertices of the cell */
+
+    /** The list of points representing the vertices of the cell's polygon. */
     private List<Point> vertices;
-    /** List of the neighbors of this cell */
+
+    /** The list of neighboring Voronoi cells adjacent to this cell. */
     private List<CelluleVoronoi> neighbors;
 
     /**
-     * Constructs a new CelluleVoronoi associated with a water tank reservoir.
+     * Constructs a new {@code CelluleVoronoi} associated with a specific water tank reservoir
+     * and defined by its vertices.
      *
-     * @param reservoir the water tank that acts as the site of this Voronoi cell
+     * @param reservoir the water tank that acts as the site (center) of this Voronoi cell
+     * @param vertices  the list of points representing the vertices of the cell's polygon
      */
-    public CelluleVoronoi(WaterTank reservoir) {
+    public CelluleVoronoi(WaterTank reservoir, List<Point> vertices) {
         this.reservoir = reservoir;
-        this.vertices = new ArrayList<>();
+        this.vertices = vertices;
         this.neighbors = new ArrayList<>();
     }
 
@@ -44,18 +48,18 @@ public class CelluleVoronoi {
     }
 
     /**
-     * Gets the list of vertices.
-     * 
-     * @return the vertices list
+     * Returns the list of vertices defining the polygon of this Voronoi cell.
+     *
+     * @return the list of vertices
      */
     public List<Point> getVertices() {
         return vertices;
     }
 
     /**
-     * Gets the area with the shoelace formula
+     * Calculates and returns the area of this Voronoi cell using the Shoelace formula.
      *
-     * @return the area
+     * @return the area of the cell, or 0.0 if the cell has fewer than 3 vertices
      */
     public double getArea() {
         List<Point> v = vertices;
@@ -115,10 +119,12 @@ public class CelluleVoronoi {
     }
 
     /**
-     * Compares two CelluleVoronoi objects based on their associated reservoir.
-     * 
-     * @param o the object to compare
-     * @return true if both cells are associated with the same reservoir
+     * Compares this Voronoi cell to the specified object for equality.
+     * Two Voronoi cells are considered equal if and only if they are associated
+     * with the exact same water tank reservoir.
+     *
+     * @param o the object to compare with this cell
+     * @return {@code true} if the given object is equivalent to this cell; {@code false} otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -129,9 +135,10 @@ public class CelluleVoronoi {
     }
 
     /**
-     * Returns the hash code based on the associated reservoir.
-     * 
-     * @return the hash code
+     * Returns a hash code value for this Voronoi cell.
+     * The hash code is generated based solely on its associated reservoir.
+     *
+     * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
