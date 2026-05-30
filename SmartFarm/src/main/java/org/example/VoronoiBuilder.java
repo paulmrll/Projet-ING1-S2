@@ -3,8 +3,34 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for building a Voronoi diagram from a Delaunay triangulation.
+ * <p>
+ * This class cannot be instantiated. All methods are static.
+ * The Voronoi diagram is derived from the duality between Delaunay triangulation
+ * and Voronoi diagrams: the circumcenter of each Delaunay triangle is a vertex
+ * of the Voronoi polygon surrounding the corresponding water tank.
+ * </p>
+ *
+ * @author Oscar LUIGGI
+ * @version 1.0
+ */
 public class VoronoiBuilder {
 
+    /**
+     * Builds a list of Voronoi cells from a Delaunay triangulation.
+     * <p>
+     * For each water tank, the method collects all adjacent Delaunay triangles
+     * (triangles that share this tank as a vertex), extracts their circumcenters,
+     * and sorts them by angle around the tank to form a valid non-self-intersecting
+     * polygon.
+     * </p>
+     *
+     * @param tanks     the list of water tanks used as Voronoi sites
+     * @param triangles the list of Delaunay triangles computed from the same tanks
+     * @return a list of {@link CelluleVoronoi}, one per water tank,
+     *         each containing its polygon vertices in counter-clockwise order
+     */
     public static List<CelluleVoronoi> fromTriangulation( List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
 
         List<CelluleVoronoi> cells = new ArrayList<>();

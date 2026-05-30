@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Voronoi cell.
- * 
- * @author Tom LEMENAND
- * @version 1.0
+ * Represents a Voronoi cell associated with a water tank reservoir.
+ * <p>
+ * A Voronoi cell is a convex polygon whose vertices are the circumcenters
+ * of the adjacent Delaunay triangles. Any point inside this cell is closer
+ * to its reservoir than to any other reservoir in the diagram.
+ * </p>
+ *
+ * @author Tom LEMENAND, Oscar LUIGGI
+ * @version 1.1
  */
 public class CelluleVoronoi {
     /** The waterTank of the voronoi cell */
@@ -20,8 +25,8 @@ public class CelluleVoronoi {
 
     /**
      * Constructs a new CelluleVoronoi associated with a water tank reservoir.
-     * 
-     * @param reservoir the water tank reservoir for this cell
+     *
+     * @param reservoir the water tank that acts as the site of this Voronoi cell
      */
     public CelluleVoronoi(WaterTank reservoir) {
         this.reservoir = reservoir;
@@ -30,9 +35,9 @@ public class CelluleVoronoi {
     }
 
     /**
-     * Gets the water tank reservoir.
-     * 
-     * @return the reservoir
+     * Returns the water tank reservoir associated with this cell.
+     *
+     * @return the {@link WaterTank} acting as the site of this cell
      */
     public WaterTank getReservoir() {
         return reservoir;
