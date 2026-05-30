@@ -117,7 +117,7 @@ public class DelaunayTriangle {
         // STEP 3: Check if the three points are collinear (d ≈ 0)
         // If d is nearly zero, the points are on the same line and cannot form a valid triangle
         if(Math.abs(d) < 1e-10){
-            // Set the circumcenter to the centroid of the triagle
+            // Set the circumcenter to the centroid of the triangle
             this.circumcenter = new Point((x1 + x2 + x3) / 3, (y1 + y2 + y3) /3);
             // Set circumradius to infinity since there's no valid circle
             this.circumRadius = Double.MAX_VALUE;

@@ -11,11 +11,10 @@ import java.util.Objects;
  * @version 1.0
  */
 public class CelluleVoronoi {
-
+    /** The waterTank of the voronoi cell */
     private WaterTank reservoir;
+    /** List of the vertices of the cell */
     private List<Point> vertices;
-    private double surface;
-    private String state;
 
     /**
      * Constructs a new CelluleVoronoi associated with a water tank reservoir.
@@ -25,8 +24,6 @@ public class CelluleVoronoi {
     public CelluleVoronoi(WaterTank reservoir) {
         this.reservoir = reservoir;
         this.vertices = new ArrayList<>();
-        this.surface = 0.0;
-        this.state = "active";
     }
 
     /**
@@ -45,42 +42,6 @@ public class CelluleVoronoi {
      */
     public List<Point> getVertices() {
         return vertices;
-    }
-
-    /**
-     * Gets the surface area.
-     * 
-     * @return the surface area
-     */
-    public double getSurface() {
-        return surface;
-    }
-
-    /**
-     * Sets the surface area.
-     * 
-     * @param surface the surface area value
-     */
-    public void setSurface(double surface) {
-        this.surface = surface;
-    }
-
-    /**
-     * Gets the state.
-     * 
-     * @return the state
-     */
-    public String getState() {
-        return state;
-    }
-
-    /**
-     * Sets the state.
-     * 
-     * @param state the state value
-     */
-    public void setState(String state) {
-        this.state = state;
     }
 
     /**
