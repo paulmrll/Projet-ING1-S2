@@ -15,7 +15,8 @@ public class CelluleVoronoi {
     private WaterTank reservoir;
     /** List of the vertices of the cell */
     private List<Point> vertices;
-    private double area;
+    /** List of the neighbors of this cell */
+    private List<CelluleVoronoi> neighbors;
 
     /**
      * Constructs a new CelluleVoronoi associated with a water tank reservoir.
@@ -25,7 +26,7 @@ public class CelluleVoronoi {
     public CelluleVoronoi(WaterTank reservoir) {
         this.reservoir = reservoir;
         this.vertices = new ArrayList<>();
-        this.area = 0.0;
+        this.neighbors = new ArrayList<>();
     }
 
     /**
@@ -47,21 +48,65 @@ public class CelluleVoronoi {
     }
 
     /**
-     * Gets the area.
+     * Gets the area with the shoelace formula
      *
      * @return the area
      */
     public double getArea() {
-        return area;
+        List<Point> v = vertices;
+        int n = v.size();
+        if (n < 3) return 0;
+        double area = 0;
+        for (int i = 0; i < n; i++) {
+            Point a = v.get(i), b = v.get((i + 1) % n);
+            area += a.getX() * b.getY() - b.getX() * a.getY();
+        }
+        return Math.abs(area) / 2.0;
     }
 
     /**
-     * Sets the area.
+     * Determines whether a given point lies inside this Voronoi cell
+     * using the ray casting algorithm.
+     * <p>
+     * A horizontal ray is cast from the given point toward positive infinity.
+     * For each edge of the cell's polygon, the method checks whether the ray
+     * crosses that edge. If the total number of crossings is odd, the point
+     * is inside the cell; if even, it is outside.
+     * </p>
      *
-     * @param area the area value
+     * @param p the point to test
+     * @return {@code true} if the point is inside this cell; {@code false} otherwise
      */
-    public void setArea(double area) {
-        this.area = area;
+    public boolean contains(Point p) {
+        int crossings = 0;
+        int n = vertices.size();
+        //On boucle sur deux points consecutifs pour avoir une arête de la cellule Voronoi
+        for (int i = 0; i < n; i++) {
+            int next = (i + 1) % n;
+            Point a = vertices.get(i);
+            Point b = vertices.get(next);
+
+            //Si un point est au dessus et un en dessous de notre point alors l'arête "enjambe" notre point p
+            boolean aEstEnDessous = a.getY() <= p.getY();
+            boolean bEstEnDessous = b.getY() <= p.getY();
+            boolean areteEnjambe  = aEstEnDessous != bEstEnDessous;
+
+            if (areteEnjambe) {
+                // Condition 2 : calculer le x de l'arête à la hauteur du point
+                double pente = (b.getX() - a.getX()) / (b.getY() - a.getY()); //le coef directeur de l'arête qui enjambe
+                double xIntersection = a.getX() + pente * (p.getY() - a.getY());
+                //on utilise le coef directeur pour savoir
+                // si je descends de a.y jusqu'à p.y, de combien ai-je avancé en x ?
+
+                // Le croisement est-il à droite du point ?
+                if (p.getX() < xIntersection) {
+                    crossings++; //notre rayon passe par +1 arête du polygone
+                }
+            }
+        }
+
+        // Impair = dedans, pair = dehors
+        return crossings % 2 == 1;
     }
 
     /**
