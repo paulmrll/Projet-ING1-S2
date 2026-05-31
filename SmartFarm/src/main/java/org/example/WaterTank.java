@@ -6,7 +6,7 @@ import java.util.Objects;
  * Represents a water tank positioned at specific coordinates.
  * A water tank has a maximum capacity, a current flow rate and an active status.
  * It extends the {@link Point} class to inherit spatial coordinates.
- * @author Paul MORILLE
+ * @author Paul MORILLE, Oscar LUIGGI
  * @version 1.0
  */
 public class WaterTank extends Point {
@@ -86,10 +86,10 @@ public class WaterTank extends Point {
     }
 
     /**
-     * Decreases the current flow rate by the specified amount, provided that
-     * the reduction does not result in a negative flow rate.
+     * Sets the current flow rate of this water tank.
+     * If the provided value is negative, the flow rate is set to 0.
      *
-     * @param flow the amount to subtract from the current flow rate
+     * @param flow the new flow rate to assign to this water tank
      */
     public void setFlow(double flow) {
         if (flow >= 0.0) {

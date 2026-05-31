@@ -6,7 +6,7 @@ import java.util.Objects;
  * Represents a specific point in a coordinate system, characterized by its
  * x and y coordinates, a unique identifier, an internal type, and a state.
  *
- * @author Paul MORILLE
+ * @author Paul MORILLE, Oscar LUIGGI
  * @version 1.0
  */
 public class Point {

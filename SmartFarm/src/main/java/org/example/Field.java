@@ -129,15 +129,14 @@ public class Field {
 
     /**
      * Returns a hash code value for this field based on its water plants,
-     * name, and coordinate boundaries.
+     * name, coordinate boundaries and area.
      *
      * @return a hash code value for this field
      */
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.deepHashCode(waterPlants), name, xStart, xStop, yStart, yStop);
+        return Objects.hash(Arrays.deepHashCode(waterPlants), name, xStart, xStop, yStart, yStop, area);
     }
-
     /**
      * Returns a string representation of the field's water plants.
      * Each plant's string representation is followed by a new line character.

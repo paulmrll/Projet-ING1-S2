@@ -16,7 +16,7 @@ import java.util.Objects;
  * @version 1.1
  */
 public class VoronoiCell {
-    /** The water tank tank associated with this Voronoi cell. */
+    /** The WaterTank tank associated with this Voronoi cell. */
     private WaterTank tank;
 
     /** The list of points representing the vertices of the cell's polygon. */

@@ -9,7 +9,7 @@ import java.util.Objects;
  * A ground has an area and contains fields, water tanks and sprinkler systems
  * for intelligent irrigation management.
  * 
- * @author Tom LEMENAND
+ * @author Tom LEMENAND, Oscar LUIGGI
  * @version 1.0
  */
 public class Ground {
@@ -135,26 +135,32 @@ public class Ground {
     }
 
     /**
-     * Compares two Ground objects based on their area.
-     * 
+     * Compares two Ground objects based on their area, fields, tanks and sprinklers.
+     * Two grounds are considered equal if they have the same area and identical
+     * lists of fields, tanks and sprinklers.
+     *
      * @param o the object to compare
-     * @return true if both objects have the same area
+     * @return true if both objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ground ground = (Ground) o;
-        return ground.area == area;
+        return Double.compare(ground.area, area) == 0
+                && Objects.equals(fields, ground.fields)
+                && Objects.equals(tanks, ground.tanks)
+                && Objects.equals(sprinklers, ground.sprinklers);
     }
 
     /**
-     * Returns the hash code based on the area.
-     * 
-     * @return the hash code
+     * Returns a hash code value for this ground based on its area,
+     * fields, tanks and sprinklers.
+     *
+     * @return a hash code value for this ground
      */
     @Override
     public int hashCode() {
-        return Objects.hash(area);
+        return Objects.hash(area, fields, tanks, sprinklers);
     }
 }

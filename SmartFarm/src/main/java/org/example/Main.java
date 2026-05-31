@@ -24,8 +24,8 @@ public class Main {
         }
         System.out.println(points.getFirst());
         List<DelaunayTriangle> triangles = DelaunayTriangulation.triangulate(points);
-        System.out.println("Calcule triangle terminé");
+        System.out.println("Calcule triangle termine");
         List<VoronoiCell> cells = VoronoiBuilder.fromTriangulation(points, triangles);
-        System.out.println("Calcule cellule voronoi terminé");
+        System.out.println("Calcule cellule voronoi termine");
     }
 }
