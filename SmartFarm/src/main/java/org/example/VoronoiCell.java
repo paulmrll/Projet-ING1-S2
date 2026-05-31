@@ -5,46 +5,46 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Voronoi cell associated with a water tank reservoir.
+ * Represents a Voronoi cell associated with a water tank tank.
  * <p>
  * A Voronoi cell is a convex polygon whose vertices are the circumcenters
  * of the adjacent Delaunay triangles. Any point inside this cell is closer
- * to its reservoir than to any other reservoir in the diagram.
+ * to its tank than to any other tank in the diagram.
  * </p>
  *
  * @author Tom LEMENAND, Oscar LUIGGI
  * @version 1.1
  */
-public class CelluleVoronoi {
-    /** The water tank reservoir associated with this Voronoi cell. */
-    private WaterTank reservoir;
+public class VoronoiCell {
+    /** The water tank tank associated with this Voronoi cell. */
+    private WaterTank tank;
 
     /** The list of points representing the vertices of the cell's polygon. */
     private List<Point> vertices;
 
     /** The list of neighboring Voronoi cells adjacent to this cell. */
-    private List<CelluleVoronoi> neighbors;
+    private List<VoronoiCell> neighbors;
 
     /**
-     * Constructs a new {@code CelluleVoronoi} associated with a specific water tank reservoir
+     * Constructs a new {@code VoronoiCell} associated with a specific water tank tank
      * and defined by its vertices.
      *
-     * @param reservoir the water tank that acts as the site (center) of this Voronoi cell
+     * @param tank the water tank that acts as the site (center) of this Voronoi cell
      * @param vertices  the list of points representing the vertices of the cell's polygon
      */
-    public CelluleVoronoi(WaterTank reservoir, List<Point> vertices) {
-        this.reservoir = reservoir;
+    public VoronoiCell(WaterTank tank, List<Point> vertices) {
+        this.tank = tank;
         this.vertices = vertices;
         this.neighbors = new ArrayList<>();
     }
 
     /**
-     * Returns the water tank reservoir associated with this cell.
+     * Returns the water tank tank associated with this cell.
      *
      * @return the {@link WaterTank} acting as the site of this cell
      */
-    public WaterTank getReservoir() {
-        return reservoir;
+    public WaterTank getTank() {
+        return tank;
     }
 
     /**
@@ -121,7 +121,7 @@ public class CelluleVoronoi {
     /**
      * Compares this Voronoi cell to the specified object for equality.
      * Two Voronoi cells are considered equal if and only if they are associated
-     * with the exact same water tank reservoir.
+     * with the exact same water tank tank.
      *
      * @param o the object to compare with this cell
      * @return {@code true} if the given object is equivalent to this cell; {@code false} otherwise
@@ -130,19 +130,19 @@ public class CelluleVoronoi {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CelluleVoronoi that = (CelluleVoronoi) o;
-        return Objects.equals(reservoir, that.reservoir);
+        VoronoiCell that = (VoronoiCell) o;
+        return Objects.equals(tank, that.tank);
     }
 
     /**
      * Returns a hash code value for this Voronoi cell.
-     * The hash code is generated based solely on its associated reservoir.
+     * The hash code is generated based solely on its associated tank.
      *
      * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(reservoir);
+        return Objects.hash(tank);
     }
 
 }

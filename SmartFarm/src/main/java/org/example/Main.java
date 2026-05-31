@@ -7,7 +7,7 @@ import java.util.Random;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void main() {
+    static void main(String[] args) {
         System.out.println("Hello and welcome!");
         for (int i = 1; i <= 5; i++) {
             System.out.println("i = " + i);
@@ -25,7 +25,7 @@ public class Main {
         System.out.println(points.getFirst());
         List<DelaunayTriangle> triangles = DelaunayTriangulation.triangulate(points);
         System.out.println("Calcule triangle terminé");
-        List<CelluleVoronoi> cells = VoronoiBuilder.fromTriangulation(points, triangles);
+        List<VoronoiCell> cells = VoronoiBuilder.fromTriangulation(points, triangles);
         System.out.println("Calcule cellule voronoi terminé");
     }
 }

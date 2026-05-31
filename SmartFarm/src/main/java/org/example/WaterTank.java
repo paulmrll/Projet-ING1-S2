@@ -92,8 +92,10 @@ public class WaterTank extends Point {
      * @param flow the amount to subtract from the current flow rate
      */
     public void setFlow(double flow) {
-        if (this.flow - flow >= 0) {
-            this.flow -= flow;
+        if (flow >= 0.0) {
+            this.flow = flow;
+        }else{
+            this.flow = 0.0;
         }
     }
 

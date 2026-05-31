@@ -36,7 +36,7 @@ public class Sprinkler extends Point {
      * @param active the initial operational status of the sprinkler
      */
     public Sprinkler(double x, double y, double flow, double radius, boolean active) {
-        super((int) x, (int) y); // Cast to int if your Point class requires integers
+        super(x, y);
         if (flow >= 0 && radius >= 0) {
             this.flow = flow;
             this.radius = radius;
@@ -103,10 +103,10 @@ public class Sprinkler extends Point {
      * @param flow the new flow rate to set
      */
     public void setFlow(double flow) {
-        if (flow >= 0) {
+        if (flow >= 0.0) {
             this.flow = flow;
         } else {
-            this.flow = 0;
+            this.flow = 0.0;
         }
     }
 

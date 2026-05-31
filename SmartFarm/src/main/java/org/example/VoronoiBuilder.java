@@ -28,12 +28,12 @@ public class VoronoiBuilder {
      *
      * @param tanks     the list of water tanks used as Voronoi sites
      * @param triangles the list of Delaunay triangles computed from the same tanks
-     * @return a list of {@link CelluleVoronoi}, one per water tank,
+     * @return a list of {@link VoronoiCell}, one per water tank,
      *         each containing its polygon vertices in counter-clockwise order
      */
-    public static List<CelluleVoronoi> fromTriangulation( List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
+    public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
 
-        List<CelluleVoronoi> cells = new ArrayList<>();
+        List<VoronoiCell> cells = new ArrayList<>();
 
         for (WaterTank tank : tanks) {
 
@@ -64,7 +64,7 @@ public class VoronoiBuilder {
             });
 
             // On construit la cellule avec ces sommets
-            CelluleVoronoi cell = new CelluleVoronoi(tank, polygonVertices);
+            VoronoiCell cell = new VoronoiCell(tank, polygonVertices);
             cells.add(cell);
         }
 
