@@ -13,23 +13,28 @@ import java.util.List;
  * </p>
  *
  * @author Oscar LUIGGI
- * @version 1.0
+ * @version 1.1
  */
 public class VoronoiBuilder {
 
     /**
-     * Builds a list of Voronoi cells from a Delaunay triangulation.
+     * Builds a list of Voronoi cells from a Delaunay triangulation,
+     * and computes the neighbors of each cell.
      * <p>
-     * For each water tank, the method collects all adjacent Delaunay triangles
-     * (triangles that share this tank as a vertex), extracts their circumcenters,
-     * and sorts them by angle around the tank to form a valid non-self-intersecting
-     * polygon.
+     * For each water tank, the method:
+     * <ul>
+     *   <li>Collects all adjacent Delaunay triangles (triangles that share this tank as a vertex)</li>
+     *   <li>Extracts their circumcenters as polygon vertices</li>
+     *   <li>Sorts them by angle around the tank to form a valid non-self-intersecting polygon</li>
+     *   <li>Links neighboring cells: two cells are neighbors if their tanks share a Delaunay triangle</li>
+     * </ul>
      * </p>
      *
      * @param tanks     the list of water tanks used as Voronoi sites
      * @param triangles the list of Delaunay triangles computed from the same tanks
      * @return a list of {@link VoronoiCell}, one per water tank,
      *         each containing its polygon vertices in counter-clockwise order
+     *         and its neighboring cells already populated
      */
     public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
 
@@ -66,6 +71,32 @@ public class VoronoiBuilder {
             // On construit la cellule avec ces sommets
             VoronoiCell cell = new VoronoiCell(tank, polygonVertices);
             cells.add(cell);
+        }
+
+        // Relier les cellules voisines
+        for (DelaunayTriangle triangle : triangles) {
+            WaterTank[] vertices = triangle.getVertices();
+
+            // Pour chaque paire de sommets du triangle
+            for (int i = 0; i < 3; i++) {
+                for (int j = i + 1; j < 3; j++) {
+                    VoronoiCell cellA = null;
+                    VoronoiCell cellB = null;
+
+                    // Trouver les cellules correspondantes
+                    for (VoronoiCell cell : cells) {
+                        if (cell.getTank() == vertices[i]) cellA = cell;
+                        if (cell.getTank() == vertices[j]) cellB = cell;
+
+                        // Dès qu'on a trouvé les deux, inutile de continuer
+                        if (cellA != null && cellB != null) {
+                            if (!cellA.getNeighbors().contains(cellB)) cellA.getNeighbors().add(cellB);
+                            if (!cellB.getNeighbors().contains(cellA)) cellB.getNeighbors().add(cellA);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         return cells;

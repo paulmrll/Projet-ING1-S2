@@ -74,6 +74,15 @@ public class VoronoiCell {
     }
 
     /**
+     * Returns the list of neighboring Voronoi cells adjacent to this cell.
+     *
+     * @return the list of neighboring cells
+     */
+    public List<VoronoiCell> getNeighbors() {
+        return neighbors;
+    }
+
+    /**
      * Determines whether a given point lies inside this Voronoi cell
      * using the ray casting algorithm.
      * <p>

@@ -19,13 +19,18 @@ public class Main {
 
         Random random = new Random();
         List<WaterTank> points = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
-            points.add(new WaterTank(random.nextDouble(100.0),random.nextDouble(100.0),3.0));
+        for (int i = 1; i <= 10; i++) {
+            points.add(new WaterTank(random.nextDouble(10.0),random.nextDouble(10.0),3.0));
         }
         System.out.println(points.getFirst());
+        /*
         List<DelaunayTriangle> triangles = DelaunayTriangulation.triangulate(points);
         System.out.println("Calcule triangle termine");
         List<VoronoiCell> cells = VoronoiBuilder.fromTriangulation(points, triangles);
         System.out.println("Calcule cellule voronoi termine");
+        */
+        VoronoiDiagram diagram = new VoronoiDiagram(points);
+        System.out.println(diagram.getTriangles());
+        System.out.println(diagram.getCells());
     }
 }
