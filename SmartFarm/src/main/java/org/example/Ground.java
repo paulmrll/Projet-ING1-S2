@@ -34,6 +34,12 @@ public class Ground {
     private List<Sprinkler> sprinklers;
 
     /**
+     * The Voronoi diagram computed from the water tanks on this ground.
+     * Null until computeVoronoi() is called.
+     */
+    private VoronoiDiagram voronoiDiagram;
+
+    /**
      * Constructor for the Ground class.
      * Initializes a new ground with a given area and creates empty lists
      * for fields, tanks and sprinklers.
@@ -102,12 +108,13 @@ public class Ground {
     }
 
     /**
-     * Adds a new water tank to the ground.
-     * 
+     * Adds a new water tank to the ground and recomputes the Voronoi diagram.
+     *
      * @param tank the tank to add
      */
     public void addTank(WaterTank tank) {
         tanks.add(tank);
+        if (tanks.size() >= 3) computeVoronoi();
     }
 
     /**
@@ -136,7 +143,9 @@ public class Ground {
      * @return true if the tank was removed, false if it wasn't found
      */
     public boolean removeTank(WaterTank tank) {
-        return tanks.remove(tank);
+        boolean removed = tanks.remove(tank);
+        if (removed && tanks.size() >= 3) computeVoronoi();
+        return removed;
     }
 
     /**
@@ -174,6 +183,7 @@ public class Ground {
         int index = tanks.indexOf(oldTank);
         if (index == -1) return false;
         tanks.set(index, newTank);
+        if (tanks.size() >= 3) computeVoronoi();
         return true;
     }
 
@@ -189,6 +199,63 @@ public class Ground {
         if (index == -1) return false;
         sprinklers.set(index, newSprinkler);
         return true;
+    }
+
+    /**
+     * Finds the nearest water tank to a given position.
+     *
+     * @param x the x-coordinate of the position
+     * @param y the y-coordinate of the position
+     * @return the nearest WaterTank, or null if there are no tanks
+     */
+    public WaterTank findNearestTank(double x, double y) {
+        WaterTank nearest = null;
+        double minDist = Double.MAX_VALUE;
+        for (WaterTank tank : tanks) {
+            double dx = tank.getX() - x;
+            double dy = tank.getY() - y;
+            double dist = dx * dx + dy * dy;
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = tank;
+            }
+        }
+        return nearest;
+    }
+
+    /**
+     * Finds the Voronoi cell containing a given position.
+     * computeVoronoi() must be called before using this method.
+     *
+     * @param x the x-coordinate of the position
+     * @param y the y-coordinate of the position
+     * @return the VoronoiCell containing the point, or null if not found
+     */
+    public VoronoiCell findCellContaining(double x, double y) {
+        if (voronoiDiagram == null) return null;
+        Point p = new Point(x, y);
+        for (VoronoiCell cell : voronoiDiagram.getCells()) {
+            if (cell.contains(p)) return cell;
+        }
+        return null;
+    }
+
+    /**
+     * Computes the Voronoi diagram from the water tanks on this ground.
+     * Must be called after adding tanks.
+     */
+    public void computeVoronoi() {
+        this.voronoiDiagram = new VoronoiDiagram(tanks);
+    }
+
+    /**
+     * Returns the Voronoi diagram of this ground.
+     * Returns null if computeVoronoi() has not been called yet.
+     *
+     * @return the Voronoi diagram, or null if not yet computed
+     */
+    public VoronoiDiagram getVoronoiDiagram() {
+        return voronoiDiagram;
     }
 
     /**
