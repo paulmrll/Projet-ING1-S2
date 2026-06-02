@@ -22,6 +22,9 @@ public class Sprinkler extends Point {
     /** Specifies whether the sprinkler is currently active. */
     private boolean active;
 
+    /** The water tank that supplies this sprinkler. */
+    private WaterTank source;
+
     /**
      * Constructs a new {@code Sprinkler} with the specified coordinates, flow rate,
      * coverage radius, and active status.
@@ -108,6 +111,44 @@ public class Sprinkler extends Point {
         } else {
             this.flow = 0.0;
         }
+    }
+
+    /**
+     * Returns the water tank supplying this sprinkler.
+     *
+     * @return the source WaterTank, or null if not assigned
+     */
+    public WaterTank getSource() {
+        return source;
+    }
+
+    /**
+     * Sets the water tank that supplies this sprinkler.
+     *
+     * @param source the WaterTank to assign as source
+     */
+    public void setSource(WaterTank source) {
+        this.source = source;
+    }
+
+    /**
+     * Activates the sprinkler if its source tank has enough water.
+     * Consumes water from the source tank equal to the sprinkler's flow rate.
+     *
+     * @return true if the sprinkler was activated, false if no source or tank is empty
+     */
+    public boolean activate() {
+        if (source == null || source.isEmpty()) return false;
+        source.setFlow(source.getFlow() - flow);
+        this.active = true;
+        return true;
+    }
+
+    /**
+     * Deactivates the sprinkler.
+     */
+    public void deactivate() {
+        this.active = false;
     }
 
     /**

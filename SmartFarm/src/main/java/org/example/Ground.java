@@ -123,6 +123,16 @@ public class Ground {
      * @param sprinkler the sprinkler to add
      */
     public void addSprinkler(Sprinkler sprinkler) {
+        if (voronoiDiagram != null) {
+            VoronoiCell cell = findCellContaining(sprinkler.getX(), sprinkler.getY());
+            if (cell != null) {
+                sprinkler.setSource(cell.getTank());
+            } else {
+                sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
+            }
+        } else {
+            sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
+        }
         sprinklers.add(sprinkler);
     }
 
