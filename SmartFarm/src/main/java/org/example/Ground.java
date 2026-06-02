@@ -120,6 +120,78 @@ public class Ground {
     }
 
     /**
+     * Removes a field from the ground.
+     *
+     * @param field the field to remove
+     * @return true if the field was removed, false if it wasn't found
+     */
+    public boolean removeField(Field field) {
+        return fields.remove(field);
+    }
+
+    /**
+     * Removes a water tank from the ground.
+     *
+     * @param tank the tank to remove
+     * @return true if the tank was removed, false if it wasn't found
+     */
+    public boolean removeTank(WaterTank tank) {
+        return tanks.remove(tank);
+    }
+
+    /**
+     * Removes a sprinkler from the ground.
+     *
+     * @param sprinkler the sprinkler to remove
+     * @return true if the sprinkler was removed, false if it wasn't found
+     */
+    public boolean removeSprinkler(Sprinkler sprinkler) {
+        return sprinklers.remove(sprinkler);
+    }
+
+    /**
+     * Replaces an existing field with a new one.
+     *
+     * @param oldField the field to replace
+     * @param newField the new field
+     * @return true if the field was updated, false if oldField wasn't found
+     */
+    public boolean updateField(Field oldField, Field newField) {
+        int index = fields.indexOf(oldField);
+        if (index == -1) return false;
+        fields.set(index, newField);
+        return true;
+    }
+
+    /**
+     * Replaces an existing water tank with a new one.
+     *
+     * @param oldTank the tank to replace
+     * @param newTank the new tank
+     * @return true if the tank was updated, false if oldTank wasn't found
+     */
+    public boolean updateTank(WaterTank oldTank, WaterTank newTank) {
+        int index = tanks.indexOf(oldTank);
+        if (index == -1) return false;
+        tanks.set(index, newTank);
+        return true;
+    }
+
+    /**
+     * Replaces an existing sprinkler with a new one.
+     *
+     * @param oldSprinkler the sprinkler to replace
+     * @param newSprinkler the new sprinkler
+     * @return true if the sprinkler was updated, false if oldSprinkler wasn't found
+     */
+    public boolean updateSprinkler(Sprinkler oldSprinkler, Sprinkler newSprinkler) {
+        int index = sprinklers.indexOf(oldSprinkler);
+        if (index == -1) return false;
+        sprinklers.set(index, newSprinkler);
+        return true;
+    }
+
+    /**
      * Returns a string representation of the ground.
      * 
      * @return a string containing the main information of the ground
