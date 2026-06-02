@@ -100,6 +100,22 @@ public class WaterTank extends Point {
     }
 
     /**
+     * Checks whether this water tank is empty.
+     *
+     * @return true if the flow rate is 0, false otherwise
+     */
+    public boolean isEmpty() {
+        return flow == 0.0;
+    }
+
+    /**
+     * Refills the tank by resetting the flow to its maximum capacity.
+     */
+    public void refill() {
+        this.flow = this.capacity;
+    }
+
+    /**
      * Returns a string representation of the water tank.
      * The string contains the capacity, flow, active status,
      * and the superclass data, each separated by a newline character.
