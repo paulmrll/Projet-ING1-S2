@@ -1,6 +1,7 @@
 package org.example;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Objects;
  * @version 1.0
  */
 public class Field {
-    private Point[] waterPlants;
+    private List<Point> waterPlants;
     private final double xStart;
     private final double xStop;
     private final double yStart;
@@ -35,6 +36,7 @@ public class Field {
         this.yStart = yStart;
         this.yStop = yStop;
         this.area = area;
+        this.waterPlants = new ArrayList<>();
     }
 
     /**
@@ -92,39 +94,66 @@ public class Field {
     }
 
     /**
-     * Returns the array of water plants located in this field.
+     * Returns the list of water plants located in this field.
      *
-     * @return an array of {@link Point} objects representing the water plants
+     * @return the list of water plants
      */
-    public Point[] getWaterPlants() {
-        return this.waterPlants;
+    public List<Point> getWaterPlants() {
+        return waterPlants;
+    }
+
+    /**
+     * Adds a water plant to the field.
+     *
+     * @param plant the water plant to add
+     */
+    public void addWaterPlant(Point plant) {
+        waterPlants.add(plant);
+    }
+
+    /**
+     * Removes a water plant from the field.
+     *
+     * @param plant the water plant to remove
+     * @return true if the plant was removed, false if it wasn't found
+     */
+    public boolean removeWaterPlant(Point plant) {
+        return waterPlants.remove(plant);
+    }
+
+    /**
+     * Replaces an existing water plant with a new one.
+     *
+     * @param oldPlant the plant to replace
+     * @param newPlant the new plant
+     * @return true if the plant was updated, false if oldPlant wasn't found
+     */
+    public boolean updateWaterPlant(Point oldPlant, Point newPlant) {
+        int index = waterPlants.indexOf(oldPlant);
+        if (index == -1) return false;
+        waterPlants.set(index, newPlant);
+        return true;
     }
 
     /**
      * Compares this field to the specified object for equality.
      * Two fields are considered equal if they have the same name, coordinates,
-     * area, and identical water plant elements in the exact same order.
-     * Note: This implementation may throw a {@code NullPointerException} if {@code waterPlants}
-     * is null on either object.
+     * area, and identical water plants.
      *
      * @param O the object to compare with this field
-     * @return {@code true} if the specified object is equal to this field; {@code false} otherwise
+     * @return true if the specified object is equal to this field, false otherwise
      */
+    @Override
     public boolean equals(Object O) {
-        if (O instanceof Field f) {
-            if (this.name.equals(f.getName())) {
-                if (xStop == f.getxStop() && xStart == f.getxStart() && yStart == f.getyStart() && yStop == f.getyStop() && f.getArea() == area) {
-                    Point[] waterPlantsF = f.getWaterPlants();
-                    for (int i = 0; i < this.waterPlants.length; i++) {
-                        if (!waterPlants[i].equals(waterPlantsF[i])) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
+        if (this == O) return true;
+        if (!(O instanceof Field f)) return false;
+        return Double.compare(xStart, f.xStart) == 0
+                && Double.compare(xStop, f.xStop) == 0
+                && Double.compare(yStart, f.yStart) == 0
+                && Double.compare(yStop, f.yStop) == 0
+                && Double.compare(area, f.area) == 0
+                && Objects.equals(name, f.name)
+                && Objects.equals(waterPlants, f.waterPlants);
     }
 
     /**
@@ -135,19 +164,22 @@ public class Field {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.deepHashCode(waterPlants), name, xStart, xStop, yStart, yStop, area);
+        return Objects.hash(waterPlants, name, xStart, xStop, yStart, yStop, area);
     }
+
     /**
-     * Returns a string representation of the field's water plants.
-     * Each plant's string representation is followed by a new line character.
+     * Returns a string representation of the field.
      *
-     * @return a string describing the water plants in this field
+     * @return a string describing the field and its water plants
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("Field{name=").append(name)
+          .append(", area=").append(area)
+          .append(", plants=").append(waterPlants.size()).append("}\n");
         for (Point waterPlant : waterPlants) {
-            sb.append(waterPlant.toString());
-            sb.append("\n");
+            sb.append("  ").append(waterPlant.toString()).append("\n");
         }
         return sb.toString();
     }
