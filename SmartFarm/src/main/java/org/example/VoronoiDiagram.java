@@ -74,7 +74,16 @@ public class VoronoiDiagram {
      */
     @Override
     public String toString() {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("VoronoiDiagram{\n");
+        sb.append("  tanks=").append(tanks.size()).append("\n");
+        sb.append("  triangles=").append(triangles.size()).append("\n");
+        sb.append("  cells(").append(cells.size()).append("):\n");
+        for (VoronoiCell cell : cells) {
+            sb.append(cell).append("\n");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     /**

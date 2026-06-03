@@ -7,30 +7,66 @@ import java.util.Random;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static void main(String[] args) {
-        System.out.println("Hello and welcome!");
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
-        Sprinkler sprinkler = new Sprinkler(0.0,1.0,2.0,3.0);
-        WaterTank waterTank = new WaterTank(1.0,1.0,2.0,3.0);
-        System.out.println(sprinkler);
-        System.out.println(waterTank);
+    public static void main(String[] args) {
 
-        Random random = new Random();
-        List<WaterTank> points = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            points.add(new WaterTank(random.nextDouble(10.0),random.nextDouble(10.0),3.0));
+        // --- Création du terrain ---
+        Person owner = new Person(35, "Dupont", "Jean", "jean.dupont@farm.fr");
+        Ground ground = new Ground(10000,owner);
+
+        // --- Ajout des réservoirs ---
+        ground.addTank(new WaterTank(1.0, 1.0, 100.0, 80.0));
+        ground.addTank(new WaterTank(8.0, 1.0, 100.0, 60.0));
+        ground.addTank(new WaterTank(4.5, 8.0, 100.0, 90.0));
+        ground.addTank(new WaterTank(2.0, 5.0, 80.0,  50.0));
+        ground.addTank(new WaterTank(7.0, 5.0, 80.0,  70.0));
+
+        // --- Ajout des champs ---
+        Field wheat  = new Field("Blé",   0, 5,  0, 5,  25.0);
+        Field corn   = new Field("Maïs",  5, 10, 0, 5,  25.0);
+        Field barley = new Field("Orge",  0, 10, 5, 10, 50.0);
+        ground.addField(wheat);
+        ground.addField(corn);
+        ground.addField(barley);
+
+        // --- Ajout des arroseurs ---
+        ground.addSprinkler(new Sprinkler(1.5, 1.5, 10.0, 2.0));
+        ground.addSprinkler(new Sprinkler(7.5, 1.5, 10.0, 2.0));
+        ground.addSprinkler(new Sprinkler(4.5, 7.0, 10.0, 2.0));
+        ground.addSprinkler(new Sprinkler(3.0, 4.0, 10.0, 2.0));
+        ground.addSprinkler(new Sprinkler(6.5, 4.5, 10.0, 2.0));
+
+        // --- Affichage du terrain ---
+        System.out.println("=== TERRAIN ===");
+        System.out.println(ground);
+
+        // --- Affichage des réservoirs ---
+        System.out.println("\n=== RÉSERVOIRS ===");
+        for (WaterTank tank : ground.getTanks()) {
+            System.out.println(tank);
         }
-        System.out.println(points.getFirst());
-        /*
-        List<DelaunayTriangle> triangles = DelaunayTriangulation.triangulate(points);
-        System.out.println("Calcule triangle termine");
-        List<VoronoiCell> cells = VoronoiBuilder.fromTriangulation(points, triangles);
-        System.out.println("Calcule cellule voronoi termine");
-        */
-        VoronoiDiagram diagram = new VoronoiDiagram(points);
-        System.out.println(diagram.getTriangles());
-        System.out.println(diagram.getCells());
+
+        // --- Affichage du diagramme de Voronoï ---
+        System.out.println("\n=== DIAGRAMME DE VORONOÏ ===");
+        System.out.println(ground.getVoronoiDiagram());
+
+        // --- Affichage des arroseurs et leur source ---
+        System.out.println("\n=== ARROSEURS ===");
+        for (Sprinkler s : ground.getSprinklers()) {
+            System.out.println(s);
+            System.out.println("  → source : " + s.getSource());
+        }
+
+        // --- Test activation des arroseurs ---
+        System.out.println("\n=== ACTIVATION DES ARROSEURS ===");
+        for (Sprinkler s : ground.getSprinklers()) {
+            boolean ok = s.activate();
+            System.out.println(s + " → activé : " + ok);
+        }
+
+        // --- État des réservoirs après activation ---
+        System.out.println("\n=== RÉSERVOIRS APRÈS ACTIVATION ===");
+        for (WaterTank tank : ground.getTanks()) {
+            System.out.println(tank);
+        }
     }
 }

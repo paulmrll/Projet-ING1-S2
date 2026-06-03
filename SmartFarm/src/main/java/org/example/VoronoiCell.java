@@ -154,4 +154,23 @@ public class VoronoiCell {
         return Objects.hash(tank);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("VoronoiCell{\n");
+        sb.append("  tank=").append(tank).append("\n");
+        sb.append("  vertices(").append(vertices.size()).append(")=\n");
+        for (Point v : vertices) {
+            sb.append("    ").append(v).append("\n");
+        }
+        sb.append("  area=").append(String.format("%.2f", getArea())).append("\n");
+        sb.append("  neighbors(").append(neighbors.size()).append(")=[");
+        for (int i = 0; i < neighbors.size(); i++) {
+            sb.append(neighbors.get(i).getTank());
+            if (i < neighbors.size() - 1) sb.append(", ");
+        }
+        sb.append("]\n}");
+        return sb.toString();
+    }
+
 }

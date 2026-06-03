@@ -161,10 +161,14 @@ public class Sprinkler extends Point {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("radius = ").append(radius);
-        sb.append(" , flow = ").append(flow);
-        sb.append(", active = ").append(active).append(" ");
-        sb.append(super.toString());
+        sb.append("Sprinkler{");
+        sb.append("id=").append(getId());
+        sb.append(", pos=(").append(String.format("%.1f", getX()));
+        sb.append(", ").append(String.format("%.1f", getY())).append(")");
+        sb.append(", flow=").append(String.format("%.1f", flow));
+        sb.append(", radius=").append(String.format("%.1f", radius));
+        sb.append(", active=").append(active);
+        sb.append("}");
         return sb.toString();
     }
 

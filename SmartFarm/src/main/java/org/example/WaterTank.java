@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Represents a water tank positioned at specific coordinates.
- * A water tank has a maximum capacity, a current flow rate and an active status.
+ * A water tank has a maximum capacity and a current flow rate.
  * It extends the {@link Point} class to inherit spatial coordinates.
  * @author Paul MORILLE, Oscar LUIGGI
  * @version 1.0
@@ -16,9 +16,6 @@ public class WaterTank extends Point {
 
     /** The current water flow rate of the tank. */
     private double flow;
-
-    /** Specifies whether the water tank is currently active. */
-    private boolean active;
 
     /**
      * Constructs a new WaterTank with specified coordinates, capacity, and flow.
@@ -56,24 +53,6 @@ public class WaterTank extends Point {
      */
     public double getCapacity() {
         return capacity;
-    }
-
-    /**
-     * Checks whether this water tank is active.
-     *
-     * @return true if the tank is active, false otherwise
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * Sets the active status of this water tank.
-     *
-     * @param active the new active status to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     /**
@@ -117,7 +96,7 @@ public class WaterTank extends Point {
 
     /**
      * Returns a string representation of the water tank.
-     * The string contains the capacity, flow, active status,
+     * The string contains the capacity, flow
      * and the superclass data, each separated by a newline character.
      *
      * @return a string describing this water tank
@@ -125,17 +104,20 @@ public class WaterTank extends Point {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("capacity = ").append(capacity);
-        sb.append(" , flow = ").append(flow);
-        sb.append(", active = ").append(active).append(" ");
-        sb.append(super.toString());
+        sb.append("WaterTank{");
+        sb.append("id=").append(getId());
+        sb.append(", pos=(").append(String.format("%.1f", getX()));
+        sb.append(", ").append(String.format("%.1f", getY())).append(")");
+        sb.append(", capacity=").append(String.format("%.1f", capacity));
+        sb.append(", flow=").append(String.format("%.1f", flow));
+        sb.append("}");
         return sb.toString();
     }
 
     /**
      * Compares this water tank to the specified object for equality.
      * The result is true if and only if the argument is not null, is a WaterTank object,
-     * and has the same active status, flow, capacity, and spatial coordinates
+     * and has the same flow, capacity, and spatial coordinates
      * as this object.
      *
      * @param O the object to compare this WaterTank against
@@ -144,7 +126,7 @@ public class WaterTank extends Point {
     @Override
     public boolean equals(Object O) {
         if (O instanceof WaterTank w) {
-            if (w.isActive() == active && w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
+            if (w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
                 return true;
             }
         }
@@ -153,12 +135,12 @@ public class WaterTank extends Point {
 
     /**
      * Returns a hash code value for this water tank based on its attributes
-     * (active status, flow, capacity) and its superclass state.
+     * (flow, capacity) and its superclass state.
      *
      * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(active, flow, capacity, super.hashCode());
+        return Objects.hash(flow, capacity, super.hashCode());
     }
 }

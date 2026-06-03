@@ -51,11 +51,12 @@ public class Ground {
      * 
      * @param area the area of the ground in square units
      */
-    public Ground(double area) {
+    public Ground(double area, Person owner) {
         this.area = area;
         this.fields = new ArrayList<>();
         this.tanks = new ArrayList<>();
         this.sprinklers = new ArrayList<>();
+        this.owner = owner;
     }
 
     /**
@@ -76,16 +77,6 @@ public class Ground {
         return owner;
     }
 
-    /**
-     * Sets the person managing this ground.
-     * Also updates the person's ground reference.
-     *
-     * @param owner the person to assign as owner
-     */
-    public void setOwner(Person owner) {
-        this.owner = owner;
-        if (owner != null) owner.setGround(this);
-    }
 
     /**
      * Gets the list of all fields on the ground.
@@ -301,6 +292,7 @@ public class Ground {
     @Override
     public String toString() {
         return "Ground{" +
+                "Owner=" + owner +
                 "area=" + area +
                 ", fields=" + fields.size() +
                 ", tanks=" + tanks.size() +

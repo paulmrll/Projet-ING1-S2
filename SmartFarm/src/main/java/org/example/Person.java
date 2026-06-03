@@ -154,17 +154,6 @@ public class Person {
     }
 
     /**
-     * Sets the ground managed by this person.
-     * Also updates the ground's owner reference.
-     *
-     * @param ground the ground to assign
-     */
-    public void setGround(Ground ground) {
-        this.ground = ground;
-        if (ground != null && ground.getOwner() != this) ground.setOwner(this);
-    }
-
-    /**
      * Compares this person to the specified object for equality.
      * Two persons are considered equal if and only if they share the exact same ID.
      *
