@@ -109,6 +109,42 @@ public class Person {
     }
 
     /**
+     * Sets the last name of this person.
+     *
+     * @param name the new last name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Sets the first name of this person.
+     *
+     * @param firstname the new first name
+     */
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    /**
+     * Sets the age of this person.
+     *
+     * @param age the new age
+     */
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    /**
+     * Sets the email address of this person.
+     *
+     * @param email the new email address
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
      * Returns the ground managed by this person.
      *
      * @return the ground, or null if not assigned
