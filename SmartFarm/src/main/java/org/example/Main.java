@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -67,6 +68,12 @@ public class Main {
         System.out.println("\n=== RÉSERVOIRS APRÈS ACTIVATION ===");
         for (WaterTank tank : ground.getTanks()) {
             System.out.println(tank);
+        }
+        Save s = new Save("save.txt");
+        try {
+            s.writeSave(ground);
+        } catch (FileNotFoundException e) {
+            System.err.println("file not found " + e.getMessage());
         }
     }
 }
