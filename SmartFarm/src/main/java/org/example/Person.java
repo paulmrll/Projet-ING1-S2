@@ -36,6 +36,11 @@ public class Person {
     private String email;
 
     /**
+     * The ground managed by this person.
+     */
+    private Ground ground;
+
+    /**
      * Counter used to automatically generate unique identifiers for new instances.
      */
     private static int nbId = 0;
@@ -101,6 +106,26 @@ public class Person {
      */
     public int getAge() {
         return this.age;
+    }
+
+    /**
+     * Returns the ground managed by this person.
+     *
+     * @return the ground, or null if not assigned
+     */
+    public Ground getGround() {
+        return ground;
+    }
+
+    /**
+     * Sets the ground managed by this person.
+     * Also updates the ground's owner reference.
+     *
+     * @param ground the ground to assign
+     */
+    public void setGround(Ground ground) {
+        this.ground = ground;
+        if (ground != null && ground.getOwner() != this) ground.setOwner(this);
     }
 
     /**

@@ -17,6 +17,11 @@ public class Ground {
      * The area of the ground in square units (typically in m²).
      */
     private double area;
+
+    /**
+     * The person responsible for managing this ground.
+     */
+    private Person owner;
     
     /**
      * List of fields present on the ground.
@@ -60,6 +65,26 @@ public class Ground {
      */
     public double getArea() {
         return area;
+    }
+
+    /**
+     * Returns the person managing this ground.
+     *
+     * @return the owner, or null if not assigned
+     */
+    public Person getOwner() {
+        return owner;
+    }
+
+    /**
+     * Sets the person managing this ground.
+     * Also updates the person's ground reference.
+     *
+     * @param owner the person to assign as owner
+     */
+    public void setOwner(Person owner) {
+        this.owner = owner;
+        if (owner != null) owner.setGround(this);
     }
 
     /**
