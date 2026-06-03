@@ -138,7 +138,7 @@ public class Sprinkler extends Point {
      * @return true if the sprinkler was activated, false if no source or tank is empty
      */
     public boolean activate() {
-        if (source == null || source.isEmpty()) return false;
+        if (source == null || source.isEmpty() || source.getFlow() >= flow) return false;
         source.setFlow(source.getFlow() - flow);
         this.active = true;
         return true;
