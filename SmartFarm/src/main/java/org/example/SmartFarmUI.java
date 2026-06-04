@@ -54,7 +54,6 @@ public class SmartFarmUI extends Application {
                 ));
             }
         }
-
         stage.show();
     }
 
