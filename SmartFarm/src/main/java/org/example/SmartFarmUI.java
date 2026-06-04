@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import java.io.IOException;
 
 import java.awt.Taskbar;
 import java.awt.Toolkit;
@@ -25,6 +26,17 @@ public class SmartFarmUI extends Application {
         title.setTextFill(Color.WHITE);
 
         Button btnStart   = menuButton("Lancer l'application");
+        // Ici on renvoie un stage qui lit et affiche une ferme en carte
+        btnStart.setOnAction(e ->{
+            try {
+                Save save = new Save("save.txt");
+                Ground ground = save.readSave();
+                MapView MapView = new MapView(ground);
+                stage.setScene(MapView.getScene(stage));
+            } catch (IOException ex){
+                System.err.println("Erreur chargement : " + ex.getMessage());
+            }
+        });
         Button btnAbout   = menuButton("À propos");
         Button btnCredits = menuButton("Crédits");
         Button btnQuit    = menuButton("Quitter");
