@@ -75,5 +75,23 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.err.println("file not found " + e.getMessage());
         }
+
+
+//        Random random = new Random();
+//        List<WaterTank> points = new ArrayList<>();
+//        int n = 1000;
+//        for (int i = 1; i <= n; i++) {
+//            points.add(new WaterTank(random.nextDouble(4000.0),random.nextDouble(4000.0),3.0));
+//        }
+//        System.out.println(points.getFirst());
+//
+//        long startTime1 = System.nanoTime();
+//        //on execute
+//        VoronoiDiagram voronoiDiagram = new VoronoiDiagram(points);
+//        long endTime1 = System.nanoTime();
+//        // 3. Calculer la différence
+//        long durationInNano1 = (endTime1 - startTime1);
+//        double durationInMilli1 = durationInNano1 / 1_000_000.0;
+//        System.out.println("Calcule diagramme voronoi termine, temps de calcule pour " + n + " WaterTank : " + durationInMilli1 + " ms");
     }
 }
