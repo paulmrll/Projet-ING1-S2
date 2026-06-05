@@ -41,7 +41,7 @@ public class Save {
         }
     }
 
-    public Ground readSave() throws IOException, FileNotFoundException {
+    public Ground readSave() throws IOException {
         if (path == null) {
             throw new FileNotFoundException("File not found : " + path);
         }
@@ -59,7 +59,6 @@ public class Save {
             if (element.length == 0 || line.trim().isEmpty()) continue;
             if (count == 0){
                 owner = createPerson(Integer.parseInt(element[4]), element[1], element[2], element[3]);
-                System.out.println(owner.toString());
                 count = 1;
             } else {
                 if (element[0].equals("G")){
