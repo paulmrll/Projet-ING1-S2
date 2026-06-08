@@ -9,9 +9,19 @@ import java.util.Objects;
  * It extends the {@link Point} class to inherit spatial coordinates.
  *
  * @author Oscar LUIGGI
- * @version 1.0
+ * @version 1.1
  */
 public class Sprinkler extends Point {
+
+    /**
+     * The unique identifier of this specific Sprinkler.
+     */
+    private final int id;
+
+    /**
+     * Counter used to generate unique identifiers for new Sprinklers.
+     */
+    private static int nbId = 0;
 
     /** The water flow rate of the sprinkler. */
     private double flow;
@@ -28,26 +38,32 @@ public class Sprinkler extends Point {
     /**
      * Constructs a new {@code Sprinkler} with the specified coordinates, flow rate,
      * coverage radius, and active status.
-     * <p>
-     * If the provided flow or radius is negative, they are automatically initialized to 0.
-     * </p>
      *
      * @param x      the X-coordinate of the sprinkler
      * @param y      the Y-coordinate of the sprinkler
-     * @param flow   the water flow rate of the sprinkler
-     * @param radius the final coverage radius of the sprinkler
+     * @param flow   the water flow rate of the sprinkler (must be >= 0)
+     * @param radius the final coverage radius of the sprinkler (must be >= 0)
      * @param active the initial operational status of the sprinkler
+     * @throws IllegalArgumentException if flow or radius are negative
      */
     public Sprinkler(double x, double y, double flow, double radius, boolean active) {
         super(x, y);
-        if (flow >= 0 && radius >= 0) {
-            this.flow = flow;
-            this.radius = radius;
-        } else {
-            this.flow = 0;
-            this.radius = 0;
+
+        // Validation stricte comme dans WaterTank
+        if (flow < 0) {
+            throw new IllegalArgumentException("Le flux ne peut pas être négatif.");
         }
+        if (radius < 0) {
+            throw new IllegalArgumentException("Le rayon de couverture ne peut pas être négatif.");
+        }
+
+        this.flow = flow;
+        this.radius = radius;
         this.active = active;
+
+        // Attribution sécurisée de l'ID
+        this.id = nbId;
+        nbId++;
     }
 
     /**
@@ -61,6 +77,15 @@ public class Sprinkler extends Point {
      */
     public Sprinkler(double x, double y, double flow, double radius) {
         this(x, y, flow, radius, false);
+    }
+
+    /**
+     * Gets the unique identifier of this Sprinkler.
+     *
+     * @return the Sprinkler's unique ID
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**
@@ -138,7 +163,10 @@ public class Sprinkler extends Point {
      * @return true if the sprinkler was activated, false if no source or tank is empty
      */
     public boolean activate() {
-        if (source == null || source.isEmpty() || source.getFlow() >= flow) return false;
+        if (source == null || source.isEmpty() || source.getFlow() < flow){
+            return false;
+        }
+
         source.setFlow(source.getFlow() - flow);
         this.active = true;
         return true;
@@ -153,8 +181,6 @@ public class Sprinkler extends Point {
 
     /**
      * Returns a string representation of this sprinkler.
-     * The string includes the superclass representation, followed by the flow rate
-     * and the active status.
      *
      * @return a string describing this sprinkler
      */
@@ -174,20 +200,20 @@ public class Sprinkler extends Point {
 
     /**
      * Compares this sprinkler to the specified object for equality.
-     * Two sprinklers are considered equal if they share the same spatial coordinates (superclass equality)
-     * as well as identical flow rate, radius, and active status.
+     * Two sprinklers are considered equal if they have the same unique identifier,
+     * flow, radius, active status, and spatial coordinates.
      *
      * @param o the object to compare with this sprinkler
      * @return {@code true} if the objects are equal; {@code false} otherwise
      */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Sprinkler) {
-            Sprinkler s = (Sprinkler) o;
-            if (!super.equals(o)) {
-                return false;
-            }
-            if (flow == s.flow && radius == s.radius && active == s.active) {
+        if (o instanceof Sprinkler s) {
+            if (s.getId() == getId() &&
+                    Double.compare(s.getFlow(), getFlow()) == 0 &&
+                    Double.compare(s.getRadius(), getRadius()) == 0 &&
+                    s.isActive() == isActive() &&
+                    super.equals(s)) {
                 return true;
             }
         }
@@ -196,13 +222,11 @@ public class Sprinkler extends Point {
 
     /**
      * Returns a hash code value for this sprinkler.
-     * The hash code is generated based on its active status, flow rate, radius,
-     * and the superclass state.
      *
      * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(active, flow, radius, super.hashCode());
+        return Objects.hash(super.hashCode(), id, flow, radius, active);
     }
 }

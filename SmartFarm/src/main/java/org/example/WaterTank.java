@@ -4,12 +4,21 @@ import java.util.Objects;
 
 /**
  * Represents a water tank positioned at specific coordinates.
- * A water tank has a maximum capacity and a current flow rate.
+ * A water tank has a unique identifier, a maximum capacity, and a current flow rate.
  * It extends the {@link Point} class to inherit spatial coordinates.
- * @author Paul MORILLE, Oscar LUIGGI
- * @version 1.0
+ * * @author Paul MORILLE, Oscar LUIGGI
+ * @version 1.1
  */
 public class WaterTank extends Point {
+    /**
+     * The unique identifier of this specific WaterTank.
+     */
+    private final int id;
+
+    /**
+     * Counter used to generate unique identifiers for new WaterTanks.
+     */
+    private static int nbId;
 
     /** The maximum capacity of the water tank. */
     private double capacity;
@@ -19,19 +28,27 @@ public class WaterTank extends Point {
 
     /**
      * Constructs a new WaterTank with specified coordinates, capacity, and flow.
-     * The capacity must be strictly greater than 0 for the fields to be initialized.
+     * The waterTank is initialized with its unique id if arguments are valid.
      *
      * @param x        the X coordinate of the tank
      * @param y        the Y coordinate of the tank
      * @param capacity the maximum capacity of the tank (must be > 0)
-     * @param flow     the initial flow rate of the tank
+     * @param flow     the initial flow rate of the tank (must be >= 0 and <= capacity)
+     * @throws IllegalArgumentException if capacity or flow are invalid
      */
     public WaterTank(double x, double y, double capacity, double flow) {
         super(x, y);
-        if (capacity > 0) {
-            this.capacity = capacity;
-            this.flow = flow;
+
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("La capacité doit être strictement supérieure à 0.");
         }
+        if (flow < 0 || flow > capacity) {
+            throw new IllegalArgumentException("Le flux doit être positif et ne peut pas dépasser la capacité.");
+        }
+        this.capacity = capacity;
+        this.flow = flow;
+        this.id = nbId;
+        nbId++;
     }
 
     /**
@@ -44,6 +61,15 @@ public class WaterTank extends Point {
      */
     public WaterTank(double x, double y, double capacity) {
         this(x, y, capacity, 0);
+    }
+
+    /**
+     * Gets the unique identifier of this WaterTank.
+     *
+     * @return the WaterTank's unique ID
+     */
+    public int getId() {
+        return this.id;
     }
 
     /**
@@ -66,14 +92,19 @@ public class WaterTank extends Point {
 
     /**
      * Sets the current flow rate of this water tank.
+     * The flow rate cannot exceed the capacity.
      * If the provided value is negative, the flow rate is set to 0.
      *
      * @param flow the new flow rate to assign to this water tank
      */
     public void setFlow(double flow) {
         if (flow >= 0.0) {
-            this.flow = flow;
-        }else{
+            if (flow >= capacity) {
+                refill();
+            } else {
+                this.flow = flow;
+            }
+        } else {
             this.flow = 0.0;
         }
     }
@@ -96,8 +127,7 @@ public class WaterTank extends Point {
 
     /**
      * Returns a string representation of the water tank.
-     * The string contains the capacity, flow
-     * and the superclass data, each separated by a newline character.
+     * The string contains the unique id, coordinates, capacity, and current flow rate.
      *
      * @return a string describing this water tank
      */
@@ -116,17 +146,16 @@ public class WaterTank extends Point {
 
     /**
      * Compares this water tank to the specified object for equality.
-     * The result is true if and only if the argument is not null, is a WaterTank object,
-     * and has the same flow, capacity, and spatial coordinates
-     * as this object.
+     * Two water tanks are considered equal if they have the same unique identifier,
+     * capacity, flow, and spatial coordinates.
      *
-     * @param O the object to compare this WaterTank against
+     * @param o the object to compare this WaterTank against
      * @return true if the given object is equivalent to this water tank, false otherwise
      */
     @Override
-    public boolean equals(Object O) {
-        if (O instanceof WaterTank w) {
-            if (w.getFlow() == flow && w.getCapacity() == capacity && super.equals(w)) {
+    public boolean equals(Object o) {
+        if (o instanceof WaterTank w) {
+            if (w.getId() == getId() && w.getFlow() == getFlow() && w.getCapacity() == getCapacity() && super.equals(w)) {
                 return true;
             }
         }
@@ -135,12 +164,12 @@ public class WaterTank extends Point {
 
     /**
      * Returns a hash code value for this water tank based on its attributes
-     * (flow, capacity) and its superclass state.
+     * (id, flow, capacity) and its superclass state.
      *
      * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
-        return Objects.hash(flow, capacity, super.hashCode());
+        return Objects.hash(super.hashCode(), id, capacity, flow);
     }
 }
