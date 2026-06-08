@@ -244,10 +244,9 @@ public class Ground {
     public WaterTank findNearestTank(double x, double y) {
         WaterTank nearest = null;
         double minDist = Double.MAX_VALUE;
+        Point target = new Point(x, y);
         for (WaterTank tank : tanks) {
-            double dx = tank.getX() - x;
-            double dy = tank.getY() - y;
-            double dist = dx * dx + dy * dy;
+            double dist = tank.distanceTo(target);
             if (dist < minDist) {
                 minDist = dist;
                 nearest = tank;
@@ -335,5 +334,84 @@ public class Ground {
     @Override
     public int hashCode() {
         return Objects.hash(area, fields, tanks, sprinklers);
+    }
+
+    /**
+     * Counts the number of sprinklers supplied by a specific water tank.
+     *
+     * @param tank the water tank source
+     * @return the number of sprinklers linked to this tank
+     */
+    public long countSprinklersFor(WaterTank tank) {
+        long count = 0;
+        for (Sprinkler sp : this.sprinklers) {
+            if (sp.getSource() == tank) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts the number of empty water tanks on the ground.
+     *
+     * @return the number of empty tanks
+     */
+    public long countEmptyTanks() {
+        long count = 0;
+        for (WaterTank tank : this.tanks) {
+            if (tank.isEmpty()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Calculates the imbalance among a specific list of water tanks.
+     *
+     * @param selectedTanks the list of tanks to evaluate
+     * @return the load imbalance among the selected tanks, or 0 if the list is empty
+     */
+    public long getSprinklerImbalance(List<WaterTank> selectedTanks) {
+        if (selectedTanks == null || selectedTanks.isEmpty()) {
+            return 0;
+        }
+
+        long max = Long.MIN_VALUE;
+        long min = Long.MAX_VALUE;
+
+        for (WaterTank tank : selectedTanks) {
+            long count = countSprinklersFor(tank);
+            if (count > max) max = count;
+            if (count < min) min = count;
+        }
+
+        return max - min;
+    }
+
+    /**
+     * Calculates the imbalance (max - min difference) in the number of sprinklers per tank.
+     * A difference of 0 indicates a perfectly balanced network.
+     *
+     * @return the load imbalance, or 0 if there are no tanks.
+     */
+    public long getSprinklerImbalance() {
+        return getSprinklerImbalance(tanks);
+    }
+
+    /**
+     * Counts the total number of currently active sprinklers on the ground.
+     *
+     * @return the number of running sprinklers.
+     */
+    public long countActiveSprinklers() {
+        long count = 0;
+        for (Sprinkler sp : this.sprinklers) {
+            if (sp.isActive()) {
+                count++;
+            }
+        }
+        return count;
     }
 }

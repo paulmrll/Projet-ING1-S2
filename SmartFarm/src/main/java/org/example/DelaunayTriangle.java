@@ -96,6 +96,21 @@ public class DelaunayTriangle {
         return Arrays.hashCode(vertices);
     }
 
+    @Override
+    public String toString() {
+        return "";
+    }
+
+
+    public double getArea() {
+        double ab = vertices[0].distanceTo(vertices[1]);
+        double bc = vertices[1].distanceTo(vertices[2]);
+        double ca = vertices[2].distanceTo(vertices[0]);
+
+        double s = (ab + bc + ca) / 2.0;
+        return Math.sqrt(s * (s - ab) * (s - bc) * (s - ca));
+    }
+
     /**
      * Calculates the circumcircle (circumcenter and circumradius) of the triangle.
      * The circumcenter is the point equidistant from all three vertices.
@@ -135,9 +150,9 @@ public class DelaunayTriangle {
         // STEP 6: Create the circumcenter point with calculated coordinates
         this.circumcenter = new Point(ux, uy);
 
-        // STEP 7: Calculate the circumradius (distnce form circumcenter to any vertex)
-        // Using the Euclidean distance formula
-        this.circumRadius = Math.sqrt((ux - x1) * (ux - x1) + (uy - y1) * (uy - y1));
+        // STEP 7: Calculate the circumradius (distance form circumcenter to any vertex)
+        // Using the Euclidean distance formula in Point.java
+        this.circumRadius = this.circumcenter.distanceTo(vertices[0]);
     }
 
     /**
@@ -148,9 +163,7 @@ public class DelaunayTriangle {
      */
     public boolean isPointInCircumcircle(WaterTank point) {
         if (circumcenter == null) return false;
-        double dx = point.getX() - circumcenter.getX();
-        double dy = point.getY() - circumcenter.getY();
-        return (dx * dx + dy * dy) < (circumRadius * circumRadius + 1e-10);
+        return circumcenter.distanceTo(point) < (circumRadius + 1e-10);
     }
 
 }

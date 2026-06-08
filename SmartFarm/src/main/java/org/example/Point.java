@@ -60,6 +60,18 @@ public class Point {
     }
 
     /**
+     * Computes the Euclidean distance between this point and another point.
+     *
+     * @param other the other point
+     * @return the distance between the two points
+     */
+    public double distanceTo(Point other) {
+        double dx = this.x - other.getX();
+        double dy = this.y - other.getY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
      * Sets the vertical Y coordinate of this point.
      *
      * @param y the new Y coordinate to set
