@@ -183,4 +183,15 @@ public class Field {
         }
         return sb.toString();
     }
+
+    /**
+     * Checks whether a given point is within the boundaries of this field.
+     *
+     * @param p the point to check
+     * @return true if the point is inside the field, false otherwise
+     */
+    public boolean contains(Point p) {
+        return p.getX() >= this.xStart && p.getX() <= this.xStop
+                && p.getY() >= this.yStart && p.getY() <= this.yStop;
+    }
 }

@@ -139,16 +139,7 @@ public class Ground {
      * @param sprinkler the sprinkler to add
      */
     public void addSprinkler(Sprinkler sprinkler) {
-        if (voronoiDiagram != null) {
-            VoronoiCell cell = findCellContaining(sprinkler.getX(), sprinkler.getY());
-            if (cell != null) {
-                sprinkler.setSource(cell.getTank());
-            } else {
-                sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
-            }
-        } else {
-            sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
-        }
+        findSource(sprinkler);
         sprinklers.add(sprinkler);
     }
 
@@ -222,9 +213,25 @@ public class Ground {
      */
     public boolean updateSprinkler(Sprinkler oldSprinkler, Sprinkler newSprinkler) {
         int index = sprinklers.indexOf(oldSprinkler);
-        if (index == -1) return false;
+        if (index == -1) {
+            return false;
+        }
+        findSource(newSprinkler);
         sprinklers.set(index, newSprinkler);
         return true;
+    }
+
+    private void findSource(Sprinkler sprinkler) {
+        if (voronoiDiagram != null) {
+            VoronoiCell cell = findCellContaining(sprinkler.getX(), sprinkler.getY());
+            if (cell != null) {
+                sprinkler.setSource(cell.getTank());
+            } else {
+                sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
+            }
+        } else {
+            sprinkler.setSource(findNearestTank(sprinkler.getX(), sprinkler.getY()));
+        }
     }
 
     /**
