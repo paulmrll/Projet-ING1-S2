@@ -30,7 +30,6 @@ public class Point {
      * The vertical Y coordinate.
      */
     private final double y;
-
     /**
      * Constructs a new {@code Point} with the specified x and y coordinates.
      * Automatically assigns a unique ID to the point.

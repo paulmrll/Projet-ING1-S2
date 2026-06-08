@@ -32,7 +32,7 @@ public class SmartFarmUI extends Application {
                 Save save = new Save("save.txt");
                 Ground ground = save.readSave();
                 MapView MapView = new MapView(ground);
-                stage.setScene(MapView.getScene(stage));
+                stage.setScene(MapView.getScene(stage, ground));
             } catch (IOException ex){
                 System.err.println("Erreur chargement : " + ex.getMessage());
             }
