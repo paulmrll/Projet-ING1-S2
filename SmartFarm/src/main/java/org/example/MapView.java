@@ -10,10 +10,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
+import java.util.List;
 
 public class MapView {
     private Ground ground;
@@ -22,7 +27,7 @@ public class MapView {
         this.ground = ground;
     }
 
-    public Scene getScene(Stage stage, Ground ground){
+    public Scene getScene(Stage stage){
         java.util.Random random = new java.util.Random();
 
         Pane root = new Pane();
@@ -56,9 +61,9 @@ public class MapView {
             double width = (f.getxStop() - f.getxStart()) * multiplicator;
             double height = (f.getyStop() - f.getyStart()) * multiplicator;
 
+
             Rectangle fieldSurface = new Rectangle(x, y, width, height);
 
-            // Couleur aléatoire lumineuse
             double r = 0.3 + random.nextDouble() * 0.4;
             double g = 0.6 + random.nextDouble() * 0.4; // Teinte verte dominante
             double b = 0.2 + random.nextDouble() * 0.4;
@@ -70,9 +75,7 @@ public class MapView {
             root.getChildren().add(fieldSurface);
         }
 
-        // 4. Dessiner les Sprinklers (Arroseurs)
         for (Sprinkler s : ground.getSprinklers()){
-            // Calcul de sa position ajustée à l'écran
             double cx = (s.getX() - minX) * multiplicator + margeX;
             double cy = (s.getY() - minY) * multiplicator + margeY;
 
@@ -92,9 +95,59 @@ public class MapView {
             root.getChildren().add(c);
         }
 
-        HBox topBar = getTopBar(stage);
+        if (ground.getTanks() != null && ground.getTanks().size() >= 3) {
+
+            VoronoiDiagram diagram = new VoronoiDiagram(ground.getTanks());
+
+            for (VoronoiCell cell : diagram.getCells()) {
+                List<Point> vertices = cell.getVertices();
+                if (vertices.size() < 3) continue;
+
+                Polygon voronoiPolygon = new Polygon();
+
+                for (Point p : vertices) {
+                    double screenX = (p.getX() - minX) * multiplicator + margeX;
+                    double screenY = (p.getY() - minY) * multiplicator + margeY;
+                    voronoiPolygon.getPoints().addAll(screenX, screenY);
+                }
+                voronoiPolygon.setFill(Color.TRANSPARENT);
+                voronoiPolygon.setStroke(Color.WHITE);
+                voronoiPolygon.setStrokeWidth(1.5);
+
+                root.getChildren().add(voronoiPolygon);
+            }
+
+            for (DelaunayTriangle triangle : diagram.getTriangles()) {
+                WaterTank[] v = triangle.getVertices();
+
+                double x0 = (v[0].getX() - minX) * multiplicator + margeX;
+                double y0 = (v[0].getY() - minY) * multiplicator + margeY;
+
+                double x1 = (v[1].getX() - minX) * multiplicator + margeX;
+                double y1 = (v[1].getY() - minY) * multiplicator + margeY;
+
+                double x2 = (v[2].getX() - minX) * multiplicator + margeX;
+                double y2 = (v[2].getY() - minY) * multiplicator + margeY;
+
+                Line line1 = new Line(x0, y0, x1, y1);
+                Line line2 = new Line(x1, y1, x2, y2);
+                Line line3 = new Line(x2, y2, x0, y0);
+
+                Color delaunayColor = Color.ORANGE;
+                double delaunayWidth = 1.0;
+
+                line1.setStroke(delaunayColor); line1.setStrokeWidth(delaunayWidth);
+                line2.setStroke(delaunayColor); line2.setStrokeWidth(delaunayWidth);
+                line3.setStroke(delaunayColor); line3.setStrokeWidth(delaunayWidth);
+
+                root.getChildren().addAll(line1, line2, line3);
+            }
+        }
+
+
+        HBox topBar = SmartFarmUI.getTopBar(stage, "SmartFarm - " + ground.getOwner().getFirstname() + " " + ground.getOwner().getName());
         HBox bottomBar = getBottomBar(stage);
-        VBox RightBar = getRightBar(stage);
+        VBox RightBar = getRightBar(stage, ground);
 
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(topBar);
@@ -106,14 +159,26 @@ public class MapView {
         return new Scene(mainLayout, 1200, 700);
     }
 
-    private VBox getRightBar(Stage stage){
+    private VBox getRightBar(Stage stage, Ground ground){
         Button addSprinklers = new Button("Add Sprinklers");
         Button addWaterTank = new Button("Add WaterTank");
-        VBox rightBar = new VBox(40,addWaterTank, addSprinklers);
+        Button save = new Button("Save your Ground");
+        VBox rightBar = new VBox(40,addWaterTank, addSprinklers, save);
         rightBar.setStyle("-fx-background-color: #3a5a30;");
         rightBar.setAlignment(Pos.CENTER);
+
+        save.setOnAction(E->{
+            Save register = new Save(ground.getOwner().getFirstname().toLowerCase()+"_"+ground.getOwner().getName().toLowerCase()+"_save");
+            try {
+                register.writeSave(ground);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         return rightBar;
     }
+
 
     private HBox getBottomBar(Stage stage){
         Label legend = new Label("Légende : "+ " 🔴: WaterTanks" + " 🔵 : Sprinklers");
@@ -121,29 +186,5 @@ public class MapView {
         bottomBar.setAlignment(Pos.CENTER);
         bottomBar.setStyle("-fx-border-color: #3a5a30;; -fx-border-width: 2px;");
         return bottomBar;
-    }
-
-    private HBox getTopBar(Stage stage){
-        Label title = new Label("SmartFarm - " + ground.getOwner().getFirstname() + " " + ground.getOwner().getName());
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        title.setTextFill(Color.WHITE);
-
-        Button btnBack = new Button("<- Retour");
-        btnBack.setStyle(
-                "-fx-background-color : #3a5a30;" + "-fx-text-fill : white;" + "-fx-background-radius : 6;"
-        );
-
-        HBox topBar = new HBox(20, btnBack, title);
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setStyle("-fx-background-color : #1e3e1a; -fx-padding : 10 20 10 20");
-        btnBack.setOnAction(e -> {
-            SmartFarmUI menu = new SmartFarmUI();
-            try {
-                menu.start(stage);
-            } catch (Exception ex) {
-                System.out.println("Erreur retour menu : " + ex.getMessage());
-            }
-        });
-        return topBar;
     }
 }
