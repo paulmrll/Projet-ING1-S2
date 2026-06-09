@@ -65,7 +65,7 @@ public class MapView {
             Rectangle fieldSurface = new Rectangle(x, y, width, height);
 
             double r = 0.3 + random.nextDouble() * 0.4;
-            double g = 0.6 + random.nextDouble() * 0.4; // Teinte verte dominante
+            double g = 0.6 + random.nextDouble() * 0.4;
             double b = 0.2 + random.nextDouble() * 0.4;
             fieldSurface.setFill(Color.color(r, g, b));
 
@@ -73,26 +73,6 @@ public class MapView {
             fieldSurface.setStrokeWidth(1.5);
 
             root.getChildren().add(fieldSurface);
-        }
-
-        for (Sprinkler s : ground.getSprinklers()){
-            double cx = (s.getX() - minX) * multiplicator + margeX;
-            double cy = (s.getY() - minY) * multiplicator + margeY;
-
-            Circle c = new Circle(cx, cy, 5);
-            c.setFill(Color.BLUE);
-
-            root.getChildren().add(c);
-        }
-
-        for (WaterTank w : ground.getTanks()){
-            double cx = (w.getX() - minX) * multiplicator + margeX;
-            double cy = (w.getY() - minY) * multiplicator + margeY;
-
-            Circle c = new Circle(cx, cy, 5);
-            c.setFill(Color.RED);
-
-            root.getChildren().add(c);
         }
 
         if (ground.getTanks() != null && ground.getTanks().size() >= 3) {
@@ -142,6 +122,28 @@ public class MapView {
 
                 root.getChildren().addAll(line1, line2, line3);
             }
+        }
+        for (Sprinkler s : ground.getSprinklers()){
+            double cx = (s.getX() - minX) * multiplicator + margeX;
+            double cy = (s.getY() - minY) * multiplicator + margeY;
+
+            Circle c = new Circle(cx, cy, 5);
+            c.setFill(Color.BLUE);
+
+            root.getChildren().add(c);
+        }
+        for (WaterTank w : ground.getTanks()){
+            double cx = (w.getX() - minX) * multiplicator + margeX;
+            double cy = (w.getY() - minY) * multiplicator + margeY;
+
+            Circle c = new Circle(cx, cy, 5);
+            c.setFill(Color.RED);
+            c.setOnMouseClicked(e->{
+                WaterTankView waterTankView = new WaterTankView(ground);
+                stage.setScene(waterTankView.getScene(stage, w));
+            });
+
+            root.getChildren().add(c);
         }
 
 

@@ -1,11 +1,9 @@
 package org.example;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,19 +14,14 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 public class SaveView {
     private Label statusLabel;
 
     public Scene getScene(Stage stage) {
-        stage.setTitle("SmartFarm - Fichiers du dossier courant");
 
-        Label titleLabel = new Label("Cartes et filesList disponibles (Dossier Courant)");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        titleLabel.setTextFill(Color.WHITE);
+
 
         statusLabel = new Label("Initialisation...");
         statusLabel.setFont(Font.font("Arial", 12));
