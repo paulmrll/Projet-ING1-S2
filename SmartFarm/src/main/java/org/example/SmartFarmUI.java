@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -25,25 +26,19 @@ public class SmartFarmUI extends Application {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 48));
         title.setTextFill(Color.WHITE);
 
-        Button btnStart   = menuButton("Lancer l'application");
-        // Ici on renvoie un stage qui lit et affiche une ferme en carte
-        btnStart.setOnAction(e ->{
-            try {
-                Save save = new Save("save.txt");
-                Ground ground = save.readSave();
-                MapView MapView = new MapView(ground);
-                stage.setScene(MapView.getScene(stage, ground));
-            } catch (IOException ex){
-                System.err.println("Erreur chargement : " + ex.getMessage());
-            }
-        });
+
         Button btnAbout   = menuButton("À propos");
         Button btnCredits = menuButton("Crédits");
         Button btnQuit    = menuButton("Quitter");
+        Button btnSave    = menuButton("save");
+        btnSave.setOnAction(e ->{
+                SaveView register = new SaveView();
+                stage.setScene(register.getScene(stage));
+        });
 
         btnQuit.setOnAction(e -> stage.close());
 
-        VBox content = new VBox(20, title, btnStart, btnCredits, btnAbout, btnQuit);
+        VBox content = new VBox(20, title, btnSave, btnCredits, btnAbout, btnQuit);
         content.setAlignment(Pos.CENTER);
 
         VBox overlay = new VBox();
@@ -85,5 +80,28 @@ public class SmartFarmUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+    public static HBox getTopBar(Stage stage, String name){
+        Label title = new Label(name);
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        title.setTextFill(Color.WHITE);
+
+        Button btnBack = new Button("<- Retour");
+        btnBack.setStyle(
+                "-fx-background-color : #3a5a30;" + "-fx-text-fill : white;" + "-fx-background-radius : 6;"
+        );
+
+        HBox topBar = new HBox(20, btnBack, title);
+        topBar.setAlignment(Pos.CENTER_LEFT);
+        topBar.setStyle("-fx-background-color : #1e3e1a; -fx-padding : 10 20 10 20");
+        btnBack.setOnAction(e -> {
+            SmartFarmUI menu = new SmartFarmUI();
+            try {
+                menu.start(stage);
+            } catch (Exception ex) {
+                System.out.println("Erreur retour menu : " + ex.getMessage());
+            }
+        });
+        return topBar;
     }
 }
