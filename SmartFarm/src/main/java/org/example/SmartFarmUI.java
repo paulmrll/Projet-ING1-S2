@@ -86,7 +86,7 @@ public class SmartFarmUI extends Application {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         title.setTextFill(Color.WHITE);
 
-        Button btnBack = new Button("<- Go to the MENU");
+        Button btnBack = new Button("<- Go to the MENU ");
         btnBack.setStyle(
                 "-fx-background-color : #3a5a30;" + "-fx-text-fill : white;" + "-fx-background-radius : 6;"
         );

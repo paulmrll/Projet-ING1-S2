@@ -9,20 +9,20 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
-public class WaterTankView extends ElementView{
-    public WaterTankView(Ground g){
+public class SprinklerView extends ElementView{
+    public SprinklerView(Ground g){
         super(g);
     }
 
 
 
     protected VBox uploadInfo (Point p, Stage stage) {
-        WaterTank w = (WaterTank) p;
+        Sprinkler s = (Sprinkler) p;
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(20);
 
-        Label idLabel = new Label("WaterTank ID : " + w.getId());
+        Label idLabel = new Label(" ID : " + s.getId());
         idLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
         vbox.getChildren().add(idLabel);
 
@@ -30,8 +30,8 @@ public class WaterTankView extends ElementView{
         coordinatesBox.setAlignment(Pos.CENTER);
         coordinatesBox.setSpacing(20);
 
-        Label xLabel = new Label("X : " + w.getX());
-        Label yLabel = new Label("Y : " + w.getY());
+        Label xLabel = new Label("X : " + s.getX());
+        Label yLabel = new Label("Y : " + s.getY());
 
         coordinatesBox.getChildren().addAll(xLabel, yLabel);
         vbox.getChildren().add(coordinatesBox);
@@ -40,11 +40,8 @@ public class WaterTankView extends ElementView{
         dataBox.setAlignment(Pos.CENTER);
         dataBox.setSpacing(20);
 
-        Label flowLabel = new Label("Flow : " + w.getFlow());
-        Label capacityLabel = new Label("Capacity : " + w.getCapacity());
-
-        dataBox.getChildren().addAll(flowLabel, capacityLabel);
-        vbox.getChildren().add(dataBox);
+        Label flowLabel = new Label("Flow : " + s.getFlow());
+        vbox.getChildren().add(flowLabel);
 
         Button btnReturn = new Button("Return to the ground");
         btnReturn.setOnAction(e->{

@@ -129,7 +129,10 @@ public class MapView {
 
             Circle c = new Circle(cx, cy, 5);
             c.setFill(Color.BLUE);
-
+            c.setOnMouseClicked(e->{
+                SprinklerView sprinklerView = new SprinklerView(ground);
+                stage.setScene(sprinklerView.getScene(stage, s));
+            });
             root.getChildren().add(c);
         }
         for (WaterTank w : ground.getTanks()){
