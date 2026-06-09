@@ -30,7 +30,7 @@ public class SmartFarmUI extends Application {
         Button btnAbout   = menuButton("À propos");
         Button btnCredits = menuButton("Crédits");
         Button btnQuit    = menuButton("Quitter");
-        Button btnSave    = menuButton("save");
+        Button btnSave    = menuButton("Save");
         btnSave.setOnAction(e ->{
                 SaveView register = new SaveView();
                 stage.setScene(register.getScene(stage));
