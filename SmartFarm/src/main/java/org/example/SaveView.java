@@ -31,7 +31,7 @@ public class SaveView {
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(topBar);
         mainLayout.setCenter(chargerFichiers(currentFolder, stage));
-        
+
         Scene scene = new Scene(mainLayout, 1200, 700);
         return scene;
     }
@@ -53,7 +53,7 @@ public class SaveView {
                     );
                     button.setPrefSize(200, 50);
                     button.setOnAction(e->{
-                        Save save = new Save(f.getAbsolutePath());
+                        Save save = new Save(f.getName());
                         try {
                             MapView mapView = new MapView(save.readSave());
                             Scene mapScene = mapView.getScene(stage);
