@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -85,25 +86,42 @@ public class NewGroundFormView {
     }
 
     public Scene newGround(Stage stage){
-        VBox root = new VBox();
-        root.setSpacing(20);
+        BorderPane root = new BorderPane();
         VBox personForm = new VBox();
         personForm.setSpacing(20);
         personForm.setAlignment(Pos.CENTER);
-        root.setAlignment(Pos.CENTER);
-        Label titleLabel = new Label("Nouvel Utilisateur");
-        TextField nameInput = new TextField();
+        HBox topBar = SmartFarmUI.getTopBar(stage, "Nouvelle ferme");
+        root.setTop(topBar);
+        Label titleLabel = new Label("Vos Informations");
+
+        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 50px; -fx-font-weight: bold;");
+        TextField nameInput = new TextField();nameInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
         nameInput.setPromptText("Name");
+        nameInput.setMaxWidth(400);
+
         TextField firstnameInput = new TextField();
+        firstnameInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
         firstnameInput.setPromptText("Firstname");
+        firstnameInput.setMaxWidth(400);
+
         TextField emailInput = new TextField();
+        emailInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
         emailInput.setPromptText("Email");
+        emailInput.setMaxWidth(400);
+
         TextField ageInput = new TextField();
+        ageInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
         ageInput.setPromptText("Age");
+        ageInput.setMaxWidth(400);
+
         TextField areaInput = new TextField();
+        areaInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
         personForm.getChildren().addAll(nameInput, firstnameInput, emailInput, ageInput);
         areaInput.setPromptText("Area");
-        Button btnSave = new Button("Enregrister");
+        areaInput.setMaxWidth(400);
+
+        Button btnSave = new Button("Créer la ferme");
+        btnSave.getStyleClass().add("btn-primary");
 
         btnSave.setOnAction(e->{
             try {
@@ -119,7 +137,19 @@ public class NewGroundFormView {
                 System.out.println("Erreur dans le formulaire");
             }
         });
-        root.getChildren().addAll(personForm, areaInput, btnSave);
-        return new Scene(root, 1200, 700);
+        VBox card = new VBox(15, personForm, areaInput);
+        card.setStyle("-fx-background-color: rgba(0,0,0,0.40); -fx-background-radius: 12; -fx-padding: 28 40 28 40;");
+        card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(520);
+
+        VBox center = new VBox(30, titleLabel, card, btnSave);
+        center.setAlignment(Pos.TOP_CENTER);
+        center.setPadding(new Insets(60, 40, 40, 40));
+        root.setCenter(center);
+
+        root.setStyle("-fx-background-image: url('/bg_nuit.png'); -fx-background-size: cover;");
+        Scene scene = new Scene(root, 1200, 700);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        return scene;
     }
 }
