@@ -159,13 +159,13 @@ public class MapView {
         Button btnAddField = sideButton("Ajouter un Field");
         AddForm addForm = new AddForm();
         btnAddTank.setOnAction(e->{
-            stage.setScene(addForm.getWaterTankForm(stage, ground));
+            stage.setScene(addForm.getWaterTankScene(stage, ground));
         });
         btnAddSprinkler.setOnAction(e->{
-            stage.setScene(addForm.getSprinklerForm(stage, ground));
+            stage.setScene(addForm.getSprinklerScene(stage, ground));
         });
         btnAddField.setOnAction(e->{
-            stage.setScene(addForm.getFieldForm(stage, ground));
+            stage.setScene(addForm.getFieldScene(stage, ground));
         });
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");

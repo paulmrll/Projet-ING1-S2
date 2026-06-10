@@ -27,14 +27,19 @@ public class SmartFarmUI extends Application {
         Button btnCredits = menuButton("Crédits");
         Button btnAbout   = menuButton("À propos");
         Button btnQuit    = menuButton("Quitter");
+        Button btnGround = menuButton("Add a ground");
 
         btnSave.setOnAction(e -> {
             SaveView saveView = new SaveView();
             stage.setScene(saveView.getScene(stage));
         });
+        btnGround.setOnAction(e -> {
+            NewGroundFormView newGroundFormView = new NewGroundFormView();
+            stage.setScene(newGroundFormView.newGround(stage));
+        });
         btnQuit.setOnAction(e -> stage.close());
 
-        VBox content = new VBox(20, title, btnSave, btnCredits, btnAbout, btnQuit);
+        VBox content = new VBox(20, title, btnSave, btnGround, btnCredits, btnAbout, btnQuit);
         content.setAlignment(Pos.CENTER);
 
         VBox overlay = new VBox();
