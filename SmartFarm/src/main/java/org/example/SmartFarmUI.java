@@ -13,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.Priority;
 
 import java.awt.Taskbar;
 import java.awt.Toolkit;
@@ -138,7 +140,10 @@ public class SmartFarmUI extends Application {
         iconLabel.setTextFill(Color.color(1, 1, 1, 0.7));
 
         Label textLabel = new Label(text);
-        textLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 13px;");
+        textLabel.setStyle(
+                "-fx-text-fill: rgba(255,255,255,0.7); " +
+                "-fx-font-size: 13px;"
+        );
 
         HBox box = new HBox(7, iconLabel, textLabel);
         box.setAlignment(Pos.CENTER);
@@ -167,30 +172,65 @@ public class SmartFarmUI extends Application {
     }
 
     /** Shared top bar used by all views. */
-    public static HBox getTopBar(Stage stage, String name) {
-        Label title = new Label(name);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        title.setTextFill(Color.WHITE);
+    public static HBox getTopBar(Stage stage, String title) {
+        HBox topBar = new HBox();
+        topBar.setStyle("-fx-background-color: linear-gradient(to right, #1a2e18, #0f1f0f); " +
+                "-fx-padding: 14 24 14 24; " +
+                "-fx-border-width: 0 0 2 0; " +
+                "-fx-border-color: #3a7a30;");
+        topBar.setAlignment(Pos.CENTER_LEFT);
 
-        Button btnBack = new Button("<- Go to the MENU");
+        Button btnBack = new Button("Menu");
         btnBack.setStyle(
-                "-fx-background-color: #3a5a30;" +
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 6;" +
-                "-fx-cursor: hand;"
+                "-fx-background-color: rgba(255,255,255,0.08); " +
+                "-fx-border-color: rgba(255,255,255,0.15); " +
+                "-fx-text-fill: #aaaaaa; -fx-border-radius: 20; " +
+                "-fx-background-radius: 20; -fx-padding: 6 16 6 16; " +
+                "-fx-font-size: 12px;"
         );
         btnBack.setOnAction(e -> {
             SmartFarmUI menu = new SmartFarmUI();
-            try {
-                menu.start(stage);
-            } catch (Exception ex) {
-                System.err.println("Erreur retour menu : " + ex.getMessage());
-            }
+            menu.start(stage);
         });
 
-        HBox topBar = new HBox(20, btnBack, title);
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.setStyle("-fx-background-color: #1e3e1a; -fx-padding: 10 20 10 20;");
+        Region sepVertical = new Region();
+        sepVertical.setPrefWidth(1);
+        sepVertical.setPrefHeight(20);
+        sepVertical.setMaxHeight(20);
+        sepVertical.setStyle("-fx-background-color: #2e5228;");
+
+        HBox gauche = new HBox(16);
+        gauche.setAlignment(Pos.CENTER_LEFT);
+        gauche.getChildren().addAll(btnBack, sepVertical);
+
+        Label titreBar = new Label(title);
+        titreBar.setStyle(
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 22px; " +
+                "-fx-font-weight: bold;"
+        );
+
+        Label badge = new Label("SmartFarm");
+        badge.setStyle(
+                "-fx-text-fill: #7aaa74; " +
+                "-fx-font-size: 11px; " +
+                "-fx-background-color: rgba(74,154,58,0.12); " +
+                "-fx-border-color: rgba(74,154,58,0.25); " +
+                "-fx-border-radius: 20; " +
+                "-fx-background-radius: 20; " +
+                "-fx-padding: 4 14 4 14;"
+        );
+
+        HBox droite = new HBox();
+        droite.setAlignment(Pos.CENTER_RIGHT);
+        droite.getChildren().add(badge);
+
+        Region spacer1 = new Region();
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+
+        topBar.getChildren().addAll(gauche, spacer1, titreBar, spacer2, droite);
         return topBar;
     }
 }
