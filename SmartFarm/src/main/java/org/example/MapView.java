@@ -124,7 +124,7 @@ public class MapView {
             Circle c = new Circle(cx, cy, 6, Color.web("#5599ee"));
             c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showSprinklerInfo(s); e.consume(); });
+            c.setOnMouseClicked(e -> { showSprinklerInfo(stage, s); e.consume(); });
             c.setOnMouseEntered(e -> c.setRadius(8));
             c.setOnMouseExited(e  -> c.setRadius(6));
             mapPane.getChildren().add(c);
@@ -135,7 +135,7 @@ public class MapView {
             Circle c = new Circle(cx, cy, 7, Color.web("#dd4444"));
             c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showWaterTankInfo(w); e.consume(); });
+            c.setOnMouseClicked(e -> { showWaterTankInfo(stage, w); e.consume(); });
             c.setOnMouseEntered(e -> c.setRadius(9));
             c.setOnMouseExited(e  -> c.setRadius(7));
             mapPane.getChildren().add(c);
@@ -301,7 +301,7 @@ public class MapView {
     }
 
     // show info
-    private void showWaterTankInfo(WaterTank w) {
+    private void showWaterTankInfo(Stage stage, WaterTank w) {
         infoContent.getChildren().setAll(
             infoRow("ID", String.valueOf(w.getId())),
             infoRow("X", String.format("%.1f", w.getX())),
@@ -310,9 +310,14 @@ public class MapView {
             infoRow("Capacité", String.format("%.2f", w.getCapacity())),
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
+        Button modify = new Button("Modify");
+        modify.setOnAction(e->{
+            stage.setScene(AddForm.modify(stage, w, ground));
+        });
+        infoContent.getChildren().add(modify);
     }
 
-    private void showSprinklerInfo(Sprinkler s) {
+    private void showSprinklerInfo(Stage stage, Sprinkler s) {
         String src = s.getSource() != null ? "Tank #" + s.getSource().getId() : "—";
         infoContent.getChildren().setAll(
             infoRow("ID",     String.valueOf(s.getId())),
@@ -322,6 +327,11 @@ public class MapView {
             infoRow("Rayon",  String.format("%.2f", s.getRadius())),
             infoRow("Source", src)
         );
+        Button modify = new Button("Modify");
+        modify.setOnAction(e->{
+            stage.setScene(AddForm.modify(stage, s, ground));
+        });
+        infoContent.getChildren().add(modify);
     }
 
     private HBox infoRow(String key, String value) {
