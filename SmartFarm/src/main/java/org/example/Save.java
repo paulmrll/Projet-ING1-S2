@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class Save {
     private Path path = null;
     public Save(String path){
-        this.path = Paths.get("./SmartFarm/src/main/resources/Saves/"+path);
+        this.path = Paths.get(path);
     }
 
     public void writeSave(Ground ground) throws FileNotFoundException {
