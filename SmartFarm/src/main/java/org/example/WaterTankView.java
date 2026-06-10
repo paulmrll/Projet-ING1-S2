@@ -46,6 +46,11 @@ public class WaterTankView extends ElementView{
         dataBox.getChildren().addAll(flowLabel, capacityLabel);
         vbox.getChildren().add(dataBox);
 
+        double div = w.getFlow()/w.getCapacity();
+        String result = String.format("%.2f", div);
+        Label rapport = new Label("Rapport : "+w.getFlow()+"/"+w.getCapacity()+"="+result+"%");
+        vbox.getChildren().add(rapport);
+
         Button btnReturn = new Button("Return to the ground");
         btnReturn.setOnAction(e->{
             MapView mapView = new MapView(super.getGround());
