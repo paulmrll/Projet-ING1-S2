@@ -7,15 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 public class SaveView {
     private Label statusLabel;
 
@@ -33,6 +32,7 @@ public class SaveView {
         mainLayout.setCenter(chargerFichiers(currentFolder, stage));
 
         Scene scene = new Scene(mainLayout, 1200, 700);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         return scene;
     }
 
@@ -41,19 +41,16 @@ public class SaveView {
         VBox files = new VBox();
 
         File currentFolder = new File(dossier.toUri());
-
         File[] filesList = currentFolder.listFiles();
 
         if (filesList != null) {
             for (File f : filesList) {
                 if (f.isFile()) {
                     Button button = new Button(f.getName());
-                    button.setStyle(
-                            "-fx-background-color : #3a5a30;" + "-fx-text-fill : white;" + "-fx-background-radius : 6;"
-                    );
+                    button.getStyleClass().add("btn-save-file");
                     button.setPrefSize(200, 50);
-                    button.setOnAction(e->{
-                        Save save = new Save(f.getName());
+                    button.setOnAction(e -> {
+                        Save save = new Save(f.getAbsolutePath());
                         try {
                             MapView mapView = new MapView(save.readSave());
                             Scene mapScene = mapView.getScene(stage);
@@ -67,7 +64,8 @@ public class SaveView {
             }
         }
         files.setAlignment(Pos.CENTER);
-        files.setSpacing(30);
+        files.setSpacing(20);
+        files.getStyleClass().add("saves-container");
         return files;
     }
 }

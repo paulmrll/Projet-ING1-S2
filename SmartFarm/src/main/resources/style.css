@@ -1,0 +1,146 @@
+/* ── Global ─────────────────────────────────────────── */
+.root {
+    -fx-font-family: "Arial";
+}
+
+/* ── Top bar ─────────────────────────────────────────── */
+.top-bar {
+    -fx-background-color: #1e3e1a;
+    -fx-padding: 10 20 10 20;
+    -fx-spacing: 14;
+    -fx-alignment: CENTER_LEFT;
+    -fx-min-height: 52px;
+}
+
+.top-bar-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #a8d5a2;
+    -fx-border-color: #a8d5a2;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.btn-back:hover {
+    -fx-background-color: rgba(168, 213, 162, 0.18);
+}
+
+.btn-primary {
+    -fx-background-color: #3a5a30;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 7 16 7 16;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #4d7840;
+}
+
+.btn-save {
+    -fx-background-color: #b8900e;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 7 16 7 16;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.btn-save:hover {
+    -fx-background-color: #d4a51a;
+}
+
+.btn-menu {
+    -fx-background-color: #3a5a30;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-padding: 10 20 10 20;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-min-width: 260px;
+}
+
+.btn-menu:hover {
+    -fx-background-color: #4d7840;
+}
+
+.btn-save-file {
+    -fx-background-color: #3a5a30;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 30 12 30;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-min-width: 240px;
+}
+
+.btn-save-file:hover {
+    -fx-background-color: #4d7840;
+}
+
+/* ── Info panel (bottom of MapView) ──────────────────── */
+.info-panel {
+    -fx-background-color: #162d13;
+    -fx-padding: 0 24 0 24;
+    -fx-min-height: 90px;
+    -fx-max-height: 90px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 32;
+}
+
+.info-hint {
+    -fx-text-fill: #7aad72;
+    -fx-font-size: 13px;
+    -fx-font-style: italic;
+}
+
+.info-element-title {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.info-stat-label {
+    -fx-text-fill: #b0d4ab;
+    -fx-font-size: 12px;
+}
+
+.info-stat-value {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.info-separator {
+    -fx-background-color: #3a5a30;
+    -fx-pref-width: 1px;
+    -fx-min-width: 1px;
+    -fx-max-width: 1px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
+}
+
+/* ── Menu screen title ───────────────────────────────── */
+.menu-title {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* ── Saves list ─────────────────────────────────────── */
+.saves-container {
+    -fx-padding: 40;
+    -fx-spacing: 16;
+    -fx-alignment: CENTER;
+    -fx-background-color: #f4f6f0;
+}

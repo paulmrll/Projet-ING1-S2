@@ -1,195 +1,253 @@
 package org.example;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 public class MapView {
-    private Ground ground;
 
-    public MapView(Ground ground){
+    private static final String BG_DARK   = "-fx-background-color: #2b4a27;";
+    private static final String BG_DARKER = "-fx-background-color: #1f3a1c;";
+
+    private final Ground ground;
+    private VBox infoContent;
+
+    public MapView(Ground ground) {
         this.ground = ground;
     }
 
-    public Scene getScene(Stage stage){
-        java.util.Random random = new java.util.Random();
-
-        Pane root = new Pane();
+    public Scene getScene(Stage stage) {
+        java.util.Random random = new java.util.Random(42);
 
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
-
+        double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
         for (Field f : ground.getFields()) {
-            if (f.getxStart() < minX) minX = f.getxStart();
-            if (f.getyStart() < minY) minY = f.getyStart();
-            if (f.getxStop() > maxX) maxX = f.getxStop();
-            if (f.getyStop() > maxY) maxY = f.getyStop();
+            minX = Math.min(minX, f.getxStart()); minY = Math.min(minY, f.getyStart());
+            maxX = Math.max(maxX, f.getxStop());  maxY = Math.max(maxY, f.getyStop());
         }
 
-        double groundWidth = maxX - minX;
-        double groundHeight = maxY - minY;
+        double gW = maxX - minX, gH = maxY - minY;
 
-        double targetWidth = 1100;
-        double targetHeight = 520;
+        double mult  = Math.min(920.0 / gW, 600.0 / gH);
+        double ofsX  = (970 - gW * mult) / 2.0;
+        double ofsY  = (650 - gH * mult) / 2.0;
 
-        double scaleX = targetWidth / groundWidth;
-        double scaleY = targetHeight / groundHeight;
-        double multiplicator = Math.min(scaleX, scaleY);
+        // map
+        Pane mapPane = new Pane();
+        mapPane.setStyle("-fx-background-color: #1a2b18;");
 
-        double margeX = (1200 - (groundWidth * multiplicator)) / 2;
-        double margeY = (550 - (groundHeight * multiplicator)) / 2;
+        for (Field f : ground.getFields()) {
+            double x = (f.getxStart() - minX) * mult + ofsX;
+            double y = (f.getyStart() - minY) * mult + ofsY;
+            double w = (f.getxStop()  - f.getxStart()) * mult;
+            double h = (f.getyStop()  - f.getyStart()) * mult;
 
-        for (Field f : ground.getFields()){
-            double x = (f.getxStart() - minX) * multiplicator + margeX;
-            double y = (f.getyStart() - minY) * multiplicator + margeY;
-            double width = (f.getxStop() - f.getxStart()) * multiplicator;
-            double height = (f.getyStop() - f.getyStart()) * multiplicator;
+            Rectangle rect = new Rectangle(x, y, w, h);
+            rect.setFill(Color.color(0.18 + random.nextDouble() * 0.18,
+                                     0.40 + random.nextDouble() * 0.25,
+                                     0.10 + random.nextDouble() * 0.15));
+            rect.setStroke(Color.color(1, 1, 1, 0.20));
+            rect.setStrokeWidth(1.0);
 
-
-            Rectangle fieldSurface = new Rectangle(x, y, width, height);
-
-            double r = 0.3 + random.nextDouble() * 0.4;
-            double g = 0.6 + random.nextDouble() * 0.4;
-            double b = 0.2 + random.nextDouble() * 0.4;
-            fieldSurface.setFill(Color.color(r, g, b));
-
-            fieldSurface.setStroke(Color.WHITE);
-            fieldSurface.setStrokeWidth(1.5);
-
-            root.getChildren().add(fieldSurface);
+            Label lbl = new Label(f.getName());
+            lbl.setStyle("-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 11px;");
+            lbl.setLayoutX(x + 5); lbl.setLayoutY(y + 4);
+            mapPane.getChildren().addAll(rect, lbl);
         }
 
         if (ground.getTanks() != null && ground.getTanks().size() >= 3) {
-
             VoronoiDiagram diagram = new VoronoiDiagram(ground.getTanks());
 
             for (VoronoiCell cell : diagram.getCells()) {
-                List<Point> vertices = cell.getVertices();
-                if (vertices.size() < 3) continue;
+                List<Point> verts = cell.getVertices();
+                if (verts.size() < 3) continue;
+                Polygon poly = new Polygon();
+                for (Point p : verts)
+                    poly.getPoints().addAll((p.getX()-minX)*mult+ofsX, (p.getY()-minY)*mult+ofsY);
+                poly.setFill(Color.TRANSPARENT);
+                poly.setStroke(Color.color(1, 1, 1, 0.30));
+                poly.setStrokeWidth(1.0);
+                mapPane.getChildren().add(poly);
+            }
 
-                Polygon voronoiPolygon = new Polygon();
-
-                for (Point p : vertices) {
-                    double screenX = (p.getX() - minX) * multiplicator + margeX;
-                    double screenY = (p.getY() - minY) * multiplicator + margeY;
-                    voronoiPolygon.getPoints().addAll(screenX, screenY);
+            for (DelaunayTriangle tri : diagram.getTriangles()) {
+                WaterTank[] v = tri.getVertices();
+                double[] sx = new double[3], sy = new double[3];
+                for (int i = 0; i < 3; i++) {
+                    sx[i] = (v[i].getX()-minX)*mult+ofsX;
+                    sy[i] = (v[i].getY()-minY)*mult+ofsY;
                 }
-                voronoiPolygon.setFill(Color.TRANSPARENT);
-                voronoiPolygon.setStroke(Color.WHITE);
-                voronoiPolygon.setStrokeWidth(1.5);
-
-                root.getChildren().add(voronoiPolygon);
-            }
-
-            for (DelaunayTriangle triangle : diagram.getTriangles()) {
-                WaterTank[] v = triangle.getVertices();
-
-                double x0 = (v[0].getX() - minX) * multiplicator + margeX;
-                double y0 = (v[0].getY() - minY) * multiplicator + margeY;
-
-                double x1 = (v[1].getX() - minX) * multiplicator + margeX;
-                double y1 = (v[1].getY() - minY) * multiplicator + margeY;
-
-                double x2 = (v[2].getX() - minX) * multiplicator + margeX;
-                double y2 = (v[2].getY() - minY) * multiplicator + margeY;
-
-                Line line1 = new Line(x0, y0, x1, y1);
-                Line line2 = new Line(x1, y1, x2, y2);
-                Line line3 = new Line(x2, y2, x0, y0);
-
-                Color delaunayColor = Color.ORANGE;
-                double delaunayWidth = 1.0;
-
-                line1.setStroke(delaunayColor); line1.setStrokeWidth(delaunayWidth);
-                line2.setStroke(delaunayColor); line2.setStrokeWidth(delaunayWidth);
-                line3.setStroke(delaunayColor); line3.setStrokeWidth(delaunayWidth);
-
-                root.getChildren().addAll(line1, line2, line3);
+                for (int i = 0; i < 3; i++) {
+                    Line l = new Line(sx[i], sy[i], sx[(i+1)%3], sy[(i+1)%3]);
+                    l.setStroke(Color.color(1.0, 0.6, 0.1, 0.55));
+                    l.setStrokeWidth(0.9);
+                    mapPane.getChildren().add(l);
+                }
             }
         }
-        for (Sprinkler s : ground.getSprinklers()){
-            double cx = (s.getX() - minX) * multiplicator + margeX;
-            double cy = (s.getY() - minY) * multiplicator + margeY;
 
-            Circle c = new Circle(cx, cy, 5);
-            c.setFill(Color.BLUE);
-            c.setOnMouseClicked(e->{
-                SprinklerView sprinklerView = new SprinklerView(ground);
-                stage.setScene(sprinklerView.getScene(stage, s));
-            });
-            root.getChildren().add(c);
-        }
-        for (WaterTank w : ground.getTanks()){
-            double cx = (w.getX() - minX) * multiplicator + margeX;
-            double cy = (w.getY() - minY) * multiplicator + margeY;
-
-            Circle c = new Circle(cx, cy, 5);
-            c.setFill(Color.RED);
-            c.setOnMouseClicked(e->{
-                WaterTankView waterTankView = new WaterTankView(ground);
-                stage.setScene(waterTankView.getScene(stage, w));
-            });
-
-            root.getChildren().add(c);
+        for (Sprinkler s : ground.getSprinklers()) {
+            double cx = (s.getX()-minX)*mult+ofsX, cy = (s.getY()-minY)*mult+ofsY;
+            Circle c = new Circle(cx, cy, 6, Color.web("#5599ee"));
+            c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
+            c.setStyle("-fx-cursor: hand;");
+            c.setOnMouseClicked(e -> showSprinklerInfo(s));
+            c.setOnMouseEntered(e -> c.setRadius(8));
+            c.setOnMouseExited(e  -> c.setRadius(6));
+            mapPane.getChildren().add(c);
         }
 
+        for (WaterTank w : ground.getTanks()) {
+            double cx = (w.getX()-minX)*mult+ofsX, cy = (w.getY()-minY)*mult+ofsY;
+            Circle c = new Circle(cx, cy, 7, Color.web("#dd4444"));
+            c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
+            c.setStyle("-fx-cursor: hand;");
+            c.setOnMouseClicked(e -> showWaterTankInfo(w));
+            c.setOnMouseEntered(e -> c.setRadius(9));
+            c.setOnMouseExited(e  -> c.setRadius(7));
+            mapPane.getChildren().add(c);
+        }
 
-        HBox topBar = SmartFarmUI.getTopBar(stage, "SmartFarm - " + ground.getOwner().getFirstname() + " " + ground.getOwner().getName());
-        HBox bottomBar = getBottomBar(stage);
-        VBox RightBar = getRightBar(stage, ground);
+        String ownerName = ground.getOwner().getFirstname() + " " + ground.getOwner().getName();
+        HBox topBar = SmartFarmUI.getTopBar(stage, "SmartFarm — " + ownerName);
 
-        BorderPane mainLayout = new BorderPane();
-        mainLayout.setTop(topBar);
-        mainLayout.setCenter(root);
-        mainLayout.setBottom(bottomBar);
-        mainLayout.setRight(RightBar);
+        VBox rightPanel = buildRightPanel(stage);
+        rightPanel.setPrefWidth(220);
 
+        BorderPane root = new BorderPane();
+        root.setCenter(mapPane);
+        root.setRight(rightPanel);
+        root.setTop(topBar); // en dernier → au-dessus de la carte
 
-        return new Scene(mainLayout, 1200, 700);
+        Scene scene = new Scene(root, 1200, 700);
+        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        return scene;
     }
 
-    private VBox getRightBar(Stage stage, Ground ground){
-        Button addSprinklers = new Button("Add Sprinklers");
-        Button addWaterTank = new Button("Add WaterTank");
-        Button save = new Button("Save your Ground");
-        VBox rightBar = new VBox(40,addWaterTank, addSprinklers, save);
-        rightBar.setStyle("-fx-background-color: #3a5a30;");
-        rightBar.setAlignment(Pos.CENTER);
+    // right side
 
-        save.setOnAction(E->{
-            Save register = new Save(ground.getOwner().getFirstname().toLowerCase()+"_"+ground.getOwner().getName().toLowerCase()+"_save");
-            try {
-                register.writeSave(ground);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    private VBox buildRightPanel(Stage stage) {
+        // section buttons
+        VBox buttonsSection = new VBox(12);
+        buttonsSection.setStyle(BG_DARK);
+        buttonsSection.setAlignment(Pos.TOP_CENTER);
+        buttonsSection.setPadding(new Insets(20, 14, 20, 14));
+        VBox.setVgrow(buttonsSection, Priority.ALWAYS);
 
-        return rightBar;
+        Label actionsTitle = new Label("Actions");
+        actionsTitle.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+        Button btnAddTank = sideButton("Ajouter un WaterTank");
+        Button btnAddSprinkler = sideButton("Ajouter un Sprinkler");
+        Button btnSave = sideButton("Sauvegarder");
+        btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
+        btnSave.setOnAction(e -> saveGround());
+
+        buttonsSection.getChildren().addAll(actionsTitle, btnAddTank, btnAddSprinkler, btnSave);
+
+        Separator sep = new Separator();
+        sep.setStyle("-fx-background-color: #3a5a30;");
+
+        // section infos
+        infoContent = new VBox(10);
+        infoContent.setAlignment(Pos.TOP_LEFT);
+
+        Label placeholder = new Label("Cliquez sur un\nélément de la carte.");
+        placeholder.setStyle("-fx-text-fill: #7aaa74; -fx-font-size: 12px;");
+        infoContent.getChildren().add(placeholder);
+
+        VBox infoSection = new VBox(infoContent);
+        infoSection.setStyle(BG_DARKER);
+        infoSection.setAlignment(Pos.TOP_LEFT);
+        infoSection.setPadding(new Insets(16, 14, 16, 14));
+        VBox.setVgrow(infoSection, Priority.ALWAYS);
+
+        Label infoTitle = new Label("Informations");
+        infoTitle.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px; -fx-font-weight: bold;");
+        infoSection.getChildren().add(0, infoTitle);
+        infoSection.getChildren().add(1, new Label(" ") {{ setStyle("-fx-text-fill: transparent; -fx-font-size: 2px;"); }});
+
+
+        VBox panel = new VBox(buttonsSection, sep, infoSection);
+        panel.setStyle(BG_DARK);
+        VBox.setVgrow(buttonsSection, Priority.ALWAYS);
+        VBox.setVgrow(infoSection, Priority.ALWAYS);
+        return panel;
     }
 
+    private Button sideButton(String text) {
+        Button btn = new Button(text);
+        btn.setPrefWidth(192);
+        btn.setStyle(
+            "-fx-background-color: #3a5a30;" +
+            "-fx-text-fill: white;" +
+            "-fx-background-radius: 5;" +
+            "-fx-padding: 8 12 8 12;" +
+            "-fx-font-size: 13px;" +
+            "-fx-cursor: hand;"
+        );
+        return btn;
+    }
 
-    private HBox getBottomBar(Stage stage){
-        Label legend = new Label("Légende : "+ " 🔴: WaterTanks" + " 🔵 : Sprinklers");
-        HBox bottomBar = new HBox(legend);
-        bottomBar.setAlignment(Pos.CENTER);
-        bottomBar.setStyle("-fx-border-color: #3a5a30;; -fx-border-width: 2px;");
-        return bottomBar;
+    // show info
+    private void showWaterTankInfo(WaterTank w) {
+        infoContent.getChildren().setAll(
+            infoRow("ID", String.valueOf(w.getId())),
+            infoRow("X", String.format("%.1f", w.getX())),
+            infoRow("Y", String.format("%.1f", w.getY())),
+            infoRow("Débit", String.format("%.2f", w.getFlow())),
+            infoRow("Capacité", String.format("%.2f", w.getCapacity())),
+            infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
+        );
+    }
+
+    private void showSprinklerInfo(Sprinkler s) {
+        String src = s.getSource() != null ? "Tank #" + s.getSource().getId() : "—";
+        infoContent.getChildren().setAll(
+            infoRow("ID",     String.valueOf(s.getId())),
+            infoRow("X",      String.format("%.1f", s.getX())),
+            infoRow("Y",      String.format("%.1f", s.getY())),
+            infoRow("Débit",  String.format("%.2f", s.getFlow())),
+            infoRow("Rayon",  String.format("%.2f", s.getRadius())),
+            infoRow("Source", src)
+        );
+    }
+
+    private HBox infoRow(String key, String value) {
+        Label k = new Label(key + " :");
+        k.setStyle("-fx-text-fill: #8dbb88; -fx-font-size: 12px; -fx-min-width: 72px;");
+        Label v = new Label(value);
+        v.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;");
+        HBox row = new HBox(6, k, v);
+        row.setAlignment(Pos.CENTER_LEFT);
+        return row;
+    }
+
+    // Save
+    private void saveGround() {
+        String name = ground.getOwner().getFirstname().toLowerCase() + "_" + ground.getOwner().getName().toLowerCase() + "_save";
+        Save save = new Save("./SmartFarm/src/main/resources/Saves/" + name);
+        try {
+            save.writeSave(ground);
+        } catch (FileNotFoundException e) {
+            System.err.println("Erreur sauvegarde : " + e.getMessage());
+        }
     }
 }
