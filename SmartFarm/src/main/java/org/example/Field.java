@@ -38,6 +38,15 @@ public class Field {
         this.area = area;
         this.waterPlants = new ArrayList<>();
     }
+    public Field(String name, double xStart, double xStop, double yStart, double yStop) {
+        this.name = name;
+        this.xStart = xStart;
+        this.xStop = xStop;
+        this.yStart = yStart;
+        this.yStop = yStop;
+        this.area = (xStop-xStart)*(yStop-yStart);
+        this.waterPlants = new ArrayList<>();
+    }
 
     /**
      * Returns the name of the field.

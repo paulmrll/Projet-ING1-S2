@@ -156,11 +156,22 @@ public class MapView {
 
         Button btnAddTank = sideButton("Ajouter un WaterTank");
         Button btnAddSprinkler = sideButton("Ajouter un Sprinkler");
+        Button btnAddField = sideButton("Ajouter un Field");
+        AddForm addForm = new AddForm();
+        btnAddTank.setOnAction(e->{
+            stage.setScene(addForm.getWaterTankForm(stage, ground));
+        });
+        btnAddSprinkler.setOnAction(e->{
+            stage.setScene(addForm.getSprinklerForm(stage, ground));
+        });
+        btnAddField.setOnAction(e->{
+            stage.setScene(addForm.getFieldForm(stage, ground));
+        });
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
         btnSave.setOnAction(e -> saveGround());
 
-        buttonsSection.getChildren().addAll(actionsTitle, btnAddTank, btnAddSprinkler, btnSave);
+        buttonsSection.getChildren().addAll(actionsTitle, btnAddTank, btnAddSprinkler, btnAddField, btnSave);
 
         Separator sep = new Separator();
         sep.setStyle("-fx-background-color: #3a5a30;");

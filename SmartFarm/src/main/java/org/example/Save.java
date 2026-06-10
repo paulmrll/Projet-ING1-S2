@@ -35,7 +35,6 @@ public class Save {
                 writer.write("S;"+s.getX()+";"+s.getY()+";"+s.getFlow()+";"+s.getRadius());
                 writer.newLine();
             }
-            System.out.println("Lines correctly added");
         } catch (IOException e) {
             System.err.println("Error while writing " + e.getMessage());
         }
