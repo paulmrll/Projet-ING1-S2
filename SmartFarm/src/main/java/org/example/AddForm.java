@@ -142,8 +142,56 @@ public class AddForm {
         flowInput.setPromptText("Flow");
         TextField capacityInput = new TextField();
         capacityInput.setPromptText("Capacity");
-
-
         return new VBox(15, titleLabel, xInput, yInput, flowInput, capacityInput);
+    }
+    public static Scene modify(Stage stage, Point p, Ground g){
+        VBox main = new VBox();
+
+        if (p != null){
+            Label title = new Label();
+            TextField xInput = new TextField();
+            TextField yInput = new TextField();
+            TextField flowInput = new TextField();
+
+
+            if (p instanceof Sprinkler s){
+                title.setText("Modify WaterTanks n°"+s.getId());
+                xInput.setText(String.valueOf(s.getX()));
+                yInput.setText(String.valueOf(s.getY()));
+                flowInput.setText(String.valueOf(s.getFlow()));
+            } else if (p instanceof WaterTank w){
+                title.setText("Modify WaterTanks n°"+w.getId());
+                xInput.setText(String.valueOf(w.getX()));
+                yInput.setText(String.valueOf(w.getY()));
+                flowInput.setText(String.valueOf(w.getFlow()));
+            }
+
+            main.setSpacing(20);
+            Button modify = new Button("MODIFY");
+            main.getChildren().addAll(title, xInput, yInput, flowInput, modify);
+
+            modify.setOnAction(e->{
+                try{
+                    double x = Double.parseDouble(xInput.getText());
+                    double y = Double.parseDouble(yInput.getText());
+                    double flow = Double.parseDouble(flowInput.getText());
+                    if (p instanceof Sprinkler s){
+                        s.setFlow(flow);
+                        s.setX(x);
+                        s.setY(y);
+                    } else if (p instanceof WaterTank w){
+                        w.setFlow(flow);
+                        w.setX(x);
+                        w.setY(y);
+                    }
+                    MapView mapView = new MapView(g);
+                    stage.setScene(mapView.getScene(stage));
+                }catch (NumberFormatException ex) {
+                    System.out.println("Erreur");
+                }
+            });
+
+        }
+        return new Scene(main, 1200, 700);
     }
 }
