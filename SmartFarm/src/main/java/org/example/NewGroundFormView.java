@@ -90,9 +90,9 @@ public class NewGroundFormView {
         VBox personForm = new VBox();
         personForm.setSpacing(20);
         personForm.setAlignment(Pos.CENTER);
-        HBox topBar = SmartFarmUI.getTopBar(stage, "Nouvelle ferme");
+        HBox topBar = SmartFarmUI.getTopBar(stage, "New Farm");
         root.setTop(topBar);
-        Label titleLabel = new Label("Vos Informations");
+        Label titleLabel = new Label("Your Information");
 
         titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 50px; -fx-font-weight: bold;");
         TextField nameInput = new TextField();nameInput.setStyle("-fx-background-color: #ffffff; -fx-text-fill: black; -fx-prompt-text-fill: #233722; -fx-background-radius: 6; -fx-padding: 8 12 8 12;");
@@ -120,7 +120,7 @@ public class NewGroundFormView {
         areaInput.setPromptText("Area");
         areaInput.setMaxWidth(400);
 
-        Button btnSave = new Button("Créer la ferme");
+        Button btnSave = new Button("Create Farm");
         btnSave.getStyleClass().add("btn-primary");
 
         btnSave.setOnAction(e->{
