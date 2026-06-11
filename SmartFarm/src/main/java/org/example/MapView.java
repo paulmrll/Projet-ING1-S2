@@ -185,9 +185,13 @@ public class MapView {
             mapPane.getChildren().add(c);
         }
 
-        // zoom + dezoom
+        // zoom + dezoom (restaurer le pan après reconstruction)
+        double savedTX = (mapGroup != null) ? mapGroup.getTranslateX() : 0;
+        double savedTY = (mapGroup != null) ? mapGroup.getTranslateY() : 0;
         mapGroup = new Group(mapPane);
         mapGroup.getTransforms().add(scaleTransform);
+        mapGroup.setTranslateX(savedTX);
+        mapGroup.setTranslateY(savedTY);
 
         viewport = new Pane(mapGroup);
         viewport.setStyle("-fx-background-color: #1c1c1e;");
