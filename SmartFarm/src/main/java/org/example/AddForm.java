@@ -155,7 +155,7 @@ public class AddForm {
 
 
             if (p instanceof Sprinkler s){
-                title.setText("Modify WaterTanks n°"+s.getId());
+                title.setText("Modify Sprinkler n°"+s.getId());
                 xInput.setText(String.valueOf(s.getX()));
                 yInput.setText(String.valueOf(s.getY()));
                 flowInput.setText(String.valueOf(s.getFlow()));
