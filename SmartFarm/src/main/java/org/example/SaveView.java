@@ -31,7 +31,7 @@ public class SaveView {
         BorderPane mainLayout = new BorderPane();
         mainLayout.setStyle("-fx-background-color : #1c1c1e;");
         mainLayout.setTop(topBar);
-        mainLayout.setCenter(chargerFichiers(currentFolder, stage));
+        mainLayout.setCenter(loadFiles(currentFolder, stage));
 
         Scene scene = new Scene(mainLayout, 1200, 700);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
@@ -39,7 +39,7 @@ public class SaveView {
     }
 
     
-    private VBox chargerFichiers(Path dossier, Stage stage) {
+    private VBox loadFiles(Path dossier, Stage stage) {
         Label soustitre = new Label("Your saved farms");
         soustitre.setStyle(
                 "-fx-text-fill : #666; " +

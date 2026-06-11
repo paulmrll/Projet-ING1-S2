@@ -180,7 +180,6 @@ public class MapView {
         return scene;
     }
 
-    // zoom
 
     private void applyZoom(double factor) {
         double oldZoom = zoomLevel;
@@ -215,6 +214,7 @@ public class MapView {
         Button btnAddTank = sideButton("Ajouter un WaterTank");
         Button btnAddSprinkler = sideButton("Ajouter un Sprinkler");
         Button btnAddField = sideButton("Ajouter un Field");
+        Button btnModifyUser = sideButton("Modify User");
         AddForm addForm = new AddForm();
         btnAddTank.setOnAction(e      -> stage.setScene(addForm.getWaterTankScene(stage, ground)));
         btnAddSprinkler.setOnAction(e -> stage.setScene(addForm.getSprinklerScene(stage, ground)));
@@ -223,6 +223,9 @@ public class MapView {
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
         btnSave.setOnAction(e -> saveGround());
+        btnModifyUser.setOnAction(e->{
+            stage.setScene(AddForm.modifyUser(stage, ground));
+        });
 
         // zoom visuals
         Label zoomTitle = new Label("Zoom");
@@ -240,7 +243,7 @@ public class MapView {
         zoomBar.setAlignment(Pos.CENTER);
 
         buttonsSection.getChildren().addAll(
-            actionsTitle, btnAddTank, btnAddSprinkler, btnAddField, btnSave,
+            actionsTitle, btnAddTank, btnAddSprinkler, btnAddField, btnModifyUser, btnSave,
             zoomTitle, zoomBar
         );
 
@@ -312,7 +315,7 @@ public class MapView {
         );
         Button modify = new Button("Modify");
         modify.setOnAction(e->{
-            stage.setScene(AddForm.modify(stage, w, ground));
+            stage.setScene(AddForm.modifyTanksSprinklers(stage, w, ground));
         });
         infoContent.getChildren().add(modify);
     }
@@ -329,7 +332,7 @@ public class MapView {
         );
         Button modify = new Button("Modify");
         modify.setOnAction(e->{
-            stage.setScene(AddForm.modify(stage, s, ground));
+            stage.setScene(AddForm.modifyTanksSprinklers(stage, s, ground));
         });
         infoContent.getChildren().add(modify);
     }

@@ -144,23 +144,24 @@ public class AddForm {
         capacityInput.setPromptText("Capacity");
         return new VBox(15, titleLabel, xInput, yInput, flowInput, capacityInput);
     }
-    public static Scene modify(Stage stage, Point p, Ground g){
+
+    public static Scene modifyTanksSprinklers(Stage stage, Point p, Ground g) {
         VBox main = new VBox();
 
-        if (p != null){
+        if (p != null) {
             Label title = new Label();
             TextField xInput = new TextField();
             TextField yInput = new TextField();
             TextField flowInput = new TextField();
 
 
-            if (p instanceof Sprinkler s){
-                title.setText("Modify Sprinkler n°"+s.getId());
+            if (p instanceof Sprinkler s) {
+                title.setText("Modify Sprinkler n°" + s.getId());
                 xInput.setText(String.valueOf(s.getX()));
                 yInput.setText(String.valueOf(s.getY()));
                 flowInput.setText(String.valueOf(s.getFlow()));
-            } else if (p instanceof WaterTank w){
-                title.setText("Modify WaterTanks n°"+w.getId());
+            } else if (p instanceof WaterTank w) {
+                title.setText("Modify WaterTanks n°" + w.getId());
                 xInput.setText(String.valueOf(w.getX()));
                 yInput.setText(String.valueOf(w.getY()));
                 flowInput.setText(String.valueOf(w.getFlow()));
@@ -170,27 +171,67 @@ public class AddForm {
             Button modify = new Button("MODIFY");
             main.getChildren().addAll(title, xInput, yInput, flowInput, modify);
 
-            modify.setOnAction(e->{
-                try{
+            modify.setOnAction(e -> {
+                try {
                     double x = Double.parseDouble(xInput.getText());
                     double y = Double.parseDouble(yInput.getText());
                     double flow = Double.parseDouble(flowInput.getText());
-                    if (p instanceof Sprinkler s){
+                    if (p instanceof Sprinkler s) {
                         s.setFlow(flow);
                         s.setX(x);
                         s.setY(y);
-                    } else if (p instanceof WaterTank w){
+                    } else if (p instanceof WaterTank w) {
                         w.setFlow(flow);
                         w.setX(x);
                         w.setY(y);
                     }
                     MapView mapView = new MapView(g);
                     stage.setScene(mapView.getScene(stage));
-                }catch (NumberFormatException ex) {
+                } catch (NumberFormatException ex) {
                     System.out.println("Erreur");
                 }
             });
 
+        }
+        return new Scene(main, 1200, 700);
+    }
+
+    public static Scene modifyUser(Stage stage, Ground g) {
+        VBox main = new VBox();
+        main.setSpacing(20);
+        main.setAlignment(Pos.CENTER);
+        if (g != null) {
+            if (g.getOwner() != null) {
+                Label title = new Label("Modify User"+g.getOwner().getName()+ "information");
+                TextField nameInput = new TextField();
+                nameInput.setText(g.getOwner().getName());
+                TextField firstnameInput = new TextField();
+                firstnameInput.setText(g.getOwner().getFirstname());
+                TextField mailInput = new TextField();
+                mailInput.setText(g.getOwner().getEmail());
+                TextField ageInput = new TextField();
+                ageInput.setText(String.valueOf(g.getOwner().getAge()));
+                Button modify = new Button("MODIFY");
+                modify.setOnAction(e->{
+                    try{
+                        String name = nameInput.getText();
+                        String firstname = firstnameInput.getText();
+                        String mail = mailInput.getText();
+                        int age = Integer.parseInt(ageInput.getText());
+
+                        g.getOwner().setName(name);
+                        g.getOwner().setFirstname(firstname);
+                        g.getOwner().setAge(age);
+                        g.getOwner().setEmail(mail);
+
+                        MapView mapView = new MapView(g);
+                        stage.setScene(mapView.getScene(stage));
+                    } catch (NumberFormatException ex) {
+                        System.out.println("Erreur");
+                    }
+                });
+                main.getChildren().addAll(title, nameInput, firstnameInput, ageInput, mailInput, modify);
+            }
         }
         return new Scene(main, 1200, 700);
     }
