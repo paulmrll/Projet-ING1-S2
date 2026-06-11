@@ -130,7 +130,10 @@ public class Ground {
      */
     public void addTank(WaterTank tank) {
         tanks.add(tank);
-        if (tanks.size() >= 3) computeVoronoi();
+        if (tanks.size() >= 3) {
+            computeVoronoi();
+            sprinklers.forEach(this::findSource);
+        }
     }
 
     /**
@@ -161,7 +164,10 @@ public class Ground {
      */
     public boolean removeTank(WaterTank tank) {
         boolean removed = tanks.remove(tank);
-        if (removed && tanks.size() >= 3) computeVoronoi();
+        if (removed) {
+            if (tanks.size() >= 3) computeVoronoi();
+            sprinklers.forEach(this::findSource);
+        }
         return removed;
     }
 
