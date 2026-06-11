@@ -55,6 +55,7 @@ public class MapView {
     private String placingMode = null; // "TANK" ou "SPRINKLER"
     private boolean showDelaunay = false;
     private boolean showVoronoi = false;
+    private boolean showRadius = false;
 
     public MapView(Ground ground) {
         this.ground = ground;
@@ -134,6 +135,18 @@ public class MapView {
 
         for (Sprinkler s : ground.getSprinklers()) {
             double cx = (s.getX()-minX)*mult+ofsX, cy = (s.getY()-minY)*mult+ofsY;
+
+            if (showRadius) {
+                Circle radiusCircle = new Circle(cx, cy, s.getRadius() * mult);
+                radiusCircle.setFill(Color.color(0.33, 0.60, 0.93, 0.10));
+                radiusCircle.setStroke(s.isActive()
+                    ? Color.color(0.33, 0.93, 0.50, 0.60)
+                    : Color.color(0.33, 0.60, 0.93, 0.40));
+                radiusCircle.setStrokeWidth(1.0);
+                radiusCircle.setMouseTransparent(true);
+                mapPane.getChildren().add(radiusCircle);
+            }
+
             Circle c = new Circle(cx, cy, 6, Color.web("#5599ee"));
             c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
@@ -252,6 +265,13 @@ public class MapView {
             stage.setScene(getScene(stage));
         });
 
+        Button btnRadius = sideButton("Voir Rayons");
+        if (showRadius) btnRadius.setStyle(sideButtonStyle() + " -fx-background-color: #3a3a8b;");
+        btnRadius.setOnAction(e -> {
+            showRadius = !showRadius;
+            stage.setScene(getScene(stage));
+        });
+
         Button btnPlaceTank = sideButton("📍 Place Tank");
         Button btnPlaceSprinkler = sideButton("📍 Place Sprinkler");
 
@@ -301,7 +321,7 @@ public class MapView {
 
         buttonsSection.getChildren().addAll(
             actionsTitle, btnAddField, btnModifyUser, btnSave,
-            btnDelaunay, btnVoronoi,
+            btnDelaunay, btnVoronoi, btnRadius,
             btnPlaceTank, btnPlaceSprinkler,
             zoomTitle, zoomBar
         );
