@@ -51,6 +51,8 @@ public class MapView {
 
     // pour le pan
     private double dragOriginX, dragOriginY;
+    private boolean isDragging = false;
+    private String placingMode = null; // "TANK" ou "SPRINKLER"
 
     public MapView(Ground ground) {
         this.ground = ground;
@@ -158,15 +160,24 @@ public class MapView {
         viewport.setOnMousePressed(e -> {
             dragOriginX = e.getSceneX() - mapGroup.getTranslateX();
             dragOriginY = e.getSceneY() - mapGroup.getTranslateY();
+            isDragging = false;
             viewport.setStyle("-fx-background-color: #1c1c1e; -fx-cursor: closed-hand;");
         });
         viewport.setOnMouseDragged(e -> {
+            isDragging = true;
             mapGroup.setTranslateX(e.getSceneX() - dragOriginX);
             mapGroup.setTranslateY(e.getSceneY() - dragOriginY);
         });
-        viewport.setOnMouseReleased(e ->
-            viewport.setStyle("-fx-background-color: #1c1c1e;")
-        );
+        viewport.setOnMouseReleased(e -> {
+            viewport.setStyle("-fx-background-color: #1c1c1e;");
+            if (!isDragging && placingMode != null) {
+                double clickX = (e.getX() - mapGroup.getTranslateX()) / zoomLevel;
+                double clickY = (e.getY() - mapGroup.getTranslateY()) / zoomLevel;
+                double realClickX = (clickX - ofsX) / mult + minX;
+                double realClickY = (clickY - ofsY) / mult + minY;
+                showPlacementForm(stage, realClickX, realClickY);
+            }
+        });
 
         // layout
         String ownerName = ground.getOwner().getFirstname() + " " + ground.getOwner().getName();
@@ -216,14 +227,35 @@ public class MapView {
         Label actionsTitle = new Label("Actions");
         actionsTitle.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px; -fx-font-weight: bold;");
 
-        Button btnAddTank = sideButton("Ajouter un WaterTank");
-        Button btnAddSprinkler = sideButton("Ajouter un Sprinkler");
         Button btnAddField = sideButton("Ajouter un Field");
         Button btnModifyUser = sideButton("Modify User");
         AddForm addForm = new AddForm();
-        btnAddTank.setOnAction(e      -> stage.setScene(addForm.getWaterTankScene(stage, ground)));
-        btnAddSprinkler.setOnAction(e -> stage.setScene(addForm.getSprinklerScene(stage, ground)));
-        btnAddField.setOnAction(e     -> stage.setScene(addForm.getFieldScene(stage, ground)));
+        btnAddField.setOnAction(e -> stage.setScene(addForm.getFieldScene(stage, ground)));
+
+        Button btnPlaceTank = sideButton("📍 Place Tank");
+        Button btnPlaceSprinkler = sideButton("📍 Place Sprinkler");
+
+        btnPlaceTank.setOnAction(e -> {
+            if ("TANK".equals(placingMode)) {
+                placingMode = null;
+                btnPlaceTank.setStyle(sideButtonStyle());
+            } else {
+                placingMode = "TANK";
+                btnPlaceTank.setStyle(sideButtonStyle() + " -fx-background-color: #1a6b3a;");
+                btnPlaceSprinkler.setStyle(sideButtonStyle());
+            }
+        });
+
+        btnPlaceSprinkler.setOnAction(e -> {
+            if ("SPRINKLER".equals(placingMode)) {
+                placingMode = null;
+                btnPlaceSprinkler.setStyle(sideButtonStyle());
+            } else {
+                placingMode = "SPRINKLER";
+                btnPlaceSprinkler.setStyle(sideButtonStyle() + " -fx-background-color: #1a4a6b;");
+                btnPlaceTank.setStyle(sideButtonStyle());
+            }
+        });
 
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
@@ -248,7 +280,8 @@ public class MapView {
         zoomBar.setAlignment(Pos.CENTER);
 
         buttonsSection.getChildren().addAll(
-            actionsTitle, btnAddTank, btnAddSprinkler, btnAddField, btnModifyUser, btnSave,
+            actionsTitle, btnAddField, btnModifyUser, btnSave,
+            btnPlaceTank, btnPlaceSprinkler,
             zoomTitle, zoomBar
         );
 
@@ -273,24 +306,33 @@ public class MapView {
         infoSection.setPadding(new Insets(16, 14, 16, 14));
         VBox.setVgrow(infoSection, Priority.ALWAYS);
 
-        VBox panel = new VBox(buttonsSection, sep, infoSection);
+        javafx.scene.control.ScrollPane scrollButtons = new javafx.scene.control.ScrollPane(buttonsSection);
+        scrollButtons.setFitToWidth(true);
+        scrollButtons.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollButtons.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollButtons.setStyle("-fx-background: #2b4a27; -fx-background-color: #2b4a27; -fx-border-color: transparent;");
+        VBox.setVgrow(scrollButtons, Priority.ALWAYS);
+
+        VBox panel = new VBox(scrollButtons, sep, infoSection);
         panel.setStyle(BG_DARK);
         VBox.setVgrow(buttonsSection, Priority.ALWAYS);
         VBox.setVgrow(infoSection, Priority.ALWAYS);
         return panel;
     }
 
+    private String sideButtonStyle() {
+        return "-fx-background-color: #3a5a30;" +
+               "-fx-text-fill: white;" +
+               "-fx-background-radius: 5;" +
+               "-fx-padding: 8 12 8 12;" +
+               "-fx-font-size: 13px;" +
+               "-fx-cursor: hand;";
+    }
+
     private Button sideButton(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(192);
-        btn.setStyle(
-            "-fx-background-color: #3a5a30;" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 5;" +
-            "-fx-padding: 8 12 8 12;" +
-            "-fx-font-size: 13px;" +
-            "-fx-cursor: hand;"
-        );
+        btn.setStyle(sideButtonStyle());
         return btn;
     }
 
@@ -306,6 +348,62 @@ public class MapView {
             "-fx-padding: 2 8 2 8;"
         );
         return btn;
+    }
+
+    private void showPlacementForm(Stage stage, double x, double y) {
+        javafx.scene.control.TextField flowField = new javafx.scene.control.TextField();
+        flowField.setPromptText("Flow");
+        flowField.setMaxWidth(192);
+
+        if ("TANK".equals(placingMode)) {
+            javafx.scene.control.TextField capacityField = new javafx.scene.control.TextField();
+            capacityField.setPromptText("Capacity");
+            capacityField.setMaxWidth(192);
+
+            Button confirm = sideButton("Add Tank here");
+            confirm.setStyle(sideButtonStyle() + " -fx-background-color: #1a6b3a;");
+            confirm.setOnAction(e -> {
+                try {
+                    double flow = Double.parseDouble(flowField.getText());
+                    double capacity = Double.parseDouble(capacityField.getText());
+                    ground.addTank(new WaterTank(x, y, capacity, flow));
+                    placingMode = null;
+                    stage.setScene(getScene(stage));
+                } catch (NumberFormatException ex) {
+                    flowField.setStyle("-fx-border-color: red;");
+                }
+            });
+
+            infoContent.getChildren().setAll(
+                infoRow("X", String.format("%.1f", x)),
+                infoRow("Y", String.format("%.1f", y)),
+                flowField, capacityField, confirm
+            );
+        } else if ("SPRINKLER".equals(placingMode)) {
+            javafx.scene.control.TextField radiusField = new javafx.scene.control.TextField();
+            radiusField.setPromptText("Radius");
+            radiusField.setMaxWidth(192);
+
+            Button confirm = sideButton("Add Sprinkler here");
+            confirm.setStyle(sideButtonStyle() + " -fx-background-color: #1a4a6b;");
+            confirm.setOnAction(e -> {
+                try {
+                    double flow = Double.parseDouble(flowField.getText());
+                    double radius = Double.parseDouble(radiusField.getText());
+                    ground.addSprinkler(new Sprinkler(x, y, flow, radius));
+                    placingMode = null;
+                    stage.setScene(getScene(stage));
+                } catch (NumberFormatException ex) {
+                    flowField.setStyle("-fx-border-color: red;");
+                }
+            });
+
+            infoContent.getChildren().setAll(
+                infoRow("X", String.format("%.1f", x)),
+                infoRow("Y", String.format("%.1f", y)),
+                flowField, radiusField, confirm
+            );
+        }
     }
 
     // show info

@@ -59,32 +59,6 @@ public class AddForm {
         return new VBox(15, titleLabel, xStartInput, xStopInput, yStartInput, yStopInput, typeCulture);
     }
 
-    public Scene getSprinklerScene(Stage stage, Ground ground) {
-        VBox layout = getSprinklerForm();
-        Button btnValider = buttonStyle("Enregistrer l'arroseur");
-
-        btnValider.setOnAction(e -> {
-            try {
-                double x = Double.parseDouble(((TextField) layout.getChildren().get(1)).getText());
-                double y = Double.parseDouble(((TextField) layout.getChildren().get(2)).getText());
-                double flow = Double.parseDouble(((TextField) layout.getChildren().get(3)).getText());
-                double radius = Double.parseDouble(((TextField) layout.getChildren().get(4)).getText());
-
-                ground.addSprinkler(new Sprinkler(x, y, flow, radius));
-                MapView mapView = new MapView(ground);
-                stage.setScene(mapView.getScene(stage));
-            } catch (NumberFormatException ex) {
-                System.out.println("Erreur : Veuillez saisir des nombres valides pour les coordonnées.");
-            }
-        });
-
-        layout.getChildren().add(btnValider);
-        layout.setSpacing(20);
-        layout.setAlignment(Pos.CENTER);
-
-        return sceneStyle(layout);
-    }
-
     public VBox getSprinklerForm() {
         Label titleLabel = labelStyle("Ajouter un nouveau arroseur");
         TextField xInput = textFieldEnterPromptText("Coordonnée X");
@@ -93,32 +67,6 @@ public class AddForm {
         TextField radiusInput = textFieldEnterPromptText("Radius");
 
         return new VBox(15, titleLabel, xInput, yInput, flowInput, radiusInput);
-    }
-
-    public Scene getWaterTankScene(Stage stage, Ground ground) {
-        VBox layout = getWaterTankForm();
-        Button btnValider = buttonStyle("Enregistrer le watertank");
-
-        btnValider.setOnAction(e -> {
-            try {
-                double x = Double.parseDouble(((TextField) layout.getChildren().get(1)).getText());
-                double y = Double.parseDouble(((TextField) layout.getChildren().get(2)).getText());
-                double flow = Double.parseDouble(((TextField) layout.getChildren().get(3)).getText());
-                double capacity = Double.parseDouble(((TextField) layout.getChildren().get(4)).getText());
-
-                ground.addTank(new WaterTank(x, y, capacity, flow));
-                MapView mapView = new MapView(ground);
-                stage.setScene(mapView.getScene(stage));
-            } catch (NumberFormatException ex) {
-                System.out.println("Erreur : Veuillez saisir des nombres valides pour les coordonnées.");
-            }
-        });
-
-        layout.getChildren().add(btnValider);
-        layout.setSpacing(20);
-        layout.setAlignment(Pos.CENTER);
-
-        return sceneStyle(layout);
     }
 
     public VBox getWaterTankForm() {
