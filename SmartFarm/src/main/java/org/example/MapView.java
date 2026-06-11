@@ -439,6 +439,12 @@ public class MapView {
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
         Button modify = sideButton("Modify");
+        Button refill = sideButton("Refill");
+        refill.setStyle(refill.getStyle() + " -fx-background-color: #1a5a8b;");
+        refill.setOnAction(e -> {
+            w.refill();
+            showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane);
+        });
         Button delete = sideButton("Delete");
         delete.setStyle(delete.getStyle() + " -fx-background-color: #8b2020;");
         c.setOnMousePressed(e -> {
@@ -469,7 +475,7 @@ public class MapView {
             ground.removeTank(w);
             stage.setScene(getScene(stage));
         });
-        infoContent.getChildren().addAll(delete, modify);
+        infoContent.getChildren().addAll(delete, refill, modify);
     }
 
     private void showSprinklerInfo(Circle c,Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
@@ -508,18 +514,24 @@ public class MapView {
             stage.setScene(getScene(stage));
         });
         button.setSpacing(20);
-        if (s.getStatusActivation() == true){
+        if (s.getStatusActivation()) {
             Button activation = sideButton("DESACTIVATE");
-            activation.setOnAction(e->{
-                s.setActive(false);
+            activation.setOnAction(e -> {
+                s.deactivate();
                 showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
             });
             button.getChildren().addAll(delete, modify, activation);
         } else {
             Button activation = sideButton("ACTIVATE");
-            activation.setOnAction(e->{
-                s.setActive(true);
-                showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
+            activation.setOnAction(e -> {
+                boolean ok = s.activate();
+                if (!ok) {
+                    Label warn = new Label("Tank vide ou non assigné !");
+                    warn.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 11px;");
+                    button.getChildren().add(warn);
+                } else {
+                    showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
+                }
             });
             button.getChildren().addAll(delete, modify, activation);
         }
