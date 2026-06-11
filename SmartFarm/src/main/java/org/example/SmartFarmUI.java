@@ -38,9 +38,14 @@ public class SmartFarmUI extends Application {
             );
         }
 
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-Regular.ttf"), 13);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-Medium.ttf"), 13);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBold.ttf"), 13);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-Bold.ttf"), 13);
+
         // title
         Label title = new Label("SmartFarm");
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 52));
+        title.setFont(Font.font("Poppins", FontWeight.BOLD, 52));
         title.setTextFill(Color.WHITE);
 
         // main buttons
