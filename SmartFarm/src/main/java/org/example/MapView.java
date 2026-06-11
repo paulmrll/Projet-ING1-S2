@@ -57,7 +57,11 @@ public class MapView {
     // pour le pan
     private double dragOriginX, dragOriginY;
     private boolean isDragging = false;
-    private String placingMode = null; // "TANK" ou "SPRINKLER"
+    private String placingMode = null; // "TANK", "SPRINKLER" ou "FIELD"
+    // état du placement de champ en deux clics
+    private Point  fieldFirstPoint = null;
+    private javafx.scene.control.TextField fieldNameInput = null;
+    private Circle fieldMarker = null;
     private boolean showDelaunay = false;
     private boolean showVoronoi = false;
     private boolean showRadius = false;
@@ -96,10 +100,19 @@ public class MapView {
                                      0.10 + random.nextDouble() * 0.15));
             rect.setStroke(Color.color(1, 1, 1, 0.20));
             rect.setStrokeWidth(1.0);
+            rect.setStyle("-fx-cursor: hand;");
+            rect.setOnMouseClicked(e -> {
+                if (placingMode == null) { showFieldInfo(stage, f); e.consume(); }
+            });
+            rect.setOnMouseEntered(e -> { if (placingMode == null) rect.setStroke(Color.color(1, 1, 0.4, 0.8)); });
+            rect.setOnMouseExited(e  -> rect.setStroke(Color.color(1, 1, 1, 0.20)));
 
             Label lbl = new Label(f.getName());
-            lbl.setStyle("-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 11px;");
+            lbl.setStyle("-fx-text-fill: rgba(255,255,255,0.80); -fx-font-size: 11px; -fx-cursor: hand;");
             lbl.setLayoutX(x + 5); lbl.setLayoutY(y + 4);
+            lbl.setOnMouseClicked(e -> {
+                if (placingMode == null) { showFieldInfo(stage, f); e.consume(); }
+            });
             mapPane.getChildren().addAll(rect, lbl);
         }
 
@@ -199,7 +212,43 @@ public class MapView {
                 double clickY = (e.getY() - mapGroup.getTranslateY()) / zoomLevel;
                 double realClickX = (clickX - ofsX) / mult + minX;
                 double realClickY = (clickY - ofsY) / mult + minY;
-                showPlacementForm(stage, realClickX, realClickY);
+                if ("FIELD".equals(placingMode)) {
+                    if (fieldFirstPoint == null) {
+                        // premier clic : coin haut-gauche
+                        fieldFirstPoint = new Point(realClickX, realClickY);
+                        fieldNameInput = new javafx.scene.control.TextField();
+                        fieldNameInput.setPromptText("Nom du champ");
+                        fieldNameInput.setMaxWidth(192);
+                        // marqueur jaune sur la carte
+                        if (fieldMarker != null) mapPane.getChildren().remove(fieldMarker);
+                        fieldMarker = new Circle(
+                            (realClickX - minX) * mult + ofsX,
+                            (realClickY - minY) * mult + ofsY,
+                            6, Color.web("#f0e040")
+                        );
+                        fieldMarker.setMouseTransparent(true);
+                        mapPane.getChildren().add(fieldMarker);
+                        Label tip = new Label("1er coin sélectionné.\nNommez le champ puis\ncliquez sur le coin bas-droit.");
+                        tip.setStyle("-fx-text-fill: #f0e040; -fx-font-size: 11px;");
+                        infoContent.getChildren().setAll(tip, fieldNameInput);
+                    } else {
+                        // second clic : on crée le champ
+                        String name = (fieldNameInput != null && !fieldNameInput.getText().trim().isEmpty())
+                            ? fieldNameInput.getText().trim() : "Champ";
+                        double xStart = Math.min(fieldFirstPoint.getX(), realClickX);
+                        double xStop  = Math.max(fieldFirstPoint.getX(), realClickX);
+                        double yStart = Math.min(fieldFirstPoint.getY(), realClickY);
+                        double yStop  = Math.max(fieldFirstPoint.getY(), realClickY);
+                        ground.addField(new Field(name, xStart, xStop, yStart, yStop));
+                        fieldFirstPoint = null;
+                        fieldNameInput  = null;
+                        fieldMarker     = null;
+                        placingMode     = null;
+                        stage.setScene(getScene(stage));
+                    }
+                } else {
+                    showPlacementForm(stage, realClickX, realClickY);
+                }
             }
         });
 
@@ -279,6 +328,7 @@ public class MapView {
 
         Button btnPlaceTank = sideButton("📍 Place Tank");
         Button btnPlaceSprinkler = sideButton("📍 Place Sprinkler");
+        Button btnPlaceField = sideButton("📍 Place Field");
 
         btnPlaceTank.setOnAction(e -> {
             if ("TANK".equals(placingMode)) {
@@ -286,8 +336,10 @@ public class MapView {
                 btnPlaceTank.setStyle(sideButtonStyle());
             } else {
                 placingMode = "TANK";
+                fieldFirstPoint = null;
                 btnPlaceTank.setStyle(sideButtonStyle() + " -fx-background-color: #1a6b3a;");
                 btnPlaceSprinkler.setStyle(sideButtonStyle());
+                btnPlaceField.setStyle(sideButtonStyle());
             }
         });
 
@@ -297,10 +349,32 @@ public class MapView {
                 btnPlaceSprinkler.setStyle(sideButtonStyle());
             } else {
                 placingMode = "SPRINKLER";
+                fieldFirstPoint = null;
                 btnPlaceSprinkler.setStyle(sideButtonStyle() + " -fx-background-color: #1a4a6b;");
                 btnPlaceTank.setStyle(sideButtonStyle());
+                btnPlaceField.setStyle(sideButtonStyle());
             }
         });
+
+        btnPlaceField.setOnAction(e -> {
+            if ("FIELD".equals(placingMode)) {
+                placingMode = null;
+                fieldFirstPoint = null;
+                fieldNameInput = null;
+                fieldMarker = null;
+                btnPlaceField.setStyle(sideButtonStyle());
+            } else {
+                placingMode = "FIELD";
+                fieldFirstPoint = null;
+                btnPlaceField.setStyle(sideButtonStyle() + " -fx-background-color: #5a3a8b;");
+                btnPlaceTank.setStyle(sideButtonStyle());
+                btnPlaceSprinkler.setStyle(sideButtonStyle());
+                Label tip = new Label("Cliquez sur le coin\nhaut-gauche du champ.");
+                tip.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px;");
+                infoContent.getChildren().setAll(tip);
+            }
+        });
+        if ("FIELD".equals(placingMode)) btnPlaceField.setStyle(sideButtonStyle() + " -fx-background-color: #5a3a8b;");
 
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
@@ -327,7 +401,7 @@ public class MapView {
         buttonsSection.getChildren().addAll(
             actionsTitle, btnAddField, btnModifyUser, btnSave,
             btnDelaunay, btnVoronoi, btnRadius,
-            btnPlaceTank, btnPlaceSprinkler,
+            btnPlaceTank, btnPlaceSprinkler, btnPlaceField,
             zoomTitle, zoomBar
         );
 
@@ -606,6 +680,45 @@ public class MapView {
         HBox row = new HBox(6, k, v);
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
+    }
+
+    /**
+     * Affiche les informations d'un champ dans le panneau latéral droit
+     * et propose de renommer ou supprimer ce champ.
+     *
+     * @param stage la fenêtre principale
+     * @param f     le champ sélectionné
+     */
+    private void showFieldInfo(Stage stage, Field f) {
+        long sprInside  = ground.getSprinklers().stream().filter(s -> f.contains(s)).count();
+        long tankInside = ground.getTanks().stream().filter(t -> f.contains(t)).count();
+
+        javafx.scene.control.TextField nameEdit = new javafx.scene.control.TextField(f.getName());
+        nameEdit.setMaxWidth(192);
+
+        Button btnRename = sideButton("Renommer");
+        btnRename.setOnAction(e -> {
+            String newName = nameEdit.getText().trim();
+            if (!newName.isEmpty()) f.setName(newName);
+            stage.setScene(getScene(stage));
+        });
+
+        Button btnDelete = sideButton("Supprimer");
+        btnDelete.setStyle(sideButtonStyle() + " -fx-background-color: #8b2020;");
+        btnDelete.setOnAction(e -> {
+            ground.removeField(f);
+            stage.setScene(getScene(stage));
+        });
+
+        infoContent.getChildren().setAll(
+            infoRow("Nom",        f.getName()),
+            infoRow("X",          String.format("%.1f → %.1f", f.getxStart(), f.getxStop())),
+            infoRow("Y",          String.format("%.1f → %.1f", f.getyStart(), f.getyStop())),
+            infoRow("Superficie", String.format("%.2f", f.getArea())),
+            infoRow("Arroseurs",  String.valueOf(sprInside)),
+            infoRow("Réservoirs", String.valueOf(tankInside)),
+            nameEdit, btnRename, btnDelete
+        );
     }
 
     private void saveGround() {

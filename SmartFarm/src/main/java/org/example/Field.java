@@ -58,6 +58,15 @@ public class Field {
     }
 
     /**
+     * Sets the name of the field.
+     *
+     * @param name the new name to assign to this field
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * Returns the starting X-coordinate boundary of the field.
      *
      * @return the starting X-coordinate
