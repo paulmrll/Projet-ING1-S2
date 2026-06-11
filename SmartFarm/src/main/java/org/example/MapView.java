@@ -252,6 +252,29 @@ public class MapView {
             }
         });
 
+        // label de coordonnées affiché en bas à gauche du viewport
+        Label coordLabel = new Label("x: —   y: —");
+        coordLabel.setStyle(
+            "-fx-background-color: rgba(0,0,0,0.55);" +
+            "-fx-text-fill: #c8e6c4;" +
+            "-fx-font-size: 11px;" +
+            "-fx-padding: 3 8 3 8;" +
+            "-fx-background-radius: 4;"
+        );
+        coordLabel.setMouseTransparent(true);
+        coordLabel.setLayoutX(8);
+        coordLabel.setLayoutY(622);
+        viewport.getChildren().add(coordLabel);
+
+        viewport.setOnMouseMoved(e -> {
+            double mapX = (e.getX() - mapGroup.getTranslateX()) / zoomLevel;
+            double mapY = (e.getY() - mapGroup.getTranslateY()) / zoomLevel;
+            double rx = (mapX - ofsX) / mult + minX;
+            double ry = (mapY - ofsY) / mult + minY;
+            coordLabel.setText(String.format("x: %.2f   y: %.2f", rx, ry));
+        });
+        viewport.setOnMouseExited(e -> coordLabel.setText("x: —   y: —"));
+
         // layout
         String ownerName = ground.getOwner().getFirstname() + " " + ground.getOwner().getName();
         HBox topBar = SmartFarmUI.getTopBar(stage, "SmartFarm — " + ownerName);
@@ -300,10 +323,7 @@ public class MapView {
         Label actionsTitle = new Label("Actions");
         actionsTitle.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px; -fx-font-weight: bold;");
 
-        Button btnAddField = sideButton("Ajouter un Field");
         Button btnModifyUser = sideButton("Modify User");
-        AddForm addForm = new AddForm();
-        btnAddField.setOnAction(e -> stage.setScene(addForm.getFieldScene(stage, ground)));
 
         Button btnDelaunay = sideButton("Voir Delaunay");
         if (showDelaunay) btnDelaunay.setStyle(sideButtonStyle() + " -fx-background-color: #7a5010;");
@@ -399,7 +419,7 @@ public class MapView {
         zoomBar.setAlignment(Pos.CENTER);
 
         buttonsSection.getChildren().addAll(
-            actionsTitle, btnAddField, btnModifyUser, btnSave,
+            actionsTitle, btnModifyUser, btnSave,
             btnDelaunay, btnVoronoi, btnRadius,
             btnPlaceTank, btnPlaceSprinkler, btnPlaceField,
             zoomTitle, zoomBar
