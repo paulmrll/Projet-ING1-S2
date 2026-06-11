@@ -229,4 +229,8 @@ public class Sprinkler extends Point {
     public int hashCode() {
         return Objects.hash(super.hashCode(), id, flow, radius, active);
     }
+
+    public boolean getStatusActivation(){
+        return active;
+    }
 }

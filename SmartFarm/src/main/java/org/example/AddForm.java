@@ -10,13 +10,10 @@ import javafx.stage.Stage;
 public class AddForm {
 
     public Scene getFieldScene(Stage stage, Ground ground) {
-        // 1. On récupère le formulaire de base (les champs uniquement)
         VBox layout = getFieldForm();
 
-        // 2. On crée le bouton à part, ici dans la Scene
         Button btnValider = buttonStyle("Enregistrer le champ");
 
-        // 3. On gère le comportement du bouton à part
         btnValider.setOnAction(e -> {
             try {
                 // On va chercher les valeurs dans le VBox au MOMENT du clic
@@ -255,7 +252,7 @@ public class AddForm {
     }
 
     private static Scene sceneStyle(Parent parent) {
-        Scene scene = new Scene(parent, 1200, 700);
+        Scene scene = new Scene(parent, 1300, 800);
         scene.getRoot().setStyle(
                 "-fx-background-image: url('/bg_nuit.png'); " +
                         "-fx-background-size: cover;"

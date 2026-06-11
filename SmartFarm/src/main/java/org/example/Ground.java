@@ -221,7 +221,7 @@ public class Ground {
         return true;
     }
 
-    private void findSource(Sprinkler sprinkler) {
+    public void findSource(Sprinkler sprinkler) {
         if (voronoiDiagram != null) {
             VoronoiCell cell = findCellContaining(sprinkler.getX(), sprinkler.getY());
             if (cell != null) {

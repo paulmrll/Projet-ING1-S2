@@ -30,6 +30,13 @@ public class MapView {
     private static final double ZOOM_STEP = 0.25;
     private static final double ZOOM_MIN = 0.25;
     private static final double ZOOM_MAX = 3.0;
+    private Circle temporaryCircle = null;
+    private double nodeDragOffsetX;
+    private double nodeDragOffsetY;
+    double realX = -2;
+    double realY = -2;
+    double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+    double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
 
     private static final double MAP_W = 970;
     private static final double MAP_H = 650;
@@ -53,8 +60,6 @@ public class MapView {
         java.util.Random random = new java.util.Random(42);
 
         // borne
-        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
         for (Field f : ground.getFields()) {
             minX = Math.min(minX, f.getxStart()); minY = Math.min(minY, f.getyStart());
             maxX = Math.max(maxX, f.getxStop());  maxY = Math.max(maxY, f.getyStop());
@@ -124,7 +129,7 @@ public class MapView {
             Circle c = new Circle(cx, cy, 6, Color.web("#5599ee"));
             c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showSprinklerInfo(stage, s); e.consume(); });
+            c.setOnMouseClicked(e -> { showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane); e.consume(); });
             c.setOnMouseEntered(e -> c.setRadius(8));
             c.setOnMouseExited(e  -> c.setRadius(6));
             mapPane.getChildren().add(c);
@@ -135,7 +140,7 @@ public class MapView {
             Circle c = new Circle(cx, cy, 7, Color.web("#dd4444"));
             c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showWaterTankInfo(stage, w); e.consume(); });
+            c.setOnMouseClicked(e -> { showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane); e.consume(); });
             c.setOnMouseEntered(e -> c.setRadius(9));
             c.setOnMouseExited(e  -> c.setRadius(7));
             mapPane.getChildren().add(c);
@@ -143,7 +148,7 @@ public class MapView {
 
         // zoom + dezoom
         mapGroup = new Group(mapPane);
-        mapGroup.getTransforms().add(scaleTransform); // pivot fixe à (0,0)
+        mapGroup.getTransforms().add(scaleTransform);
 
         viewport = new Pane(mapGroup);
         viewport.setStyle("-fx-background-color: #1c1c1e;");
@@ -175,7 +180,7 @@ public class MapView {
         root.setRight(rightPanel);
         root.setTop(topBar);
 
-        Scene scene = new Scene(root, 1200, 700);
+        Scene scene = new Scene(root, 1300, 800);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         return scene;
     }
@@ -304,7 +309,8 @@ public class MapView {
     }
 
     // show info
-    private void showWaterTankInfo(Stage stage, WaterTank w) {
+    private void showWaterTankInfo(Circle c, Stage stage, WaterTank w,double mult, double ofsX, double ofsY, Pane mapPane) {
+        removeTemporaryCircle(mapPane);
         infoContent.getChildren().setAll(
             infoRow("ID", String.valueOf(w.getId())),
             infoRow("X", String.format("%.1f", w.getX())),
@@ -314,13 +320,38 @@ public class MapView {
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
         Button modify = sideButton("Modify");
+        c.setOnMousePressed(e -> {
+            nodeDragOffsetX = e.getSceneX() - c.getLayoutX();
+            nodeDragOffsetY = e.getSceneY() - c.getLayoutY();
+            c.setStyle("-fx-cursor: move;");
+            e.consume();
+        });
+
+        c.setOnMouseDragged(e->{
+            double newLayoutX = e.getSceneX() - nodeDragOffsetX;
+            double newLayoutY = e.getSceneY() - nodeDragOffsetY;
+            c.setLayoutX(newLayoutX);
+            c.setLayoutY(newLayoutY);
+            realX = ((newLayoutX + c.getCenterX() - ofsX) / mult) + minX;
+            realY = ((newLayoutY + c.getCenterY() - ofsY) / mult) + minY;
+            w.setX(realX);
+            w.setY(realY);
+            e.consume();
+        });
         modify.setOnAction(e->{
-            stage.setScene(AddForm.modifyTanksSprinklers(stage, w, ground));
+            for (Sprinkler s : ground.getSprinklers()){
+                ground.findSource(s);
+            }
+            stage.setScene(getScene(stage));
         });
         infoContent.getChildren().add(modify);
     }
 
-    private void showSprinklerInfo(Stage stage, Sprinkler s) {
+    private void showSprinklerInfo(Circle c,Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
+        for (Field f : ground.getFields()) {
+            minX = Math.min(minX, f.getxStart());
+            minY = Math.min(minY, f.getyStart());
+        }
         String src = s.getSource() != null ? "Tank #" + s.getSource().getId() : "—";
         infoContent.getChildren().setAll(
             infoRow("ID",     String.valueOf(s.getId())),
@@ -328,13 +359,64 @@ public class MapView {
             infoRow("Y",      String.format("%.1f", s.getY())),
             infoRow("Débit",  String.format("%.2f", s.getFlow())),
             infoRow("Rayon",  String.format("%.2f", s.getRadius())),
+            infoRow("Activate", String.valueOf(s.getStatusActivation())),
             infoRow("Source", src)
         );
-        Button modify = sideButton("Modify");
-        modify.setOnAction(e->{
-            stage.setScene(AddForm.modifyTanksSprinklers(stage, s, ground));
+        removeTemporaryCircle(mapPane);
+        for (WaterTank w : ground.getTanks()){
+            double cx = (w.getX()-minX)*mult+ofsX, cy = (w.getY()-minY)*mult+ofsY;
+            if (w.getId() == s.getSource().getId()){
+                Circle cover = new Circle(cx, cy, 7, Color.YELLOW);
+                cover.setStroke(Color.WHITE); cover.setStrokeWidth(1.5);
+                cover.setStyle("-fx-cursor: hand;");
+                temporaryCircle = cover;
+                mapPane.getChildren().add(cover);
+                cover.setOnMouseClicked(e->{showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane);});
+            }
+        }
+        VBox button = new VBox();
+        Button modify = sideButton("MODIFY");
+        button.setSpacing(20);
+        if (s.getStatusActivation() == true){
+            Button activation = sideButton("DESACTIVATE");
+            activation.setOnAction(e->{
+                s.setActive(false);
+                showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
+            });
+            button.getChildren().addAll(modify, activation);
+        } else {
+            Button activation = sideButton("ACTIVATE");
+            activation.setOnAction(e->{
+                s.setActive(true);
+                showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
+            });
+            button.getChildren().addAll(modify, activation);
+        }
+
+        c.setOnMousePressed(e -> {
+            nodeDragOffsetX = e.getSceneX() - c.getLayoutX();
+            nodeDragOffsetY = e.getSceneY() - c.getLayoutY();
+            c.setStyle("-fx-cursor: move;");
+            e.consume();
         });
-        infoContent.getChildren().add(modify);
+
+        c.setOnMouseDragged(e->{
+            double newLayoutX = e.getSceneX() - nodeDragOffsetX;
+            double newLayoutY = e.getSceneY() - nodeDragOffsetY;
+            c.setLayoutX(newLayoutX);
+            c.setLayoutY(newLayoutY);
+            realX = ((newLayoutX + c.getCenterX() - ofsX) / mult) + minX;
+            realY = ((newLayoutY + c.getCenterY() - ofsY) / mult) + minY;
+            s.setX(realX);
+            s.setY(realY);
+            e.consume();
+        });
+        modify.setOnAction(e->{
+            ground.findSource(s);
+            stage.setScene(getScene(stage));
+        });
+
+        infoContent.getChildren().add(button);
     }
 
     private HBox infoRow(String key, String value) {
@@ -347,7 +429,6 @@ public class MapView {
         return row;
     }
 
-    // Save
     private void saveGround() {
         String name = ground.getOwner().getFirstname().toLowerCase() + "_" + ground.getOwner().getName().toLowerCase() + "_save";
         Save save = new Save("./SmartFarm/src/main/resources/Saves/" + name);
@@ -355,6 +436,12 @@ public class MapView {
             save.writeSave(ground);
         } catch (FileNotFoundException e) {
             System.err.println("Erreur sauvegarde : " + e.getMessage());
+        }
+    }
+
+    private void removeTemporaryCircle(Pane mapPane){
+        if (temporaryCircle != null){
+            mapPane.getChildren().remove(temporaryCircle);
         }
     }
 }

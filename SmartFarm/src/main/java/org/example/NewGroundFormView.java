@@ -176,7 +176,7 @@ public class NewGroundFormView {
         return textField;
     }
     private static Scene sceneStyle(Parent parent) {
-        Scene scene = new Scene(parent, 1200, 700);
+        Scene scene = new Scene(parent, 1300, 800);
         scene.getRoot().setStyle(
                 "-fx-background-image: url('/bg_nuit.png'); " +
                         "-fx-background-size: cover;"

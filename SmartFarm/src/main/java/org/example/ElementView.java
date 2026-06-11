@@ -23,7 +23,7 @@ public abstract class ElementView {
         main.setCenter(uploadInfo(p, stage));
         main.setTop(topBar);
 
-        Scene scene = new Scene(main, 1200, 700);
+        Scene scene = new Scene(main, 1300, 800);
         return scene;
     }
 

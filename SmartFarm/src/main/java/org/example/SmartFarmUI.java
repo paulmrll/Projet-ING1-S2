@@ -84,7 +84,7 @@ public class SmartFarmUI extends Application {
         root.setStyle("-fx-background-image: url('/bg.png'); -fx-background-size: cover;");
         root.getChildren().addAll(overlay, content);
 
-        Scene scene = new Scene(root, 1200, 700);
+        Scene scene = new Scene(root, 1300, 800);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         stage.setTitle("SmartFarm");

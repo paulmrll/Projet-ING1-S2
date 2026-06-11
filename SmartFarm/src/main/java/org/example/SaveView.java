@@ -33,7 +33,7 @@ public class SaveView {
         mainLayout.setTop(topBar);
         mainLayout.setCenter(loadFiles(currentFolder, stage));
 
-        Scene scene = new Scene(mainLayout, 1200, 700);
+        Scene scene = new Scene(mainLayout, 1300, 800);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         return scene;
     }
