@@ -21,6 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapView {
@@ -30,7 +31,11 @@ public class MapView {
     private static final double ZOOM_STEP = 0.25;
     private static final double ZOOM_MIN = 0.25;
     private static final double ZOOM_MAX = 3.0;
+
+
     private Circle temporaryCircle = null;
+    private List<Circle> temporaryCircleListSprinklers = new ArrayList<>();
+
     private double nodeDragOffsetX;
     private double nodeDragOffsetY;
     double realX = -2;
@@ -447,9 +452,9 @@ public class MapView {
         }
     }
 
-    // show info
     private void showWaterTankInfo(Circle c, Stage stage, WaterTank w,double mult, double ofsX, double ofsY, Pane mapPane) {
         removeTemporaryCircle(mapPane);
+        removeTemporaryCircleList(mapPane);
         infoContent.getChildren().setAll(
             infoRow("ID", String.valueOf(w.getId())),
             infoRow("X", String.format("%.1f", w.getX())),
@@ -458,6 +463,16 @@ public class MapView {
             infoRow("Capacité", String.format("%.2f", w.getCapacity())),
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
+        for (Sprinkler s : ground.getSprinklers()){
+            if (s.getSource() == w){
+                double cx = (s.getX()-minX)*mult+ofsX, cy = (s.getY()-minY)*mult+ofsY;
+                Circle cover = new Circle(cx, cy, 7, Color.YELLOW);
+                cover.setStroke(Color.WHITE); cover.setStrokeWidth(1.5);
+                cover.setStyle("-fx-cursor: hand;");
+                mapPane.getChildren().add(cover);
+                temporaryCircleListSprinklers.add(cover);
+            }
+        }
         Button modify = sideButton("Modify");
         Button refill = sideButton("Refill");
         refill.setStyle(refill.getStyle() + " -fx-background-color: #1a5a8b;");
@@ -499,6 +514,7 @@ public class MapView {
     }
 
     private void showSprinklerInfo(Circle c,Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
+        removeTemporaryCircleList(mapPane);
         for (Field f : ground.getFields()) {
             minX = Math.min(minX, f.getxStart());
             minY = Math.min(minY, f.getyStart());
@@ -605,6 +621,12 @@ public class MapView {
     private void removeTemporaryCircle(Pane mapPane){
         if (temporaryCircle != null){
             mapPane.getChildren().remove(temporaryCircle);
+        }
+    }
+    private void removeTemporaryCircleList(Pane mapPane) {
+        if (temporaryCircleListSprinklers != null) {
+            mapPane.getChildren().removeAll(temporaryCircleListSprinklers);
+            temporaryCircleListSprinklers.clear();
         }
     }
 }
