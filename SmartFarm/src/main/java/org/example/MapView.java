@@ -146,21 +146,21 @@ public class MapView {
         mapGroup.getTransforms().add(scaleTransform); // pivot fixe à (0,0)
 
         viewport = new Pane(mapGroup);
-        viewport.setStyle("-fx-background-color: #1a2b18;");
+        viewport.setStyle("-fx-background-color: #1c1c1e;");
         viewport.setClip(new Rectangle(0, 0, 10000, 10000));
 
         // map movements
         viewport.setOnMousePressed(e -> {
             dragOriginX = e.getSceneX() - mapGroup.getTranslateX();
             dragOriginY = e.getSceneY() - mapGroup.getTranslateY();
-            viewport.setStyle("-fx-background-color: #1a2b18; -fx-cursor: closed-hand;");
+            viewport.setStyle("-fx-background-color: #1c1c1e; -fx-cursor: closed-hand;");
         });
         viewport.setOnMouseDragged(e -> {
             mapGroup.setTranslateX(e.getSceneX() - dragOriginX);
             mapGroup.setTranslateY(e.getSceneY() - dragOriginY);
         });
         viewport.setOnMouseReleased(e ->
-            viewport.setStyle("-fx-background-color: #1a2b18;")
+            viewport.setStyle("-fx-background-color: #1c1c1e;")
         );
 
         // layout
