@@ -2,6 +2,7 @@ package org.example;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -20,10 +21,10 @@ public class NewGroundFormView {
         VBox vBoxTank = addForm.getWaterTankForm();
         VBox vBoxSprinkler = addForm.getSprinklerForm();
 
-        Button btnSaveField = new Button("Enregistrer");
-        Button btnSaveTank = new Button("Enregistrer");
-        Button btnSaveSprinkler = new Button("Enregistrer");
-        Button btnMap = new Button("Access to the mapView");
+        Button btnSaveField = buttonStyle("Enregistrer");
+        Button btnSaveTank = buttonStyle("Enregistrer");
+        Button btnSaveSprinkler = buttonStyle("Enregistrer");
+        Button btnMap = buttonStyle("Access to the mapView");
 
         btnMap.setOnAction(e->{
             MapView mapView = new MapView(ground);
@@ -87,13 +88,16 @@ public class NewGroundFormView {
 
         HBox hBoxTankSprinkler = new HBox();
         hBoxTankSprinkler.setSpacing(20);
+        hBoxTankSprinkler.setAlignment(Pos.CENTER);
         hBoxTankSprinkler.getChildren().addAll(vBoxTank, vBoxSprinkler);
         VBox root = new VBox();
         root.setSpacing(20);
+        vBoxField.setAlignment(Pos.CENTER);
         root.getChildren().addAll(vBoxField, hBoxTankSprinkler);
         root.getChildren().add(btnMap);
+        root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, 1200, 700);
+        return sceneStyle(root);
     }
 
     public Scene newGround(Stage stage){
@@ -110,62 +114,19 @@ public class NewGroundFormView {
                 "-fx-font-size: 50px;" +
                 "-fx-font-weight: bold;"
         );
-        TextField nameInput = new TextField();nameInput.setStyle(
-                "-fx-background-color: #ffffff; " +
-                "-fx-text-fill: black; " +
-                "-fx-prompt-text-fill: #233722; " +
-                "-fx-background-radius: 6; " +
-                "-fx-padding: 8 12 8 12;"
-        );
-        nameInput.setPromptText("Name");
-        nameInput.setMaxWidth(400);
+        TextField nameInput = textFieldEnter("Name");
 
-        TextField firstnameInput = new TextField();
-        firstnameInput.setStyle(
-                "-fx-background-color: #ffffff;" +
-                "-fx-text-fill: black; " +
-                "-fx-prompt-text-fill: #233722; " +
-                "-fx-background-radius: 6; " +
-                "-fx-padding: 8 12 8 12;"
-        );
-        firstnameInput.setPromptText("Firstname");
-        firstnameInput.setMaxWidth(400);
 
-        TextField emailInput = new TextField();
-        emailInput.setStyle(
-                "-fx-background-color: #ffffff; " +
-                "-fx-text-fill: black; " +
-                "-fx-prompt-text-fill: #233722; " +
-                "-fx-background-radius: 6; " +
-                "-fx-padding: 8 12 8 12;"
-        );
-        emailInput.setPromptText("Email");
-        emailInput.setMaxWidth(400);
+        TextField firstnameInput = textFieldEnter("Firstname");
 
-        TextField ageInput = new TextField();
-        ageInput.setStyle(
-                "-fx-background-color: #ffffff; " +
-                "-fx-text-fill: black; " +
-                "-fx-prompt-text-fill: #233722; " +
-                "-fx-background-radius: 6; " +
-                "-fx-padding: 8 12 8 12;"
-        );
-        ageInput.setPromptText("Age");
-        ageInput.setMaxWidth(400);
+        TextField emailInput = textFieldEnter("Email");
 
-        TextField areaInput = new TextField();
-        areaInput.setStyle(
-                "-fx-background-color: #ffffff; " +
-                "-fx-text-fill: black; " +
-                "-fx-prompt-text-fill: #233722; " +
-                "-fx-background-radius: 6; " +
-                "-fx-padding: 8 12 8 12;"
-        );
+        TextField ageInput = textFieldEnter("Age");
+
+        TextField areaInput = textFieldEnter("Area");
         personForm.getChildren().addAll(nameInput, firstnameInput, emailInput, ageInput);
-        areaInput.setPromptText("Area");
-        areaInput.setMaxWidth(400);
 
-        Button btnSave = new Button("Create Farm");
+        Button btnSave = buttonStyle("Create Farm");
         btnSave.getStyleClass().add("btn-primary");
 
         btnSave.setOnAction(e->{
@@ -196,12 +157,43 @@ public class NewGroundFormView {
         center.setPadding(new Insets(60, 40, 40, 40));
         root.setCenter(center);
 
-        root.setStyle(
-                "-fx-background-image: url('/bg_nuit.png'); " +
-                "-fx-background-size: cover;"
+
+
+        return sceneStyle(root);
+    }
+
+    private TextField textFieldEnter(String s){
+        TextField textField = new TextField();
+        textField.setStyle(
+                "-fx-backgroun-color: #ffffff; " +
+                        "-fx-text-fill: black; " +
+                        "-fx-prompt-text-fill: #233722; " +
+                        "-fx-background-radius: 6; " +
+                        "-fx-padding: 8 12 8 12;"
         );
-        Scene scene = new Scene(root, 1200, 700);
-        scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+        textField.setPromptText(s);
+        textField.setMaxWidth(400);
+        return textField;
+    }
+    private static Scene sceneStyle(Parent parent) {
+        Scene scene = new Scene(parent, 1200, 700);
+        scene.getRoot().setStyle(
+                "-fx-background-image: url('/bg_nuit.png'); " +
+                        "-fx-background-size: cover;"
+        );
         return scene;
+    }
+    private static Button buttonStyle(String text) {
+        Button btn = new Button(text);
+        btn.setPrefWidth(192);
+        btn.setStyle(
+                "-fx-background-color: #3a5a30;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-padding: 8 12 8 12;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;"
+        );
+        return btn;
     }
 }

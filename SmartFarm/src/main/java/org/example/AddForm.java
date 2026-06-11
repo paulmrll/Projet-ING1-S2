@@ -1,7 +1,7 @@
 package org.example;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -14,7 +14,7 @@ public class AddForm {
         VBox layout = getFieldForm();
 
         // 2. On crée le bouton à part, ici dans la Scene
-        Button btnValider = new Button("Enregistrer le champ");
+        Button btnValider = buttonStyle("Enregistrer le champ");
 
         // 3. On gère le comportement du bouton à part
         btnValider.setOnAction(e -> {
@@ -40,24 +40,20 @@ public class AddForm {
 
         layout.getChildren().add(btnValider);
 
-        layout.setPadding(new Insets(20));
+        layout.setSpacing(20);
         layout.setAlignment(Pos.CENTER);
 
-        return new Scene(layout, 1200, 700);
+        return sceneStyle(layout);
     }
 
     public VBox getFieldForm() {
-        Label titleLabel = new Label("Ajouter un nouveau champ");
+        Label titleLabel = labelStyle("Ajouter un nouveau champ");
 
-        TextField xStartInput = new TextField();
-        xStartInput.setPromptText("Coordonnée X de début");
-        TextField xStopInput = new TextField();
-        xStopInput.setPromptText("Coordonnée X de fin");
+        TextField xStartInput = textFieldEnterPromptText("Coordonnée X de début");
+        TextField xStopInput = textFieldEnterPromptText("Coordonnée X de fin");
 
-        TextField yStartInput = new TextField();
-        yStartInput.setPromptText("Coordonnée Y de début");
-        TextField yStopInput = new TextField();
-        yStopInput.setPromptText("Coordonnée Y de fin");
+        TextField yStartInput = textFieldEnterPromptText("Coordonnée Y de début");
+        TextField yStopInput = textFieldEnterPromptText("Coordonnée Y de fin");
 
         ComboBox<String> typeCulture = new ComboBox<>();
         typeCulture.getItems().addAll("Blé", "Maïs", "Orge", "Tournesol");
@@ -68,7 +64,7 @@ public class AddForm {
 
     public Scene getSprinklerScene(Stage stage, Ground ground) {
         VBox layout = getSprinklerForm();
-        Button btnValider = new Button("Enregistrer l'arroseur");
+        Button btnValider = buttonStyle("Enregistrer l'arroseur");
 
         btnValider.setOnAction(e -> {
             try {
@@ -86,29 +82,25 @@ public class AddForm {
         });
 
         layout.getChildren().add(btnValider);
-        layout.setPadding(new Insets(20));
+        layout.setSpacing(20);
         layout.setAlignment(Pos.CENTER);
 
-        return new Scene(layout, 1200, 700);
+        return sceneStyle(layout);
     }
 
     public VBox getSprinklerForm() {
-        Label titleLabel = new Label("Ajouter un nouveau arroseur");
-        TextField xInput = new TextField();
-        xInput.setPromptText("Coordonnée X");
-        TextField yInput = new TextField();
-        yInput.setPromptText("Coordonnée Y");
-        TextField flowInput = new TextField();
-        flowInput.setPromptText("Flow");
-        TextField radiusInput = new TextField();
-        radiusInput.setPromptText("Radius");
+        Label titleLabel = labelStyle("Ajouter un nouveau arroseur");
+        TextField xInput = textFieldEnterPromptText("Coordonnée X");
+        TextField yInput = textFieldEnterPromptText("Coordonnée Y");
+        TextField flowInput = textFieldEnterPromptText("Flow");
+        TextField radiusInput = textFieldEnterPromptText("Radius");
 
         return new VBox(15, titleLabel, xInput, yInput, flowInput, radiusInput);
     }
 
     public Scene getWaterTankScene(Stage stage, Ground ground) {
         VBox layout = getWaterTankForm();
-        Button btnValider = new Button("Enregistrer le watertank");
+        Button btnValider = buttonStyle("Enregistrer le watertank");
 
         btnValider.setOnAction(e -> {
             try {
@@ -126,22 +118,18 @@ public class AddForm {
         });
 
         layout.getChildren().add(btnValider);
-        layout.setPadding(new Insets(20));
+        layout.setSpacing(20);
         layout.setAlignment(Pos.CENTER);
 
-        return new Scene(layout, 1200, 700);
+        return sceneStyle(layout);
     }
 
     public VBox getWaterTankForm() {
-        Label titleLabel = new Label("Ajouter un nouveau waterTank");
-        TextField xInput = new TextField();
-        xInput.setPromptText("Coordonnée X");
-        TextField yInput = new TextField();
-        yInput.setPromptText("Coordonnée Y");
-        TextField flowInput = new TextField();
-        flowInput.setPromptText("Flow");
-        TextField capacityInput = new TextField();
-        capacityInput.setPromptText("Capacity");
+        Label titleLabel = labelStyle("Ajouter un nouveau waterTank");
+        TextField xInput = textFieldEnterPromptText("Coordonnée X");
+        TextField yInput = textFieldEnterPromptText("Coordonnée Y");
+        TextField flowInput = textFieldEnterPromptText("Flow");
+        TextField capacityInput = textFieldEnterPromptText("Capacity");
         return new VBox(15, titleLabel, xInput, yInput, flowInput, capacityInput);
     }
 
@@ -149,26 +137,31 @@ public class AddForm {
         VBox main = new VBox();
 
         if (p != null) {
-            Label title = new Label();
-            TextField xInput = new TextField();
-            TextField yInput = new TextField();
-            TextField flowInput = new TextField();
+            Label title = null;
+            TextField xInput;
+            TextField yInput;
+            TextField flowInput;
 
 
             if (p instanceof Sprinkler s) {
-                title.setText("Modify Sprinkler n°" + s.getId());
-                xInput.setText(String.valueOf(s.getX()));
-                yInput.setText(String.valueOf(s.getY()));
-                flowInput.setText(String.valueOf(s.getFlow()));
+                title = labelStyle("Modify Sprinkler n°" + s.getId());
+                xInput = textFieldEnterText(String.valueOf(s.getX()));
+                yInput = textFieldEnterText(String.valueOf(s.getY()));
+                flowInput = textFieldEnterText(String.valueOf(s.getFlow()));
             } else if (p instanceof WaterTank w) {
-                title.setText("Modify WaterTanks n°" + w.getId());
-                xInput.setText(String.valueOf(w.getX()));
-                yInput.setText(String.valueOf(w.getY()));
-                flowInput.setText(String.valueOf(w.getFlow()));
+                title = labelStyle("Modify WaterTanks n°" + w.getId());
+                xInput = textFieldEnterText(String.valueOf(w.getX()));
+                yInput = textFieldEnterText(String.valueOf(w.getY()));
+                flowInput = textFieldEnterText(String.valueOf(w.getFlow()));
+            } else {
+                yInput = null;
+                flowInput = null;
+                xInput = null;
             }
 
             main.setSpacing(20);
-            Button modify = new Button("MODIFY");
+            main.setAlignment(Pos.CENTER);
+            Button modify = buttonStyle("MODIFY");
             main.getChildren().addAll(title, xInput, yInput, flowInput, modify);
 
             modify.setOnAction(e -> {
@@ -193,7 +186,7 @@ public class AddForm {
             });
 
         }
-        return new Scene(main, 1200, 700);
+        return sceneStyle(main);
     }
 
     public static Scene modifyUser(Stage stage, Ground g) {
@@ -202,18 +195,14 @@ public class AddForm {
         main.setAlignment(Pos.CENTER);
         if (g != null) {
             if (g.getOwner() != null) {
-                Label title = new Label("Modify User"+g.getOwner().getName()+ "information");
-                TextField nameInput = new TextField();
-                nameInput.setText(g.getOwner().getName());
-                TextField firstnameInput = new TextField();
-                firstnameInput.setText(g.getOwner().getFirstname());
-                TextField mailInput = new TextField();
-                mailInput.setText(g.getOwner().getEmail());
-                TextField ageInput = new TextField();
-                ageInput.setText(String.valueOf(g.getOwner().getAge()));
-                Button modify = new Button("MODIFY");
-                modify.setOnAction(e->{
-                    try{
+                Label title = labelStyle("Modify User " + g.getOwner().getName() + " informations");
+                TextField nameInput = textFieldEnterText(g.getOwner().getName());
+                TextField firstnameInput = textFieldEnterText(g.getOwner().getFirstname());
+                TextField mailInput = textFieldEnterText(g.getOwner().getEmail());
+                TextField ageInput = textFieldEnterText(String.valueOf(g.getOwner().getAge()));
+                Button modify = buttonStyle("MODIFY");
+                modify.setOnAction(e -> {
+                    try {
                         String name = nameInput.getText();
                         String firstname = firstnameInput.getText();
                         String mail = mailInput.getText();
@@ -233,6 +222,68 @@ public class AddForm {
                 main.getChildren().addAll(title, nameInput, firstnameInput, ageInput, mailInput, modify);
             }
         }
-        return new Scene(main, 1200, 700);
+
+
+        return sceneStyle(main);
+    }
+
+    private static TextField textFieldEnterPromptText(String s) {
+        TextField textField = new TextField();
+        textField.setStyle(
+                "-fx-backgroun-color: #ffffff; " +
+                        "-fx-text-fill: black; " +
+                        "-fx-prompt-text-fill: #233722; " +
+                        "-fx-background-radius: 6; " +
+                        "-fx-padding: 8 12 8 12;"
+        );
+        textField.setPromptText(s);
+        textField.setMaxWidth(400);
+        return textField;
+    }
+
+    private static TextField textFieldEnterText(String s) {
+        TextField textField = new TextField();
+        textField.setStyle(
+                "-fx-backgroun-color: #ffffff; " +
+                        "-fx-text-fill: black; " +
+                        "-fx-prompt-text-fill: #233722; " +
+                        "-fx-background-radius: 6; " +
+                        "-fx-padding: 8 12 8 12;"
+        );
+        textField.setText(s);
+        textField.setMaxWidth(400);
+        return textField;
+    }
+
+    private static Scene sceneStyle(Parent parent) {
+        Scene scene = new Scene(parent, 1200, 700);
+        scene.getRoot().setStyle(
+                "-fx-background-image: url('/bg_nuit.png'); " +
+                        "-fx-background-size: cover;"
+        );
+        return scene;
+    }
+
+    private static Label labelStyle(String string) {
+        Label label = new Label(string);
+        label.setStyle("-fx-font-family: 'Arial';" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 24px;" +
+                "-fx-text-fill: white;"
+        );
+        return label;
+    }
+    private static Button buttonStyle(String text) {
+        Button btn = new Button(text);
+        btn.setPrefWidth(192);
+        btn.setStyle(
+                "-fx-background-color: #3a5a30;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-padding: 8 12 8 12;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-cursor: hand;"
+        );
+        return btn;
     }
 }

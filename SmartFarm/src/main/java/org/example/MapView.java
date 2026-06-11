@@ -313,7 +313,7 @@ public class MapView {
             infoRow("Capacité", String.format("%.2f", w.getCapacity())),
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
-        Button modify = new Button("Modify");
+        Button modify = sideButton("Modify");
         modify.setOnAction(e->{
             stage.setScene(AddForm.modifyTanksSprinklers(stage, w, ground));
         });
@@ -330,7 +330,7 @@ public class MapView {
             infoRow("Rayon",  String.format("%.2f", s.getRadius())),
             infoRow("Source", src)
         );
-        Button modify = new Button("Modify");
+        Button modify = sideButton("Modify");
         modify.setOnAction(e->{
             stage.setScene(AddForm.modifyTanksSprinklers(stage, s, ground));
         });
