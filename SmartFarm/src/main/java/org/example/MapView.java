@@ -320,6 +320,8 @@ public class MapView {
             infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
         Button modify = sideButton("Modify");
+        Button delete = sideButton("Delete");
+        delete.setStyle(delete.getStyle() + " -fx-background-color: #8b2020;");
         c.setOnMousePressed(e -> {
             nodeDragOffsetX = e.getSceneX() - c.getLayoutX();
             nodeDragOffsetY = e.getSceneY() - c.getLayoutY();
@@ -344,7 +346,11 @@ public class MapView {
             }
             stage.setScene(getScene(stage));
         });
-        infoContent.getChildren().add(modify);
+        delete.setOnAction(e -> {
+            ground.removeTank(w);
+            stage.setScene(getScene(stage));
+        });
+        infoContent.getChildren().addAll(delete, modify);
     }
 
     private void showSprinklerInfo(Circle c,Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
@@ -376,6 +382,12 @@ public class MapView {
         }
         VBox button = new VBox();
         Button modify = sideButton("MODIFY");
+        Button delete = sideButton("DELETE");
+        delete.setStyle(delete.getStyle() + " -fx-background-color: #8b2020;");
+        delete.setOnAction(e -> {
+            ground.removeSprinkler(s);
+            stage.setScene(getScene(stage));
+        });
         button.setSpacing(20);
         if (s.getStatusActivation() == true){
             Button activation = sideButton("DESACTIVATE");
@@ -383,14 +395,14 @@ public class MapView {
                 s.setActive(false);
                 showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
             });
-            button.getChildren().addAll(modify, activation);
+            button.getChildren().addAll(delete, modify, activation);
         } else {
             Button activation = sideButton("ACTIVATE");
             activation.setOnAction(e->{
                 s.setActive(true);
                 showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
             });
-            button.getChildren().addAll(modify, activation);
+            button.getChildren().addAll(delete, modify, activation);
         }
 
         c.setOnMousePressed(e -> {
