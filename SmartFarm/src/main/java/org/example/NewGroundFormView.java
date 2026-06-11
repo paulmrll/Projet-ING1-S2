@@ -40,6 +40,11 @@ public class NewGroundFormView {
                 double yStart = Double.parseDouble(((TextField) vBoxField.getChildren().get(3)).getText());
                 double yStop = Double.parseDouble(((TextField) vBoxField.getChildren().get(4)).getText());
                 String culture = ((ComboBox<String>) vBoxField.getChildren().get(5)).getValue();
+                ((TextField) vBoxField.getChildren().get(1)).clear();
+                ((TextField) vBoxField.getChildren().get(2)).clear();
+                ((TextField) vBoxField.getChildren().get(3)).clear();
+                ((TextField) vBoxField.getChildren().get(4)).clear();
+                ((ComboBox<String>) vBoxField.getChildren().get(5)).setValue("Blé");
                 ground.addField(new Field(culture, xStart, xStop, yStart, yStop));
             } catch (Exception ex) {
                 System.out.println("Erreur dans le formulaire de Champ.");
@@ -52,7 +57,10 @@ public class NewGroundFormView {
                 double y = Double.parseDouble(((TextField) vBoxTank.getChildren().get(2)).getText());
                 double flow = Double.parseDouble(((TextField) vBoxTank.getChildren().get(3)).getText());
                 double capacity = Double.parseDouble(((TextField) vBoxTank.getChildren().get(4)).getText());
-
+                ((TextField) vBoxTank.getChildren().get(1)).clear();
+                ((TextField) vBoxTank.getChildren().get(2)).clear();
+                ((TextField) vBoxTank.getChildren().get(3)).clear();
+                ((TextField) vBoxTank.getChildren().get(4)).clear();
                 ground.addTank(new WaterTank(x, y, capacity, flow));
             } catch (Exception ex) {
                 System.out.println("Erreur dans le formulaire du Réservoir.");
@@ -65,7 +73,10 @@ public class NewGroundFormView {
                 double y = Double.parseDouble(((TextField) vBoxSprinkler.getChildren().get(2)).getText());
                 double flow = Double.parseDouble(((TextField) vBoxSprinkler.getChildren().get(3)).getText());
                 double radius = Double.parseDouble(((TextField) vBoxSprinkler.getChildren().get(4)).getText());
-
+                ((TextField) vBoxSprinkler.getChildren().get(1)).clear();
+                ((TextField) vBoxSprinkler.getChildren().get(2)).clear();
+                ((TextField) vBoxSprinkler.getChildren().get(3)).clear();
+                ((TextField) vBoxSprinkler.getChildren().get(4)).clear();
                 ground.addSprinkler(new Sprinkler(x, y, flow, radius));
             } catch (Exception ex) {
                 System.out.println("Erreur dans le formulaire de l'Arroseur.");
