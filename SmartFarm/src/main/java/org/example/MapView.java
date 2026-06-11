@@ -53,6 +53,8 @@ public class MapView {
     private double dragOriginX, dragOriginY;
     private boolean isDragging = false;
     private String placingMode = null; // "TANK" ou "SPRINKLER"
+    private boolean showDelaunay = false;
+    private boolean showVoronoi = false;
 
     public MapView(Ground ground) {
         this.ground = ground;
@@ -98,30 +100,34 @@ public class MapView {
         if (ground.getTanks() != null && ground.getTanks().size() >= 3) {
             VoronoiDiagram diagram = new VoronoiDiagram(ground.getTanks());
 
-            for (VoronoiCell cell : diagram.getCells()) {
-                List<Point> verts = cell.getVertices();
-                if (verts.size() < 3) continue;
-                Polygon poly = new Polygon();
-                for (Point p : verts)
-                    poly.getPoints().addAll((p.getX()-minX)*mult+ofsX, (p.getY()-minY)*mult+ofsY);
-                poly.setFill(Color.TRANSPARENT);
-                poly.setStroke(Color.color(1, 1, 1, 0.30));
-                poly.setStrokeWidth(1.0);
-                mapPane.getChildren().add(poly);
+            if (showVoronoi) {
+                for (VoronoiCell cell : diagram.getCells()) {
+                    List<Point> verts = cell.getVertices();
+                    if (verts.size() < 3) continue;
+                    Polygon poly = new Polygon();
+                    for (Point p : verts)
+                        poly.getPoints().addAll((p.getX()-minX)*mult+ofsX, (p.getY()-minY)*mult+ofsY);
+                    poly.setFill(Color.TRANSPARENT);
+                    poly.setStroke(Color.color(1, 1, 1, 0.30));
+                    poly.setStrokeWidth(1.0);
+                    mapPane.getChildren().add(poly);
+                }
             }
 
-            for (DelaunayTriangle tri : diagram.getTriangles()) {
-                WaterTank[] v = tri.getVertices();
-                double[] sx = new double[3], sy = new double[3];
-                for (int i = 0; i < 3; i++) {
-                    sx[i] = (v[i].getX()-minX)*mult+ofsX;
-                    sy[i] = (v[i].getY()-minY)*mult+ofsY;
-                }
-                for (int i = 0; i < 3; i++) {
-                    Line l = new Line(sx[i], sy[i], sx[(i+1)%3], sy[(i+1)%3]);
-                    l.setStroke(Color.color(1.0, 0.6, 0.1, 0.55));
-                    l.setStrokeWidth(0.9);
-                    mapPane.getChildren().add(l);
+            if (showDelaunay) {
+                for (DelaunayTriangle tri : diagram.getTriangles()) {
+                    WaterTank[] v = tri.getVertices();
+                    double[] sx = new double[3], sy = new double[3];
+                    for (int i = 0; i < 3; i++) {
+                        sx[i] = (v[i].getX()-minX)*mult+ofsX;
+                        sy[i] = (v[i].getY()-minY)*mult+ofsY;
+                    }
+                    for (int i = 0; i < 3; i++) {
+                        Line l = new Line(sx[i], sy[i], sx[(i+1)%3], sy[(i+1)%3]);
+                        l.setStroke(Color.color(1.0, 0.6, 0.1, 0.55));
+                        l.setStrokeWidth(0.9);
+                        mapPane.getChildren().add(l);
+                    }
                 }
             }
         }
@@ -232,6 +238,20 @@ public class MapView {
         AddForm addForm = new AddForm();
         btnAddField.setOnAction(e -> stage.setScene(addForm.getFieldScene(stage, ground)));
 
+        Button btnDelaunay = sideButton("Voir Delaunay");
+        if (showDelaunay) btnDelaunay.setStyle(sideButtonStyle() + " -fx-background-color: #7a5010;");
+        btnDelaunay.setOnAction(e -> {
+            showDelaunay = !showDelaunay;
+            stage.setScene(getScene(stage));
+        });
+
+        Button btnVoronoi = sideButton("Voir Voronoï");
+        if (showVoronoi) btnVoronoi.setStyle(sideButtonStyle() + " -fx-background-color: #10507a;");
+        btnVoronoi.setOnAction(e -> {
+            showVoronoi = !showVoronoi;
+            stage.setScene(getScene(stage));
+        });
+
         Button btnPlaceTank = sideButton("📍 Place Tank");
         Button btnPlaceSprinkler = sideButton("📍 Place Sprinkler");
 
@@ -281,6 +301,7 @@ public class MapView {
 
         buttonsSection.getChildren().addAll(
             actionsTitle, btnAddField, btnModifyUser, btnSave,
+            btnDelaunay, btnVoronoi,
             btnPlaceTank, btnPlaceSprinkler,
             zoomTitle, zoomBar
         );
