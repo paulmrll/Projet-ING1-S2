@@ -230,11 +230,7 @@ public class AddForm {
     private static TextField textFieldEnterPromptText(String s) {
         TextField textField = new TextField();
         textField.setStyle(
-                "-fx-backgroun-color: #ffffff; " +
-                        "-fx-text-fill: black; " +
-                        "-fx-prompt-text-fill: #233722; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-padding: 8 12 8 12;"
+                textFieldStyle()
         );
         textField.setPromptText(s);
         textField.setMaxWidth(400);
@@ -244,15 +240,18 @@ public class AddForm {
     private static TextField textFieldEnterText(String s) {
         TextField textField = new TextField();
         textField.setStyle(
-                "-fx-backgroun-color: #ffffff; " +
-                        "-fx-text-fill: black; " +
-                        "-fx-prompt-text-fill: #233722; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-padding: 8 12 8 12;"
+                textFieldStyle()
         );
         textField.setText(s);
         textField.setMaxWidth(400);
         return textField;
+    }
+    private static String textFieldStyle(){
+        return "-fx-backgroun-color: #ffffff; " +
+                "-fx-text-fill: black; " +
+                "-fx-prompt-text-fill: #233722; " +
+                "-fx-background-radius: 6; " +
+                "-fx-padding: 8 12 8 12;";
     }
 
     private static Scene sceneStyle(Parent parent) {
