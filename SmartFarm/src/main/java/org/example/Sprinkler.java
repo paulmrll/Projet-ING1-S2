@@ -23,16 +23,24 @@ public class Sprinkler extends Point {
      */
     private static int nbId = 0;
 
-    /** The water flow rate of the sprinkler. */
+    /**
+     * The water flow rate of the sprinkler.
+     */
     private double flow;
 
-    /** The final coverage radius of the sprinkler. */
+    /**
+     * The final coverage radius of the sprinkler.
+     */
     private final double radius;
 
-    /** Specifies whether the sprinkler is currently active. */
+    /**
+     * Specifies whether the sprinkler is currently active.
+     */
     private boolean active;
 
-    /** The water tank that supplies this sprinkler. */
+    /**
+     * The water tank that supplies this sprinkler.
+     */
     private WaterTank source;
 
     /**
@@ -163,7 +171,7 @@ public class Sprinkler extends Point {
      * @return true if the sprinkler was activated, false if no source or tank is empty
      */
     public boolean activate() {
-        if (source == null || source.isEmpty() || source.getFlow() < flow){
+        if (source == null || source.isEmpty() || source.getFlow() < flow) {
             return false;
         }
 
@@ -230,7 +238,7 @@ public class Sprinkler extends Point {
         return Objects.hash(super.hashCode(), id, flow, radius, active);
     }
 
-    public boolean getStatusActivation(){
+    public boolean getStatusActivation() {
         return active;
     }
 }

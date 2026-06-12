@@ -7,6 +7,7 @@ import java.util.Objects;
  * A water tank has a unique identifier, a maximum capacity, and a current flow rate.
  * It extends the {@link Point} class to inherit spatial coordinates.
  * * @author Paul MORILLE, Oscar LUIGGI
+ *
  * @version 1.1
  */
 public class WaterTank extends Point {
@@ -20,10 +21,14 @@ public class WaterTank extends Point {
      */
     private static int nbId;
 
-    /** The maximum capacity of the water tank. */
+    /**
+     * The maximum capacity of the water tank.
+     */
     private double capacity;
 
-    /** The current water flow rate of the tank. */
+    /**
+     * The current water flow rate of the tank.
+     */
     private double flow;
 
     /**

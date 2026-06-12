@@ -5,7 +5,7 @@ import java.util.Objects;
 
 /**
  * Represents a Delaunay triangle.
- * 
+ *
  * @author Tom LEMENAND
  * @version 1.0
  */
@@ -17,7 +17,7 @@ public class DelaunayTriangle {
 
     /**
      * Constructs a new DelaunayTriangle with three water tank vertices.
-     * 
+     *
      * @param vertex1 the first water tank vertex
      * @param vertex2 the second water tank vertex
      * @param vertex3 the third water tank vertex
@@ -29,7 +29,7 @@ public class DelaunayTriangle {
 
     /**
      * Gets the array of vertices.
-     * 
+     *
      * @return the vertices array
      */
     public WaterTank[] getVertices() {
@@ -38,7 +38,7 @@ public class DelaunayTriangle {
 
     /**
      * Gets the circumcenter.
-     * 
+     *
      * @return the circumcenter point
      */
     public Point getCircumcenter() {
@@ -47,7 +47,7 @@ public class DelaunayTriangle {
 
     /**
      * Sets the circumcenter.
-     * 
+     *
      * @param circumcenter the circumcenter point
      */
     public void setCircumcenter(Point circumcenter) {
@@ -56,7 +56,7 @@ public class DelaunayTriangle {
 
     /**
      * Gets the circumradius.
-     * 
+     *
      * @return the circumradius
      */
     public double getCircumRadius() {
@@ -65,7 +65,7 @@ public class DelaunayTriangle {
 
     /**
      * Sets the circumradius.
-     * 
+     *
      * @param circumRadius the circumradius value
      */
     public void setCircumRadius(double circumRadius) {
@@ -74,7 +74,7 @@ public class DelaunayTriangle {
 
     /**
      * Compares two DelaunayTriangle objects based on their vertices.
-     * 
+     *
      * @param o the object to compare
      * @return true if both triangles have the same vertices
      */
@@ -88,7 +88,7 @@ public class DelaunayTriangle {
 
     /**
      * Returns the hash code based on the vertices array.
-     * 
+     *
      * @return the hash code
      */
     @Override
@@ -116,7 +116,7 @@ public class DelaunayTriangle {
      * The circumcenter is the point equidistant from all three vertices.
      * Uses the mathematical formulas derived from solving the system of distance equations.
      */
-    public void calculateCircumcircle(){
+    public void calculateCircumcircle() {
         // STEP 1: Extract coordinate from the three vertces
         double x1 = vertices[0].getX();
         double y1 = vertices[0].getY();
@@ -131,9 +131,9 @@ public class DelaunayTriangle {
 
         // STEP 3: Check if the three points are collinear (d ≈ 0)
         // If d is nearly zero, the points are on the same line and cannot form a valid triangle
-        if(Math.abs(d) < 1e-10){
+        if (Math.abs(d) < 1e-10) {
             // Set the circumcenter to the centroid of the triangle
-            this.circumcenter = new Point((x1 + x2 + x3) / 3, (y1 + y2 + y3) /3);
+            this.circumcenter = new Point((x1 + x2 + x3) / 3, (y1 + y2 + y3) / 3);
             // Set circumradius to infinity since there's no valid circle
             this.circumRadius = Double.MAX_VALUE;
             return;
@@ -141,11 +141,11 @@ public class DelaunayTriangle {
 
         // STEP 4: Calulate the x-coordinate of the circumcenter (ux)
         // Using the formula derived from the system of linear equations
-        double ux = ((x1*x1 + y1*y1) * (y2 - y3) + (x2*x2 + y2*y2) * (y3 - y1) + (x3*x3 + y3*y3) * (y1 - y2)) / d;
-    
+        double ux = ((x1 * x1 + y1 * y1) * (y2 - y3) + (x2 * x2 + y2 * y2) * (y3 - y1) + (x3 * x3 + y3 * y3) * (y1 - y2)) / d;
+
         // STEP 5: Calculate the y-coordnate of the circumcenter (uy)
         // Using the formula derived from the system of linear equations
-        double uy = ((x1*x1 + y1*y1) * (x3 - x2) + (x2*x2 + y2*y2) * (x1 - x3) + (x3*x3 + y3*y3) * (x2 - x1)) / d;
+        double uy = ((x1 * x1 + y1 * y1) * (x3 - x2) + (x2 * x2 + y2 * y2) * (x1 - x3) + (x3 * x3 + y3 * y3) * (x2 - x1)) / d;
 
         // STEP 6: Create the circumcenter point with calculated coordinates
         this.circumcenter = new Point(ux, uy);

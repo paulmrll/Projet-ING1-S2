@@ -25,16 +25,16 @@ public class SmartFarmUI extends Application {
 
     // FontAwesome 4.7
     private static final String FA_FOLDER = "\uf07c"; // fa-folder-open
-    private static final String FA_LEAF   = "\uf06c"; // fa-leaf
-    private static final String FA_INFO   = "\uf05a"; // fa-info-circle
-    private static final String FA_USERS  = "\uf0c0"; // fa-users
-    private static final String FA_POWER  = "\uf011"; // fa-power-off
+    private static final String FA_LEAF = "\uf06c"; // fa-leaf
+    private static final String FA_INFO = "\uf05a"; // fa-info-circle
+    private static final String FA_USERS = "\uf0c0"; // fa-users
+    private static final String FA_POWER = "\uf011"; // fa-power-off
 
     @Override
     public void start(Stage stage) {
         if (faFont == null) {
             faFont = Font.loadFont(
-                getClass().getResourceAsStream("/fontawesome-webfont.ttf"), 10
+                    getClass().getResourceAsStream("/fontawesome-webfont.ttf"), 10
             );
         }
 
@@ -49,8 +49,8 @@ public class SmartFarmUI extends Application {
         title.setTextFill(Color.WHITE);
 
         // main buttons
-        Button btnLoad = bigButton(FA_FOLDER,"Charger une\nsauvegarde");
-        Button btnCreate = bigButton(FA_LEAF,"Créer une\nnouvelle ferme");
+        Button btnLoad = bigButton(FA_FOLDER, "Charger une\nsauvegarde");
+        Button btnCreate = bigButton(FA_LEAF, "Créer une\nnouvelle ferme");
 
         btnLoad.setOnAction(e -> {
             SaveView saveView = new SaveView();
@@ -66,7 +66,7 @@ public class SmartFarmUI extends Application {
 
         // buttons
         Button btnCredits = smallButton(FA_USERS, "Crédits");
-        Button btnAbout = smallButton(FA_INFO,  "À propos");
+        Button btnAbout = smallButton(FA_INFO, "À propos");
         Button btnQuit = smallButton(FA_POWER, "Quitter");
         btnQuit.setOnAction(e -> stage.close());
 
@@ -108,10 +108,10 @@ public class SmartFarmUI extends Application {
 
         Label textLabel = new Label(text);
         textLabel.setStyle(
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 13px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-text-alignment: center;"
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-alignment: center;"
         );
         textLabel.setWrapText(true);
 
@@ -130,12 +130,12 @@ public class SmartFarmUI extends Application {
 
     private void applyBigStyle(Button btn, boolean hover) {
         btn.setStyle(
-            "-fx-background-color: " + (hover ? "rgba(72,110,58,0.92)" : "rgba(50,80,40,0.82)") + ";" +
-            "-fx-background-radius: 10;" +
-            "-fx-border-color: " + (hover ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.18)") + ";" +
-            "-fx-border-radius: 10;" +
-            "-fx-border-width: 1;" +
-            "-fx-cursor: hand;"
+                "-fx-background-color: " + (hover ? "rgba(72,110,58,0.92)" : "rgba(50,80,40,0.82)") + ";" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: " + (hover ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.18)") + ";" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-cursor: hand;"
         );
     }
 
@@ -147,7 +147,7 @@ public class SmartFarmUI extends Application {
         Label textLabel = new Label(text);
         textLabel.setStyle(
                 "-fx-text-fill: rgba(255,255,255,0.7); " +
-                "-fx-font-size: 13px;"
+                        "-fx-font-size: 13px;"
         );
 
         HBox box = new HBox(7, iconLabel, textLabel);
@@ -164,11 +164,11 @@ public class SmartFarmUI extends Application {
 
     private void applySmallStyle(Button btn, boolean hover) {
         btn.setStyle(
-            "-fx-background-color: " + (hover ? "rgba(255,255,255,0.08)" : "transparent") + ";" +
-            "-fx-border-color: " + (hover ? "rgba(255,255,255,0.40)" : "rgba(255,255,255,0.22)") + ";" +
-            "-fx-border-radius: 6;" +
-            "-fx-background-radius: 6;" +
-            "-fx-cursor: hand;"
+                "-fx-background-color: " + (hover ? "rgba(255,255,255,0.08)" : "transparent") + ";" +
+                        "-fx-border-color: " + (hover ? "rgba(255,255,255,0.40)" : "rgba(255,255,255,0.22)") + ";" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-cursor: hand;"
         );
     }
 
@@ -176,7 +176,9 @@ public class SmartFarmUI extends Application {
         launch(args);
     }
 
-    /** Shared top bar used by all views. */
+    /**
+     * Shared top bar used by all views.
+     */
     public static HBox getTopBar(Stage stage, String title) {
         HBox topBar = new HBox();
         topBar.setStyle("-fx-background-color: linear-gradient(to right, #1a2e18, #0f1f0f); " +
@@ -188,10 +190,10 @@ public class SmartFarmUI extends Application {
         Button btnBack = new Button("Menu");
         btnBack.setStyle(
                 "-fx-background-color: rgba(255,255,255,0.08); " +
-                "-fx-border-color: rgba(255,255,255,0.15); " +
-                "-fx-text-fill: #aaaaaa; -fx-border-radius: 20; " +
-                "-fx-background-radius: 20; -fx-padding: 6 16 6 16; " +
-                "-fx-font-size: 12px;"
+                        "-fx-border-color: rgba(255,255,255,0.15); " +
+                        "-fx-text-fill: #aaaaaa; -fx-border-radius: 20; " +
+                        "-fx-background-radius: 20; -fx-padding: 6 16 6 16; " +
+                        "-fx-font-size: 12px;"
         );
         btnBack.setOnAction(e -> {
             SmartFarmUI menu = new SmartFarmUI();
@@ -211,19 +213,19 @@ public class SmartFarmUI extends Application {
         Label titreBar = new Label(title);
         titreBar.setStyle(
                 "-fx-text-fill: white; " +
-                "-fx-font-size: 22px; " +
-                "-fx-font-weight: bold;"
+                        "-fx-font-size: 22px; " +
+                        "-fx-font-weight: bold;"
         );
 
         Label badge = new Label("SmartFarm");
         badge.setStyle(
                 "-fx-text-fill: #7aaa74; " +
-                "-fx-font-size: 11px; " +
-                "-fx-background-color: rgba(74,154,58,0.12); " +
-                "-fx-border-color: rgba(74,154,58,0.25); " +
-                "-fx-border-radius: 20; " +
-                "-fx-background-radius: 20; " +
-                "-fx-padding: 4 14 4 14;"
+                        "-fx-font-size: 11px; " +
+                        "-fx-background-color: rgba(74,154,58,0.12); " +
+                        "-fx-border-color: rgba(74,154,58,0.25); " +
+                        "-fx-border-radius: 20; " +
+                        "-fx-background-radius: 20; " +
+                        "-fx-padding: 4 14 4 14;"
         );
 
         HBox droite = new HBox();

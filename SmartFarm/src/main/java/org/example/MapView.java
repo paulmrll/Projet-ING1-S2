@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.transform.Scale;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -49,7 +50,7 @@ public class MapView {
     private final Ground ground;
     private VBox infoContent;
     private Group mapGroup;
-    private Pane  viewport;
+    private Pane viewport;
     private final Scale scaleTransform = new Scale(1, 1, 0, 0);
     private double zoomLevel = 1.0;
     private Label zoomLabel;
@@ -59,7 +60,7 @@ public class MapView {
     private boolean isDragging = false;
     private String placingMode = null; // "TANK", "SPRINKLER" ou "FIELD"
     // état du placement de champ en deux clics
-    private Point  fieldFirstPoint = null;
+    private Point fieldFirstPoint = null;
     private javafx.scene.control.TextField fieldNameInput = null;
     private Circle fieldMarker = null;
     private boolean showDelaunay = false;
@@ -75,8 +76,10 @@ public class MapView {
 
         // borne
         for (Field f : ground.getFields()) {
-            minX = Math.min(minX, f.getxStart()); minY = Math.min(minY, f.getyStart());
-            maxX = Math.max(maxX, f.getxStop());  maxY = Math.max(maxY, f.getyStop());
+            minX = Math.min(minX, f.getxStart());
+            minY = Math.min(minY, f.getyStart());
+            maxX = Math.max(maxX, f.getxStop());
+            maxY = Math.max(maxY, f.getyStop());
         }
 
         double gW = maxX - minX, gH = maxY - minY;
@@ -91,27 +94,36 @@ public class MapView {
         for (Field f : ground.getFields()) {
             double x = (f.getxStart() - minX) * mult + ofsX;
             double y = (f.getyStart() - minY) * mult + ofsY;
-            double w = (f.getxStop()  - f.getxStart()) * mult;
-            double h = (f.getyStop()  - f.getyStart()) * mult;
+            double w = (f.getxStop() - f.getxStart()) * mult;
+            double h = (f.getyStop() - f.getyStart()) * mult;
 
             Rectangle rect = new Rectangle(x, y, w, h);
             rect.setFill(Color.color(0.18 + random.nextDouble() * 0.18,
-                                     0.40 + random.nextDouble() * 0.25,
-                                     0.10 + random.nextDouble() * 0.15));
+                    0.40 + random.nextDouble() * 0.25,
+                    0.10 + random.nextDouble() * 0.15));
             rect.setStroke(Color.color(1, 1, 1, 0.20));
             rect.setStrokeWidth(1.0);
             rect.setStyle("-fx-cursor: hand;");
             rect.setOnMouseClicked(e -> {
-                if (placingMode == null) { showFieldInfo(stage, f); e.consume(); }
+                if (placingMode == null) {
+                    showFieldInfo(stage, f);
+                    e.consume();
+                }
             });
-            rect.setOnMouseEntered(e -> { if (placingMode == null) rect.setStroke(Color.color(1, 1, 0.4, 0.8)); });
-            rect.setOnMouseExited(e  -> rect.setStroke(Color.color(1, 1, 1, 0.20)));
+            rect.setOnMouseEntered(e -> {
+                if (placingMode == null) rect.setStroke(Color.color(1, 1, 0.4, 0.8));
+            });
+            rect.setOnMouseExited(e -> rect.setStroke(Color.color(1, 1, 1, 0.20)));
 
             Label lbl = new Label(f.getName());
             lbl.setStyle("-fx-text-fill: rgba(255,255,255,0.80); -fx-font-size: 11px; -fx-cursor: hand;");
-            lbl.setLayoutX(x + 5); lbl.setLayoutY(y + 4);
+            lbl.setLayoutX(x + 5);
+            lbl.setLayoutY(y + 4);
             lbl.setOnMouseClicked(e -> {
-                if (placingMode == null) { showFieldInfo(stage, f); e.consume(); }
+                if (placingMode == null) {
+                    showFieldInfo(stage, f);
+                    e.consume();
+                }
             });
             mapPane.getChildren().addAll(rect, lbl);
         }
@@ -125,7 +137,7 @@ public class MapView {
                     if (verts.size() < 3) continue;
                     Polygon poly = new Polygon();
                     for (Point p : verts)
-                        poly.getPoints().addAll((p.getX()-minX)*mult+ofsX, (p.getY()-minY)*mult+ofsY);
+                        poly.getPoints().addAll((p.getX() - minX) * mult + ofsX, (p.getY() - minY) * mult + ofsY);
                     poly.setFill(Color.TRANSPARENT);
                     poly.setStroke(Color.color(1, 1, 1, 0.30));
                     poly.setStrokeWidth(1.0);
@@ -138,11 +150,11 @@ public class MapView {
                     WaterTank[] v = tri.getVertices();
                     double[] sx = new double[3], sy = new double[3];
                     for (int i = 0; i < 3; i++) {
-                        sx[i] = (v[i].getX()-minX)*mult+ofsX;
-                        sy[i] = (v[i].getY()-minY)*mult+ofsY;
+                        sx[i] = (v[i].getX() - minX) * mult + ofsX;
+                        sy[i] = (v[i].getY() - minY) * mult + ofsY;
                     }
                     for (int i = 0; i < 3; i++) {
-                        Line l = new Line(sx[i], sy[i], sx[(i+1)%3], sy[(i+1)%3]);
+                        Line l = new Line(sx[i], sy[i], sx[(i + 1) % 3], sy[(i + 1) % 3]);
                         l.setStroke(Color.color(1.0, 0.6, 0.1, 0.55));
                         l.setStrokeWidth(0.9);
                         mapPane.getChildren().add(l);
@@ -152,36 +164,44 @@ public class MapView {
         }
 
         for (Sprinkler s : ground.getSprinklers()) {
-            double cx = (s.getX()-minX)*mult+ofsX, cy = (s.getY()-minY)*mult+ofsY;
+            double cx = (s.getX() - minX) * mult + ofsX, cy = (s.getY() - minY) * mult + ofsY;
 
             if (showRadius) {
                 Circle radiusCircle = new Circle(cx, cy, s.getRadius() * mult);
                 radiusCircle.setFill(Color.color(0.33, 0.60, 0.93, 0.10));
                 radiusCircle.setStroke(s.isActive()
-                    ? Color.color(0.33, 0.93, 0.50, 0.60)
-                    : Color.color(0.33, 0.60, 0.93, 0.40));
+                        ? Color.color(0.33, 0.93, 0.50, 0.60)
+                        : Color.color(0.33, 0.60, 0.93, 0.40));
                 radiusCircle.setStrokeWidth(1.0);
                 radiusCircle.setMouseTransparent(true);
                 mapPane.getChildren().add(radiusCircle);
             }
 
             Circle c = new Circle(cx, cy, 6, Color.web("#5599ee"));
-            c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
+            c.setStroke(Color.WHITE);
+            c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane); e.consume(); });
+            c.setOnMouseClicked(e -> {
+                showSprinklerInfo(c, stage, s, mult, ofsX, ofsY, mapPane);
+                e.consume();
+            });
             c.setOnMouseEntered(e -> c.setRadius(8));
-            c.setOnMouseExited(e  -> c.setRadius(6));
+            c.setOnMouseExited(e -> c.setRadius(6));
             mapPane.getChildren().add(c);
         }
 
         for (WaterTank w : ground.getTanks()) {
-            double cx = (w.getX()-minX)*mult+ofsX, cy = (w.getY()-minY)*mult+ofsY;
+            double cx = (w.getX() - minX) * mult + ofsX, cy = (w.getY() - minY) * mult + ofsY;
             Circle c = new Circle(cx, cy, 7, Color.web("#dd4444"));
-            c.setStroke(Color.WHITE); c.setStrokeWidth(1.5);
+            c.setStroke(Color.WHITE);
+            c.setStrokeWidth(1.5);
             c.setStyle("-fx-cursor: hand;");
-            c.setOnMouseClicked(e -> { showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane); e.consume(); });
+            c.setOnMouseClicked(e -> {
+                showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane);
+                e.consume();
+            });
             c.setOnMouseEntered(e -> c.setRadius(9));
-            c.setOnMouseExited(e  -> c.setRadius(7));
+            c.setOnMouseExited(e -> c.setRadius(7));
             mapPane.getChildren().add(c);
         }
 
@@ -226,9 +246,9 @@ public class MapView {
                         // marqueur jaune sur la carte
                         if (fieldMarker != null) mapPane.getChildren().remove(fieldMarker);
                         fieldMarker = new Circle(
-                            (realClickX - minX) * mult + ofsX,
-                            (realClickY - minY) * mult + ofsY,
-                            6, Color.web("#f0e040")
+                                (realClickX - minX) * mult + ofsX,
+                                (realClickY - minY) * mult + ofsY,
+                                6, Color.web("#f0e040")
                         );
                         fieldMarker.setMouseTransparent(true);
                         mapPane.getChildren().add(fieldMarker);
@@ -238,16 +258,16 @@ public class MapView {
                     } else {
                         // second clic : on crée le champ
                         String name = (fieldNameInput != null && !fieldNameInput.getText().trim().isEmpty())
-                            ? fieldNameInput.getText().trim() : "Champ";
+                                ? fieldNameInput.getText().trim() : "Champ";
                         double xStart = Math.min(fieldFirstPoint.getX(), realClickX);
-                        double xStop  = Math.max(fieldFirstPoint.getX(), realClickX);
+                        double xStop = Math.max(fieldFirstPoint.getX(), realClickX);
                         double yStart = Math.min(fieldFirstPoint.getY(), realClickY);
-                        double yStop  = Math.max(fieldFirstPoint.getY(), realClickY);
+                        double yStop = Math.max(fieldFirstPoint.getY(), realClickY);
                         ground.addField(new Field(name, xStart, xStop, yStart, yStop));
                         fieldFirstPoint = null;
-                        fieldNameInput  = null;
-                        fieldMarker     = null;
-                        placingMode     = null;
+                        fieldNameInput = null;
+                        fieldMarker = null;
+                        placingMode = null;
                         stage.setScene(getScene(stage));
                     }
                 } else {
@@ -259,11 +279,11 @@ public class MapView {
         // label de coordonnées affiché en bas à gauche du viewport
         Label coordLabel = new Label("x: —   y: —");
         coordLabel.setStyle(
-            "-fx-background-color: rgba(0,0,0,0.55);" +
-            "-fx-text-fill: #c8e6c4;" +
-            "-fx-font-size: 11px;" +
-            "-fx-padding: 3 8 3 8;" +
-            "-fx-background-radius: 4;"
+                "-fx-background-color: rgba(0,0,0,0.55);" +
+                        "-fx-text-fill: #c8e6c4;" +
+                        "-fx-font-size: 11px;" +
+                        "-fx-padding: 3 8 3 8;" +
+                        "-fx-background-radius: 4;"
         );
         coordLabel.setMouseTransparent(true);
         coordLabel.setLayoutX(8);
@@ -284,7 +304,7 @@ public class MapView {
         HBox topBar = SmartFarmUI.getTopBar(stage, "SmartFarm — " + ownerName);
 
         VBox rightPanel = buildRightPanel(stage);
-        rightPanel.setPrefWidth(220);
+        rightPanel.setPrefWidth(300);
 
         BorderPane root = new BorderPane();
         root.setCenter(viewport);
@@ -301,7 +321,7 @@ public class MapView {
         double oldZoom = zoomLevel;
         zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomLevel + factor));
 
-        double cx = viewport.getWidth()  / 2.0;
+        double cx = viewport.getWidth() / 2.0;
         double cy = viewport.getHeight() / 2.0;
         double mapCx = (cx - mapGroup.getTranslateX()) / oldZoom;
         double mapCy = (cy - mapGroup.getTranslateY()) / oldZoom;
@@ -311,10 +331,8 @@ public class MapView {
         mapGroup.setTranslateX(cx - mapCx * zoomLevel);
         mapGroup.setTranslateY(cy - mapCy * zoomLevel);
 
-        zoomLabel.setText((int)(zoomLevel * 100) + "%");
+        zoomLabel.setText((int) (zoomLevel * 100) + "%");
     }
-
-    // right side
 
     private VBox buildRightPanel(Stage stage) {
         // section buttons
@@ -403,7 +421,7 @@ public class MapView {
         Button btnSave = sideButton("Sauvegarder");
         btnSave.setStyle(btnSave.getStyle() + " -fx-background-color: #8a6a10;");
         btnSave.setOnAction(e -> saveGround());
-        btnModifyUser.setOnAction(e->{
+        btnModifyUser.setOnAction(e -> {
             stage.setScene(AddForm.modifyUser(stage, ground));
         });
 
@@ -412,21 +430,21 @@ public class MapView {
         zoomTitle.setStyle("-fx-text-fill: #c8e6c4; -fx-font-size: 12px; -fx-font-weight: bold;");
 
         Button btnZoomOut = zoomButton("−");
-        Button btnZoomIn  = zoomButton("+");
+        Button btnZoomIn = zoomButton("+");
         zoomLabel = new Label("100%");
         zoomLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-min-width: 44px; -fx-alignment: center;");
 
-        btnZoomIn.setOnAction(e  -> applyZoom(ZOOM_STEP));
+        btnZoomIn.setOnAction(e -> applyZoom(ZOOM_STEP));
         btnZoomOut.setOnAction(e -> applyZoom(-ZOOM_STEP));
 
         HBox zoomBar = new HBox(6, btnZoomOut, zoomLabel, btnZoomIn);
         zoomBar.setAlignment(Pos.CENTER);
 
         buttonsSection.getChildren().addAll(
-            actionsTitle, btnModifyUser, btnSave,
-            btnDelaunay, btnVoronoi, btnRadius,
-            btnPlaceTank, btnPlaceSprinkler, btnPlaceField,
-            zoomTitle, zoomBar
+                actionsTitle, btnModifyUser, btnSave,
+                btnDelaunay, btnVoronoi, btnRadius,
+                btnPlaceTank, btnPlaceSprinkler, btnPlaceField,
+                zoomTitle, zoomBar
         );
 
         // separator
@@ -435,7 +453,7 @@ public class MapView {
 
         // section infos
         infoContent = new VBox(10);
-        infoContent.setAlignment(Pos.TOP_LEFT);
+        infoContent.setAlignment(Pos.CENTER);
 
         Label placeholder = new Label("Cliquez sur un\nélément de la carte.");
         placeholder.setStyle("-fx-text-fill: #7aaa74; -fx-font-size: 12px;");
@@ -446,14 +464,14 @@ public class MapView {
 
         VBox infoSection = new VBox(8, infoTitle, infoContent);
         infoSection.setStyle(BG_DARKER);
-        infoSection.setAlignment(Pos.TOP_LEFT);
+        infoSection.setAlignment(Pos.TOP_CENTER);
         infoSection.setPadding(new Insets(16, 14, 16, 14));
         VBox.setVgrow(infoSection, Priority.ALWAYS);
 
-        javafx.scene.control.ScrollPane scrollButtons = new javafx.scene.control.ScrollPane(buttonsSection);
+        ScrollPane scrollButtons = new javafx.scene.control.ScrollPane(buttonsSection);
         scrollButtons.setFitToWidth(true);
-        scrollButtons.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
-        scrollButtons.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollButtons.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollButtons.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollButtons.setStyle("-fx-background: #2b4a27; -fx-background-color: #2b4a27; -fx-border-color: transparent;");
         VBox.setVgrow(scrollButtons, Priority.ALWAYS);
 
@@ -466,11 +484,11 @@ public class MapView {
 
     private String sideButtonStyle() {
         return "-fx-background-color: #3a5a30;" +
-               "-fx-text-fill: white;" +
-               "-fx-background-radius: 5;" +
-               "-fx-padding: 8 12 8 12;" +
-               "-fx-font-size: 13px;" +
-               "-fx-cursor: hand;";
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 5;" +
+                "-fx-padding: 8 12 8 12;" +
+                "-fx-font-size: 13px;" +
+                "-fx-cursor: hand;";
     }
 
     private Button sideButton(String text) {
@@ -484,12 +502,12 @@ public class MapView {
         Button btn = new Button(text);
         btn.setPrefWidth(36);
         btn.setStyle(
-            "-fx-background-color: #3a5a30;" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 5;" +
-            "-fx-font-size: 16px;" +
-            "-fx-cursor: hand;" +
-            "-fx-padding: 2 8 2 8;"
+                "-fx-background-color: #3a5a30;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-padding: 2 8 2 8;"
         );
         return btn;
     }
@@ -519,9 +537,9 @@ public class MapView {
             });
 
             infoContent.getChildren().setAll(
-                infoRow("X", String.format("%.1f", x)),
-                infoRow("Y", String.format("%.1f", y)),
-                flowField, capacityField, confirm
+                    infoRow("X", String.format("%.1f", x)),
+                    infoRow("Y", String.format("%.1f", y)),
+                    flowField, capacityField, confirm
             );
         } else if ("SPRINKLER".equals(placingMode)) {
             javafx.scene.control.TextField radiusField = new javafx.scene.control.TextField();
@@ -543,29 +561,30 @@ public class MapView {
             });
 
             infoContent.getChildren().setAll(
-                infoRow("X", String.format("%.1f", x)),
-                infoRow("Y", String.format("%.1f", y)),
-                flowField, radiusField, confirm
+                    infoRow("X", String.format("%.1f", x)),
+                    infoRow("Y", String.format("%.1f", y)),
+                    flowField, radiusField, confirm
             );
         }
     }
 
-    private void showWaterTankInfo(Circle c, Stage stage, WaterTank w,double mult, double ofsX, double ofsY, Pane mapPane) {
+    private void showWaterTankInfo(Circle c, Stage stage, WaterTank w, double mult, double ofsX, double ofsY, Pane mapPane) {
         removeTemporaryCircle(mapPane);
         removeTemporaryCircleList(mapPane);
         infoContent.getChildren().setAll(
-            infoRow("ID", String.valueOf(w.getId())),
-            infoRow("X", String.format("%.1f", w.getX())),
-            infoRow("Y", String.format("%.1f", w.getY())),
-            infoRow("Débit", String.format("%.2f", w.getFlow())),
-            infoRow("Capacité", String.format("%.2f", w.getCapacity())),
-            infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
+                infoRow("ID", String.valueOf(w.getId())),
+                infoRow("X", String.format("%.1f", w.getX())),
+                infoRow("Y", String.format("%.1f", w.getY())),
+                infoRow("Débit", String.format("%.2f", w.getFlow())),
+                infoRow("Capacité", String.format("%.2f", w.getCapacity())),
+                infoRow("Asperseurs", String.valueOf(ground.countSprinklersFor(w)))
         );
-        for (Sprinkler s : ground.getSprinklers()){
-            if (s.getSource() == w){
-                double cx = (s.getX()-minX)*mult+ofsX, cy = (s.getY()-minY)*mult+ofsY;
+        for (Sprinkler s : ground.getSprinklers()) {
+            if (s.getSource() == w) {
+                double cx = (s.getX() - minX) * mult + ofsX, cy = (s.getY() - minY) * mult + ofsY;
                 Circle cover = new Circle(cx, cy, 7, Color.YELLOW);
-                cover.setStroke(Color.WHITE); cover.setStrokeWidth(1.5);
+                cover.setStroke(Color.WHITE);
+                cover.setStrokeWidth(1.5);
                 cover.setStyle("-fx-cursor: hand;");
                 mapPane.getChildren().add(cover);
                 temporaryCircleListSprinklers.add(cover);
@@ -587,7 +606,7 @@ public class MapView {
             e.consume();
         });
 
-        c.setOnMouseDragged(e->{
+        c.setOnMouseDragged(e -> {
             double newLayoutX = e.getSceneX() - nodeDragOffsetX;
             double newLayoutY = e.getSceneY() - nodeDragOffsetY;
             c.setLayoutX(newLayoutX);
@@ -598,11 +617,13 @@ public class MapView {
             w.setY(realY);
             e.consume();
         });
-        modify.setOnAction(e->{
-            for (Sprinkler s : ground.getSprinklers()){
+        modify.setOnAction(e -> {
+            infoContent.getChildren().setAll(
+                    AddForm.modifyTanksSprinklers(stage, w, ground)
+            );
+            for (Sprinkler s : ground.getSprinklers()) {
                 ground.findSource(s);
             }
-            stage.setScene(getScene(stage));
         });
         delete.setOnAction(e -> {
             ground.removeTank(w);
@@ -611,7 +632,7 @@ public class MapView {
         infoContent.getChildren().addAll(delete, refill, modify);
     }
 
-    private void showSprinklerInfo(Circle c,Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
+    private void showSprinklerInfo(Circle c, Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
         removeTemporaryCircleList(mapPane);
         for (Field f : ground.getFields()) {
             minX = Math.min(minX, f.getxStart());
@@ -619,24 +640,27 @@ public class MapView {
         }
         String src = s.getSource() != null ? "Tank #" + s.getSource().getId() : "—";
         infoContent.getChildren().setAll(
-            infoRow("ID",     String.valueOf(s.getId())),
-            infoRow("X",      String.format("%.1f", s.getX())),
-            infoRow("Y",      String.format("%.1f", s.getY())),
-            infoRow("Débit",  String.format("%.2f", s.getFlow())),
-            infoRow("Rayon",  String.format("%.2f", s.getRadius())),
-            infoRow("Activate", String.valueOf(s.getStatusActivation())),
-            infoRow("Source", src)
+                infoRow("ID", String.valueOf(s.getId())),
+                infoRow("X", String.format("%.1f", s.getX())),
+                infoRow("Y", String.format("%.1f", s.getY())),
+                infoRow("Débit", String.format("%.2f", s.getFlow())),
+                infoRow("Rayon", String.format("%.2f", s.getRadius())),
+                infoRow("Activate", String.valueOf(s.getStatusActivation())),
+                infoRow("Source", src)
         );
         removeTemporaryCircle(mapPane);
-        for (WaterTank w : ground.getTanks()){
-            double cx = (w.getX()-minX)*mult+ofsX, cy = (w.getY()-minY)*mult+ofsY;
-            if (w.getId() == s.getSource().getId()){
+        for (WaterTank w : ground.getTanks()) {
+            double cx = (w.getX() - minX) * mult + ofsX, cy = (w.getY() - minY) * mult + ofsY;
+            if (w.getId() == s.getSource().getId()) {
                 Circle cover = new Circle(cx, cy, 7, Color.YELLOW);
-                cover.setStroke(Color.WHITE); cover.setStrokeWidth(1.5);
+                cover.setStroke(Color.WHITE);
+                cover.setStrokeWidth(1.5);
                 cover.setStyle("-fx-cursor: hand;");
                 temporaryCircle = cover;
                 mapPane.getChildren().add(cover);
-                cover.setOnMouseClicked(e->{showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane);});
+                cover.setOnMouseClicked(e -> {
+                    showWaterTankInfo(c, stage, w, mult, ofsX, ofsY, mapPane);
+                });
             }
         }
         VBox button = new VBox();
@@ -677,7 +701,7 @@ public class MapView {
             e.consume();
         });
 
-        c.setOnMouseDragged(e->{
+        c.setOnMouseDragged(e -> {
             double newLayoutX = e.getSceneX() - nodeDragOffsetX;
             double newLayoutY = e.getSceneY() - nodeDragOffsetY;
             c.setLayoutX(newLayoutX);
@@ -688,15 +712,17 @@ public class MapView {
             s.setY(realY);
             e.consume();
         });
-        modify.setOnAction(e->{
+        modify.setOnAction(e -> {
+            infoContent.getChildren().setAll(
+            AddForm.modifyTanksSprinklers(stage, s, ground)
+                    );
             ground.findSource(s);
-            stage.setScene(getScene(stage));
         });
 
         infoContent.getChildren().add(button);
     }
 
-    private HBox infoRow(String key, String value) {
+    public static HBox infoRow(String key, String value) {
         Label k = new Label(key + " :");
         k.setStyle("-fx-text-fill: #8dbb88; -fx-font-size: 12px; -fx-min-width: 72px;");
         Label v = new Label(value);
@@ -714,7 +740,7 @@ public class MapView {
      * @param f     le champ sélectionné
      */
     private void showFieldInfo(Stage stage, Field f) {
-        long sprInside  = ground.getSprinklers().stream().filter(s -> f.contains(s)).count();
+        long sprInside = ground.getSprinklers().stream().filter(s -> f.contains(s)).count();
         long tankInside = ground.getTanks().stream().filter(t -> f.contains(t)).count();
 
         javafx.scene.control.TextField nameEdit = new javafx.scene.control.TextField(f.getName());
@@ -735,13 +761,13 @@ public class MapView {
         });
 
         infoContent.getChildren().setAll(
-            infoRow("Nom",        f.getName()),
-            infoRow("X",          String.format("%.1f → %.1f", f.getxStart(), f.getxStop())),
-            infoRow("Y",          String.format("%.1f → %.1f", f.getyStart(), f.getyStop())),
-            infoRow("Superficie", String.format("%.2f", f.getArea())),
-            infoRow("Arroseurs",  String.valueOf(sprInside)),
-            infoRow("Réservoirs", String.valueOf(tankInside)),
-            nameEdit, btnRename, btnDelete
+                infoRow("Nom", f.getName()),
+                infoRow("X", String.format("%.1f → %.1f", f.getxStart(), f.getxStop())),
+                infoRow("Y", String.format("%.1f → %.1f", f.getyStart(), f.getyStop())),
+                infoRow("Superficie", String.format("%.2f", f.getArea())),
+                infoRow("Arroseurs", String.valueOf(sprInside)),
+                infoRow("Réservoirs", String.valueOf(tankInside)),
+                nameEdit, btnRename, btnDelete
         );
     }
 
@@ -755,11 +781,12 @@ public class MapView {
         }
     }
 
-    private void removeTemporaryCircle(Pane mapPane){
-        if (temporaryCircle != null){
+    private void removeTemporaryCircle(Pane mapPane) {
+        if (temporaryCircle != null) {
             mapPane.getChildren().remove(temporaryCircle);
         }
     }
+
     private void removeTemporaryCircleList(Pane mapPane) {
         if (temporaryCircleListSprinklers != null) {
             mapPane.getChildren().removeAll(temporaryCircleListSprinklers);

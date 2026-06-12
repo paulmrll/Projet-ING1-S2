@@ -33,8 +33,8 @@ public class VoronoiBuilder {
      * @param tanks     the list of water tanks used as Voronoi sites
      * @param triangles the list of Delaunay triangles computed from the same tanks
      * @return a list of {@link VoronoiCell}, one per water tank,
-     *         each containing its polygon vertices in counter-clockwise order
-     *         and its neighboring cells already populated
+     * each containing its polygon vertices in counter-clockwise order
+     * and its neighboring cells already populated
      */
     public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
 
