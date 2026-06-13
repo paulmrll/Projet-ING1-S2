@@ -16,21 +16,27 @@ import java.util.Objects;
  * @version 1.1
  */
 public class VoronoiCell {
-    /** The WaterTank tank associated with this Voronoi cell. */
+    /**
+     * The WaterTank tank associated with this Voronoi cell.
+     */
     private WaterTank tank;
 
-    /** The list of points representing the vertices of the cell's polygon. */
+    /**
+     * The list of points representing the vertices of the cell's polygon.
+     */
     private List<Point> vertices;
 
-    /** The list of neighboring Voronoi cells adjacent to this cell. */
+    /**
+     * The list of neighboring Voronoi cells adjacent to this cell.
+     */
     private List<VoronoiCell> neighbors;
 
     /**
      * Constructs a new {@code VoronoiCell} associated with a specific water tank tank
      * and defined by its vertices.
      *
-     * @param tank the water tank that acts as the site (center) of this Voronoi cell
-     * @param vertices  the list of points representing the vertices of the cell's polygon
+     * @param tank     the water tank that acts as the site (center) of this Voronoi cell
+     * @param vertices the list of points representing the vertices of the cell's polygon
      */
     public VoronoiCell(WaterTank tank, List<Point> vertices) {
         this.tank = tank;
@@ -107,7 +113,7 @@ public class VoronoiCell {
             //Si un point est au dessus et un en dessous de notre point alors l'arête "enjambe" notre point p
             boolean aEstEnDessous = a.getY() <= p.getY();
             boolean bEstEnDessous = b.getY() <= p.getY();
-            boolean areteEnjambe  = aEstEnDessous != bEstEnDessous;
+            boolean areteEnjambe = aEstEnDessous != bEstEnDessous;
 
             if (areteEnjambe) {
                 // Condition 2 : calculer le x de l'arête à la hauteur du point

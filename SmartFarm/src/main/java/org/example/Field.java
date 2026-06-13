@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * Represents a geographical or agricultural field defined by coordinate boundaries,
  * an area, a name, and a collection of water plants.
+ *
  * @author Paul MORILLE
  * @version 1.0
  */
@@ -38,13 +39,14 @@ public class Field {
         this.area = area;
         this.waterPlants = new ArrayList<>();
     }
+
     public Field(String name, double xStart, double xStop, double yStart, double yStop) {
         this.name = name;
         this.xStart = xStart;
         this.xStop = xStop;
         this.yStart = yStart;
         this.yStop = yStop;
-        this.area = (xStop-xStart)*(yStop-yStart);
+        this.area = (xStop - xStart) * (yStop - yStart);
         this.waterPlants = new ArrayList<>();
     }
 
@@ -194,8 +196,8 @@ public class Field {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Field{name=").append(name)
-          .append(", area=").append(area)
-          .append(", plants=").append(waterPlants.size()).append("}\n");
+                .append(", area=").append(area)
+                .append(", plants=").append(waterPlants.size()).append("}\n");
         for (Point waterPlant : waterPlants) {
             sb.append("  ").append(waterPlant.toString()).append("\n");
         }

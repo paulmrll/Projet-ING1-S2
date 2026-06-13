@@ -9,14 +9,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
-public class WaterTankView extends ElementView{
-    public WaterTankView(Ground g){
+public class WaterTankView extends ElementView {
+    public WaterTankView(Ground g) {
         super(g);
     }
 
 
-
-    protected VBox uploadInfo (Point p, Stage stage) {
+    protected VBox uploadInfo(Point p, Stage stage) {
         WaterTank w = (WaterTank) p;
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -46,13 +45,13 @@ public class WaterTankView extends ElementView{
         dataBox.getChildren().addAll(flowLabel, capacityLabel);
         vbox.getChildren().add(dataBox);
 
-        double div = w.getFlow()/w.getCapacity();
+        double div = w.getFlow() / w.getCapacity();
         String result = String.format("%.2f", div);
-        Label rapport = new Label("Rapport : "+w.getFlow()+"/"+w.getCapacity()+"="+result+"%");
+        Label rapport = new Label("Rapport : " + w.getFlow() + "/" + w.getCapacity() + "=" + result + "%");
         vbox.getChildren().add(rapport);
 
         Button btnReturn = new Button("Return to the ground");
-        btnReturn.setOnAction(e->{
+        btnReturn.setOnAction(e -> {
             MapView mapView = new MapView(super.getGround());
             stage.setScene(mapView.getScene(stage));
         });

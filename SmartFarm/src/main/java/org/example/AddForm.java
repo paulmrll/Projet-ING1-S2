@@ -4,8 +4,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.awt.*;
 
 public class AddForm {
 
@@ -43,7 +49,7 @@ public class AddForm {
         return sceneStyle(layout);
     }
 
-    public VBox getFieldForm() {
+    public static VBox getFieldForm() {
         Label titleLabel = labelStyle("Ajouter un nouveau champ");
 
         TextField xStartInput = textFieldEnterPromptText("Coordonnée X de début");
@@ -78,50 +84,57 @@ public class AddForm {
         return new VBox(15, titleLabel, xInput, yInput, flowInput, capacityInput);
     }
 
-    public static Scene modifyTanksSprinklers(Stage stage, Point p, Ground g) {
+    public static VBox modifyTanksSprinklers(Stage stage, Point p, Ground g) {
         VBox main = new VBox();
 
         if (p != null) {
             Label title = null;
-            TextField xInput;
-            TextField yInput;
             TextField flowInput;
-
-
+            TextField capacityInput;
+            HBox hBoxFlow = new HBox();
+            HBox hBoxCapacity = new HBox();
+            Label flowLabel = new Label("Flow : ");
+            flowLabel.setStyle("-fx-text-fill: white;");
+            Label capacityLabel = new Label("Capacity : ");
+            capacityLabel.setStyle("-fx-text-fill: white;");
+            Button modify = buttonStyle("MODIFY");
             if (p instanceof Sprinkler s) {
                 title = labelStyle("Modify Sprinkler n°" + s.getId());
-                xInput = textFieldEnterText(String.valueOf(s.getX()));
-                yInput = textFieldEnterText(String.valueOf(s.getY()));
                 flowInput = textFieldEnterText(String.valueOf(s.getFlow()));
+                hBoxFlow.getChildren().addAll(flowLabel, flowInput);
+                hBoxCapacity = null;
+                capacityInput = null;
             } else if (p instanceof WaterTank w) {
                 title = labelStyle("Modify WaterTanks n°" + w.getId());
-                xInput = textFieldEnterText(String.valueOf(w.getX()));
-                yInput = textFieldEnterText(String.valueOf(w.getY()));
                 flowInput = textFieldEnterText(String.valueOf(w.getFlow()));
+                capacityInput = textFieldEnterText(String.valueOf(w.getCapacity()));
+                hBoxFlow.getChildren().addAll(flowLabel, flowInput);
+                hBoxCapacity.getChildren().addAll(capacityLabel, capacityInput);
             } else {
-                yInput = null;
                 flowInput = null;
-                xInput = null;
+                capacityInput = null;
             }
 
-            main.setSpacing(20);
+            main.setSpacing(10);
             main.setAlignment(Pos.CENTER);
-            Button modify = buttonStyle("MODIFY");
-            main.getChildren().addAll(title, xInput, yInput, flowInput, modify);
+            if (hBoxCapacity != null){
+                main.getChildren().addAll(title, hBoxFlow, hBoxCapacity, modify);
+            } else {
+                main.getChildren().addAll(title, hBoxFlow, modify);
+            }
+
 
             modify.setOnAction(e -> {
                 try {
-                    double x = Double.parseDouble(xInput.getText());
-                    double y = Double.parseDouble(yInput.getText());
                     double flow = Double.parseDouble(flowInput.getText());
+                    double capacity;
+                    if (capacityInput != null){
+                        capacity = Double.parseDouble(capacityInput.getText());
+                    }
                     if (p instanceof Sprinkler s) {
                         s.setFlow(flow);
-                        s.setX(x);
-                        s.setY(y);
                     } else if (p instanceof WaterTank w) {
                         w.setFlow(flow);
-                        w.setX(x);
-                        w.setY(y);
                     }
                     MapView mapView = new MapView(g);
                     stage.setScene(mapView.getScene(stage));
@@ -129,9 +142,8 @@ public class AddForm {
                     System.out.println("Erreur");
                 }
             });
-
         }
-        return sceneStyle(main);
+        return main;
     }
 
     public static Scene modifyUser(Stage stage, Ground g) {
@@ -191,7 +203,8 @@ public class AddForm {
         textField.setMaxWidth(400);
         return textField;
     }
-    private static String textFieldStyle(){
+
+    private static String textFieldStyle() {
         return "-fx-backgroun-color: #ffffff; " +
                 "-fx-text-fill: black; " +
                 "-fx-prompt-text-fill: #233722; " +
@@ -217,6 +230,7 @@ public class AddForm {
         );
         return label;
     }
+
     private static Button buttonStyle(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(192);

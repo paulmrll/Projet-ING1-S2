@@ -9,14 +9,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
-public class SprinklerView extends ElementView{
-    public SprinklerView(Ground g){
+public class SprinklerView extends ElementView {
+    public SprinklerView(Ground g) {
         super(g);
     }
 
 
-
-    protected VBox uploadInfo (Point p, Stage stage) {
+    protected VBox uploadInfo(Point p, Stage stage) {
         Sprinkler s = (Sprinkler) p;
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
@@ -44,7 +43,7 @@ public class SprinklerView extends ElementView{
         vbox.getChildren().add(flowLabel);
 
         Button btnReturn = new Button("Return to the ground");
-        btnReturn.setOnAction(e->{
+        btnReturn.setOnAction(e -> {
             MapView mapView = new MapView(super.getGround());
             stage.setScene(mapView.getScene(stage));
         });

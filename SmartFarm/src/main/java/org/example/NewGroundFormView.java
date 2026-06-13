@@ -26,7 +26,7 @@ public class NewGroundFormView {
         Button btnSaveSprinkler = buttonStyle("Enregistrer");
         Button btnMap = buttonStyle("Access to the mapView");
 
-        btnMap.setOnAction(e->{
+        btnMap.setOnAction(e -> {
             MapView mapView = new MapView(ground);
             stage.setScene(mapView.getScene(stage));
         });
@@ -85,7 +85,6 @@ public class NewGroundFormView {
         });
 
 
-
         HBox hBoxTankSprinkler = new HBox();
         hBoxTankSprinkler.setSpacing(20);
         hBoxTankSprinkler.setAlignment(Pos.CENTER);
@@ -100,7 +99,7 @@ public class NewGroundFormView {
         return sceneStyle(root);
     }
 
-    public Scene newGround(Stage stage){
+    public Scene newGround(Stage stage) {
         BorderPane root = new BorderPane();
         VBox personForm = new VBox();
         personForm.setSpacing(20);
@@ -111,8 +110,8 @@ public class NewGroundFormView {
 
         titleLabel.setStyle(
                 "-fx-text-fill: white;" +
-                "-fx-font-size: 50px;" +
-                "-fx-font-weight: bold;"
+                        "-fx-font-size: 50px;" +
+                        "-fx-font-weight: bold;"
         );
         TextField nameInput = textFieldEnter("Name");
 
@@ -129,7 +128,7 @@ public class NewGroundFormView {
         Button btnSave = buttonStyle("Create Farm");
         btnSave.getStyleClass().add("btn-primary");
 
-        btnSave.setOnAction(e->{
+        btnSave.setOnAction(e -> {
             try {
                 String name = nameInput.getText();
                 String firstname = firstnameInput.getText();
@@ -146,8 +145,8 @@ public class NewGroundFormView {
         VBox card = new VBox(15, personForm, areaInput);
         card.setStyle(
                 "-fx-background-color: rgba(0,0,0,0.40); " +
-                "-fx-background-radius: 12; " +
-                "-fx-padding: 28 40 28 40;"
+                        "-fx-background-radius: 12; " +
+                        "-fx-padding: 28 40 28 40;"
         );
         card.setAlignment(Pos.CENTER);
         card.setMaxWidth(520);
@@ -158,11 +157,10 @@ public class NewGroundFormView {
         root.setCenter(center);
 
 
-
         return sceneStyle(root);
     }
 
-    private TextField textFieldEnter(String s){
+    private TextField textFieldEnter(String s) {
         TextField textField = new TextField();
         textField.setStyle(
                 "-fx-backgroun-color: #ffffff; " +
@@ -175,6 +173,7 @@ public class NewGroundFormView {
         textField.setMaxWidth(400);
         return textField;
     }
+
     private static Scene sceneStyle(Parent parent) {
         Scene scene = new Scene(parent, 1300, 800);
         scene.getRoot().setStyle(
@@ -183,6 +182,7 @@ public class NewGroundFormView {
         );
         return scene;
     }
+
     private static Button buttonStyle(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(192);

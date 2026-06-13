@@ -49,7 +49,7 @@ public class DelaunayTriangulation {
      *
      * @param points the list of WaterTank points to triangulate (minimum 3)
      * @return a list of DelaunayTriangle forming the triangulation,
-     *         or an empty list if fewer than 3 points are provided
+     * or an empty list if fewer than 3 points are provided
      */
     public static List<DelaunayTriangle> triangulate(List<WaterTank> points) {
         List<DelaunayTriangle> triangles = new ArrayList<>();
@@ -99,9 +99,9 @@ public class DelaunayTriangulation {
             for (DelaunayTriangle t : badTriangles) {
                 WaterTank[] v = t.getVertices();
                 Edge[] edges = {
-                    new Edge(v[0], v[1]),
-                    new Edge(v[1], v[2]),
-                    new Edge(v[2], v[0])
+                        new Edge(v[0], v[1]),
+                        new Edge(v[1], v[2]),
+                        new Edge(v[2], v[0])
                 };
                 for (Edge edge : edges) {
                     boolean sharedWithOther = false;
@@ -111,9 +111,9 @@ public class DelaunayTriangulation {
                         }
                         WaterTank[] ov = other.getVertices();
                         Edge[] otherEdges = {
-                            new Edge(ov[0], ov[1]),
-                            new Edge(ov[1], ov[2]),
-                            new Edge(ov[2], ov[0])
+                                new Edge(ov[0], ov[1]),
+                                new Edge(ov[1], ov[2]),
+                                new Edge(ov[2], ov[0])
                         };
                         for (Edge oe : otherEdges) {
                             if (edge.equals(oe)) {
@@ -140,8 +140,8 @@ public class DelaunayTriangulation {
         triangles.removeIf(t -> {
             WaterTank[] v = t.getVertices();
             return v[0] == st0 || v[0] == st1 || v[0] == st2
-                || v[1] == st0 || v[1] == st1 || v[1] == st2
-                || v[2] == st0 || v[2] == st1 || v[2] == st2;
+                    || v[1] == st0 || v[1] == st1 || v[1] == st2
+                    || v[2] == st0 || v[2] == st1 || v[2] == st2;
         });
 
         return triangles;

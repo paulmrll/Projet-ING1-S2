@@ -56,7 +56,7 @@ public class Point {
      * @param x the new X coordinate to set
      */
     public void setX(double x) {
-        if (x >= 0){
+        if (x >= 0) {
             this.x = x;
         }
     }

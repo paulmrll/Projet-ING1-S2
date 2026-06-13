@@ -16,13 +16,19 @@ import java.util.Objects;
  */
 public class VoronoiDiagram {
 
-    /** The list of Voronoi cells that make up this diagram. */
+    /**
+     * The list of Voronoi cells that make up this diagram.
+     */
     private List<VoronoiCell> cells;
 
-    /** The list of water tanks serving as the sites (centers) for the diagram. */
+    /**
+     * The list of water tanks serving as the sites (centers) for the diagram.
+     */
     private List<WaterTank> tanks;
 
-    /** The list of Delaunay triangles generated from the water tanks. */
+    /**
+     * The list of Delaunay triangles generated from the water tanks.
+     */
     private List<DelaunayTriangle> triangles;
 
     private double minX, minY, maxX, maxY;
