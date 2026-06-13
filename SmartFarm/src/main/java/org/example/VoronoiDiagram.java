@@ -25,6 +25,8 @@ public class VoronoiDiagram {
     /** The list of Delaunay triangles generated from the water tanks. */
     private List<DelaunayTriangle> triangles;
 
+    private double minX, minY, maxX, maxY;
+
     /**
      * Constructs a new {@code VoronoiDiagram} from a given list of water tanks.
      * <p>

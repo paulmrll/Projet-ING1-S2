@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Utility class for building a Voronoi diagram from a Delaunay triangulation.
+ * Utility class for building a Voronoi diagram from a Delaunay triangulation,
+ * including clipping algorithms to constrain cells within ground boundaries.
  * <p>
  * This class cannot be instantiated. All methods are static.
  * The Voronoi diagram is derived from the duality between Delaunay triangulation
@@ -13,7 +14,7 @@ import java.util.List;
  * </p>
  *
  * @author Oscar LUIGGI
- * @version 1.1
+ * @version 1.2
  */
 public class VoronoiBuilder {
 
@@ -100,5 +101,43 @@ public class VoronoiBuilder {
         }
 
         return cells;
+    }
+
+    /**
+     * Computes the intersection point between a line segment and a vertical boundary line.
+     * <p>
+     * This method calculates the precise entry or exit intersection coordinate using
+     * linear interpolation (parametric equation of a line) based on the target vertical line's
+     * X coordinate.
+     * </p>
+     *
+     * @param a the starting point of the segment
+     * @param b the ending point of the segment
+     * @param x the fixed X coordinate of the vertical clipping boundary
+     * @return a new {@link Point} object representing the exact intersection coordinate
+     */
+    private static Point intersectVertical(Point a, Point b, double x) {
+        double t = (x - a.getX()) / (b.getX() - a.getX());
+        double y = a.getY() + t * (b.getY() - a.getY());
+        return new Point(x, y);
+    }
+
+    /**
+     * Computes the intersection point between a line segment and a horizontal boundary line.
+     * <p>
+     * This method calculates the precise entry or exit intersection coordinate using
+     * linear interpolation (parametric equation of a line) based on the target horizontal line's
+     * Y coordinate.
+     * </p>
+     *
+     * @param a the starting point of the segment
+     * @param b the ending point of the segment
+     * @param y the fixed Y coordinate of the horizontal clipping boundary
+     * @return a new {@link Point} object representing the exact intersection coordinate
+     */
+    private static Point intersectHorizontal(Point a, Point b, double y) {
+        double t = (y - a.getY()) / (b.getY() - a.getY());
+        double x = a.getX() + t * (b.getX() - a.getX());
+        return new Point(x, y);
     }
 }
