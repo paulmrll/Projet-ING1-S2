@@ -912,8 +912,11 @@ public class MapView {
         Button btnDelete = sideButton("Supprimer");
         btnDelete.setStyle(sideButtonStyle() + " -fx-background-color: #8b2020;");
         btnDelete.setOnAction(e -> {
-            ground.removeField(f);
-            stage.setScene(getScene(stage));
+            if (ground.getFields().size() > 1){
+                ground.removeField(f);
+                stage.setScene(getScene(stage));
+            }
+
         });
 
         infoContent.getChildren().setAll(

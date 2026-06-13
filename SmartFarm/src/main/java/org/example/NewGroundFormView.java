@@ -46,8 +46,10 @@ public class NewGroundFormView {
         Button btnMap = buttonStyle("Access to the mapView");
 
         btnMap.setOnAction(e -> {
-            MapView mapView = new MapView(ground);
-            stage.setScene(mapView.getScene(stage));
+            if (!ground.getFields().isEmpty()){
+                MapView mapView = new MapView(ground);
+                stage.setScene(mapView.getScene(stage));
+            }
         });
 
         vBoxField.getChildren().add(btnSaveField);
