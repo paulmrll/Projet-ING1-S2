@@ -7,14 +7,14 @@ Visualisez vos champs, gérez vos réserves d'eau et asperseurs, et explorez la 
 
 ## ✨ Fonctionnalités
 
-- **Carte interactive** — visualisation des champs, réserves d'eau et asperseurs
-- **Zoom & déplacement** — zoom centré sur la carte + navigation au clic maintenu
-- **Diagramme de Voronoï** — calculé automatiquement depuis les réserves d'eau
-- **Triangulation de Delaunay** — affichée en surimpression sur la carte
-- **Panneau d'informations** — cliquez sur un élément pour afficher ses détails à droite
-- **Ajouter des éléments** — formulaires pour créer des champs, réserves d'eau et asperseurs
-- **Sauvegarde / chargement** — format texte lisible, éditable manuellement
-- **Créer une nouvelle ferme** — saisie et configuration initiale
+- **Carte interactive** : visualisation des champs, réserves d'eau et asperseurs
+- **Zoom & déplacement** : zoom centré sur la carte + navigation au clic maintenu
+- **Diagramme de Voronoï** : calculé automatiquement depuis les réserves d'eau
+- **Triangulation de Delaunay** : affichée en surimpression sur la carte
+- **Panneau d'informations** : cliquez sur un élément pour afficher ses détails à droite
+- **Ajouter des éléments** : formulaires pour créer des champs, réserves d'eau et asperseurs
+- **Sauvegarde / chargement** : format texte lisible, éditable manuellement
+- **Créer une nouvelle ferme** : saisie et configuration initiale
 
 ---
 
