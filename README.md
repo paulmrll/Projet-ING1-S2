@@ -18,6 +18,37 @@ Visualisez vos champs, gérez vos réserves d'eau et asperseurs, et explorez la 
 
 ---
 
+## 🚀 Compilation et Exécution (Ligne de commande)
+
+Ce projet utilise Maven pour la gestion des dépendances (notamment JavaFX) et la compilation. Il n'est pas nécessaire de télécharger ou de configurer le SDK JavaFX manuellement.
+
+Prérequis :
+- JDK 17 ou supérieur (le projet est configuré sous Java 21)
+- Maven installé et configuré dans les variables d'environnement
+
+Instructions pas à pas :
+
+1. Ouvrez un terminal.
+2. Déplacez-vous dans le sous-dossier SmartFarm (le dossier contenant le fichier pom.xml) :
+   ```
+   cd chemin/vers/le/dossier/Projet-ING1-S2/SmartFarm
+   ```
+
+3. Nettoyez et compilez le projet :
+   ```
+   mvn clean compile
+   ```
+
+4. Lancez l'application avec l'interface graphique JavaFX :
+   ```
+   mvn javafx:run
+   ```
+
+5. (Optionnel) Pour lancer la version en ligne de commande (mode Console) :
+   ```
+   mvn exec:java -Dexec.mainClass="org.example.Cli"
+   ```
+
 ## 🗂️ Format de sauvegarde
 
 Les fichiers se trouvent dans `SmartFarm/src/main/resources/Saves/`.  
@@ -86,35 +117,3 @@ Projet réalisé par le groupe **GI5-F**
 - Jilani Mohamed
 - Illya Liganov
 
----
-
-## 🚀 Compilation et Exécution (Ligne de commande)
-
-Ce projet utilise Maven pour la gestion des dépendances (notamment JavaFX) et la compilation. Il n'est pas nécessaire de télécharger ou de configurer le SDK JavaFX manuellement.
-
-Prérequis :
-- JDK 17 ou supérieur (le projet est configuré sous Java 21)
-- Maven installé et configuré dans les variables d'environnement
-
-Instructions pas à pas :
-
-1. Ouvrez un terminal.
-2. Déplacez-vous dans le sous-dossier SmartFarm (le dossier contenant le fichier pom.xml) :
-   ```
-   cd chemin/vers/le/dossier/Projet-ING1-S2/SmartFarm
-   ```
-
-3. Nettoyez et compilez le projet :
-   ```
-   mvn clean compile
-   ```
-
-4. Lancez l'application avec l'interface graphique JavaFX :
-   ```
-   mvn javafx:run
-   ```
-
-5. (Optionnel) Pour lancer la version en ligne de commande (mode Console) :
-   ```
-   mvn exec:java -Dexec.mainClass="org.example.Cli"
-   ```
