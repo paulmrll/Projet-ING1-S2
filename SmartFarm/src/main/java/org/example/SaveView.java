@@ -16,9 +16,28 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * The {@code SaveView} class manages the user interface for browsing,
+ * selecting, and loading previously saved farm configuration files.
+ * It reads from a specific backup directory and dynamically renders
+ * interactive file slots within a JavaFX scene layout.
+ *
+ * @author SmartFarm Team
+ * @version 1.0
+ */
 public class SaveView {
+
+    /** Label utilized to display initialization or process status feedback. */
     private Label statusLabel;
 
+    /**
+     * Builds and configures the complete user interface scene for loading saved farms.
+     * Sets up a structured layout enclosing a global header top bar, custom styling sheets,
+     * and a center grid loaded with detected farm files.
+     *
+     * @param stage the primary window ({@link Stage}) of the application used to switch scenes.
+     * @return a configured {@link Scene} displaying the interactive farm restoration interface.
+     */
     public Scene getScene(Stage stage) {
         statusLabel = new Label("Initialisation...");
         statusLabel.setFont(Font.font("Arial", 12));
@@ -35,7 +54,15 @@ public class SaveView {
         return scene;
     }
 
-
+    /**
+     * Scans the specified directory path to find available save files, converts them
+     * into interactive GUI cards with hover transitions, and configures mouse-click listeners
+     * to parse selected files and boot the interactive map.
+     *
+     * @param dossier the {@link Path} directory tracking user save-state files.
+     * @param stage   the primary window ({@link Stage}) required to mount the new map view upon load.
+     * @return a {@link VBox} holding the title stack, total save indicators, and the list of file card structures.
+     */
     private VBox loadFiles(Path dossier, Stage stage) {
         Label soustitre = new Label("Your saved farms");
         soustitre.setStyle("-fx-text-fill : #666; " + "-fx-font-size : 18px;");

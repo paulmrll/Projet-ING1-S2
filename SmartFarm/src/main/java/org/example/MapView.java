@@ -25,52 +25,129 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code MapView} class manages the primary interactive dashboard and map view
+ * of the smart farm. It handles spatial coordinate transformations, zooming, panning,
+ * rendering of fields, sprinklers, and water tanks, as well as visualizing Delaunay
+ * triangulations and Voronoi diagrams. It also facilitates real-time element drag-and-drop
+ * and context-sensitive action handling.
+ *
+ * @author SmartFarm Team
+ * @version 1.0
+ */
 public class MapView {
 
+    /** Inline CSS style for the primary dark background on side panels. */
     private static final String BG_DARK = "-fx-background-color: #2b4a27;";
+
+    /** Inline CSS style for the darker background variant used in sub-sections. */
     private static final String BG_DARKER = "-fx-background-color: #1f3a1c;";
+
+    /** The constant zoom adjustment value applied per zoom step. */
     private static final double ZOOM_STEP = 0.25;
+
+    /** The minimum bounding limit for the layout zoom scale. */
     private static final double ZOOM_MIN = 0.25;
+
+    /** The maximum bounding limit for the layout zoom scale. */
     private static final double ZOOM_MAX = 3.0;
 
-
+    /** Reference used to track a highlighted or newly updated circle on the map canvas. */
     private Circle temporaryCircle = null;
+
+    /** Collection tracking dynamically drawn context indicators for sprinklers. */
     private List<Circle> temporaryCircleListSprinklers = new ArrayList<>();
 
+    /** Horizontal mouse offset tracking variable used during node drag-and-drop operations. */
     private double nodeDragOffsetX;
+
+    /** Vertical mouse offset tracking variable used during node drag-and-drop operations. */
     private double nodeDragOffsetY;
+
+    /** Real calculated mathematical horizontal coordinate of an element post-translation. */
     double realX = -2;
+
+    /** Real calculated mathematical vertical coordinate of an element post-translation. */
     double realY = -2;
+
+    /** Extents tracking variables used to establish the terrain global coordinate bounds. */
     double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
     double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
 
+    /** Fixed default render width constraint for the graphical map area. */
     private static final double MAP_W = 970;
+
+    /** Fixed default render height constraint for the graphical map area. */
     private static final double MAP_H = 650;
 
+    /** The underlying farm architecture data model linked to this view panel. */
     private final Ground ground;
+
+    /** Container layout managing the dynamic display of context properties. */
     private VBox infoContent;
+
+    /** Core graphical parent node combining map layouts to manage scale transforms. */
     private Group mapGroup;
+
+    /** Primary interactive window canvas processing mouse inputs and panning events. */
     private Pane viewport;
+
+    /** JavaFX transformation tracking structure scaling map canvas coordinates. */
     private final Scale scaleTransform = new Scale(1, 1, 0, 0);
+
+    /** Active numeric value representing the map visualization scale. */
     private double zoomLevel = 1.0;
+
+    /** Text component displaying the current map magnification percentage. */
     private Label zoomLabel;
 
-    // pour le pan
-    private double dragOriginX, dragOriginY;
+    /** Horizontal coordinate tracking origin point when initiating canvas pan dragging. */
+    private double dragOriginX;
+
+    /** Vertical coordinate tracking origin point when initiating canvas pan dragging. */
+    private double dragOriginY;
+
+    /** Logical gate keeping track of map drag-to-pan movements. */
     private boolean isDragging = false;
-    private String placingMode = null; // "TANK", "SPRINKLER" ou "FIELD"
-    // état du placement de champ en deux clics
+
+    /** Token tracking active placement operations ("TANK", "SPRINKLER", or "FIELD"). */
+    private String placingMode = null;
+
+    /** Reference tracking the initial vertex registered when building a custom field layout. */
     private Point fieldFirstPoint = null;
+
+    /** Interactive text input tracking field name inputs during sequential creation. */
     private javafx.scene.control.TextField fieldNameInput = null;
+
+    /** Visual marker highlighting the initial anchor point of a newly drafted field layout. */
     private Circle fieldMarker = null;
+
+    /** Flag controlling the visibility of the Delaunay triangulation network overlays. */
     private boolean showDelaunay = false;
+
+    /** Flag controlling the visibility of the Voronoi partition geometry overlays. */
     private boolean showVoronoi = false;
+
+    /** Flag controlling whether operational sprinkler spray radiuses are drawn. */
     private boolean showRadius = false;
 
+    /**
+     * Constructs a new {@code MapView} instance mapped to the given ground infrastructure.
+     *
+     * @param ground the {@link Ground} terrain object tracking farm asset records.
+     */
     public MapView(Ground ground) {
         this.ground = ground;
     }
 
+    /**
+     * Constructs, styles, and links the complete interactive JavaFX scene of the dashboard map view.
+     * Processes scaling algorithms to compute aspect fits, generates geometric overlays for assets,
+     * sets up structural interaction events, and anchors coordinate status bars.
+     *
+     * @param stage the primary operational {@link Stage} context used for navigation routing.
+     * @return a structured, style-sheet linked interactive {@link Scene}.
+     */
     public Scene getScene(Stage stage) {
         java.util.Random random = new java.util.Random(42);
 
@@ -316,7 +393,12 @@ public class MapView {
         return scene;
     }
 
-
+    /**
+     * Updates the global layout scale magnification ratio by adjusting focal scale matrices
+     * while maintaining center layout alignment configurations.
+     *
+     * @param factor the dynamic relative scaling factor offset to accumulate.
+     */
     private void applyZoom(double factor) {
         double oldZoom = zoomLevel;
         zoomLevel = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomLevel + factor));
@@ -334,6 +416,14 @@ public class MapView {
         zoomLabel.setText((int) (zoomLevel * 100) + "%");
     }
 
+    /**
+     * Assembles the persistent side navigation panel container which hosts structural actions,
+     * visibility toggles, geometry generation switches, placement mode buttons, zoom controls,
+     * and contextual target information panels.
+     *
+     * @param stage the active primary application window reference context.
+     * @return a structured, stylized menu sidebar layout wrapper ({@link VBox}).
+     */
     private VBox buildRightPanel(Stage stage) {
         // section buttons
         VBox buttonsSection = new VBox(12);
@@ -482,6 +572,11 @@ public class MapView {
         return panel;
     }
 
+    /**
+     * Builds standard style template string used across global dashboard side menu buttons.
+     *
+     * @return a JavaFX CSS instruction style string string.
+     */
     private String sideButtonStyle() {
         return "-fx-background-color: #3a5a30;" +
                 "-fx-text-fill: white;" +
@@ -491,6 +586,12 @@ public class MapView {
                 "-fx-cursor: hand;";
     }
 
+    /**
+     * Instantiates a standardized action push button component matched with dashboard theme properties.
+     *
+     * @param text the alphanumerical characters written on the button face.
+     * @return a stylized JavaFX {@link Button}.
+     */
     private Button sideButton(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(192);
@@ -498,6 +599,12 @@ public class MapView {
         return btn;
     }
 
+    /**
+     * Instantiates a compact square layout button designed for magnification scale increments.
+     *
+     * @param text character string indicating operations (e.g. "+", "−").
+     * @return a stylized mini zoom {@link Button}.
+     */
     private Button zoomButton(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(36);
@@ -512,6 +619,14 @@ public class MapView {
         return btn;
     }
 
+    /**
+     * Dynamically displays localized parameters and properties within the information side pane
+     * during interactive placement procedures for new water tanks or sprinklers.
+     *
+     * @param stage primary window context reference.
+     * @param x     calculated canvas real horizontal insertion point coordinate.
+     * @param y     calculated canvas real vertical insertion point coordinate.
+     */
     private void showPlacementForm(Stage stage, double x, double y) {
         javafx.scene.control.TextField flowField = new javafx.scene.control.TextField();
         flowField.setPromptText("Flow");
@@ -568,6 +683,19 @@ public class MapView {
         }
     }
 
+    /**
+     * Populates the information sidebar with the details of a selected {@link WaterTank}.
+     * Highlights linked sprinklers, registers drag-to-move repositioning listeners,
+     * and mounts modify, refill, and delete interactions.
+     *
+     * @param c       the map node circle element representing the tank.
+     * @param stage   primary window context reference.
+     * @param w       the targeted data model instance of the {@link WaterTank}.
+     * @param mult    scaling transformation multiplier factor.
+     * @param ofsX    horizontal offset adjustment pixels.
+     * @param ofsY    vertical offset adjustment pixels.
+     * @param mapPane primary map surface container reference.
+     */
     private void showWaterTankInfo(Circle c, Stage stage, WaterTank w, double mult, double ofsX, double ofsY, Pane mapPane) {
         removeTemporaryCircle(mapPane);
         removeTemporaryCircleList(mapPane);
@@ -639,6 +767,19 @@ public class MapView {
         infoContent.getChildren().addAll(delete, refill, modify);
     }
 
+    /**
+     * Populates the information sidebar with the details of a selected {@link Sprinkler}.
+     * Draws context indicators connecting it to its source tank, attaches drag repositioning,
+     * handles structural modifications, toggle activation states, and deletion procedures.
+     *
+     * @param c       the map node circle element representing the sprinkler.
+     * @param stage   primary window context reference.
+     * @param s       the targeted data model instance of the {@link Sprinkler}.
+     * @param mult    scaling transformation multiplier factor.
+     * @param ofsX    horizontal offset adjustment pixels.
+     * @param ofsY    vertical offset adjustment pixels.
+     * @param mapPane primary map surface container reference.
+     */
     private void showSprinklerInfo(Circle c, Stage stage, Sprinkler s, double mult, double ofsX, double ofsY, Pane mapPane) {
         removeTemporaryCircleList(mapPane);
         for (Field f : ground.getFields()) {
@@ -721,14 +862,21 @@ public class MapView {
         });
         modify.setOnAction(e -> {
             infoContent.getChildren().setAll(
-            AddForm.modifyTanksSprinklers(stage, s, ground)
-                    );
+                    AddForm.modifyTanksSprinklers(stage, s, ground)
+            );
             ground.findSource(s);
         });
 
         infoContent.getChildren().add(button);
     }
 
+    /**
+     * Formats a clean horizontal key-value readout component row styled for side data boxes.
+     *
+     * @param key   the attribute description label name string.
+     * @param value the target value string tracking real metrics.
+     * @return a synchronized {@link HBox} information block row.
+     */
     public static HBox infoRow(String key, String value) {
         Label k = new Label(key + " :");
         k.setStyle("-fx-text-fill: #8dbb88; -fx-font-size: 12px; -fx-min-width: 72px;");
@@ -740,11 +888,12 @@ public class MapView {
     }
 
     /**
-     * Affiche les informations d'un champ dans le panneau latéral droit
-     * et propose de renommer ou supprimer ce champ.
+     * Displays the structural properties and details of a selected {@link Field} in the
+     * right-hand information panel. Evaluates and shows the internal counts of nested
+     * sprinklers and water tanks, and mounts interaction inputs to rename or delete the field.
      *
-     * @param stage la fenêtre principale
-     * @param f     le champ sélectionné
+     * @param stage the primary window ({@link Stage}) used to refresh the active scene view.
+     * @param f     the target {@link Field} model instance to document and analyze.
      */
     private void showFieldInfo(Stage stage, Field f) {
         long sprInside = ground.getSprinklers().stream().filter(s -> f.contains(s)).count();
@@ -778,6 +927,11 @@ public class MapView {
         );
     }
 
+    /**
+     * Serializes the current state of the {@link Ground} terrain data architecture.
+     * Generates a file name based on the farmer's credentials and exports the complete
+     * configuration into the standard backup resources repository.
+     */
     private void saveGround() {
         String name = ground.getOwner().getFirstname().toLowerCase() + "_" + ground.getOwner().getName().toLowerCase() + "_save";
         Save save = new Save("./SmartFarm/src/main/resources/Saves/" + name);
@@ -788,12 +942,23 @@ public class MapView {
         }
     }
 
+    /**
+     * Safely clears the highlighted single source node circle indicator from the interactive map canvas.
+     *
+     * @param mapPane the target primary layout {@link Pane} hosting the dynamic graphic nodes.
+     */
     private void removeTemporaryCircle(Pane mapPane) {
         if (temporaryCircle != null) {
             mapPane.getChildren().remove(temporaryCircle);
         }
     }
 
+    /**
+     * Safely clears all highlighted dependency sprinkler nodes recorded during linked
+     * asset preview routines and flushes the tracker collection.
+     *
+     * @param mapPane the target primary layout {@link Pane} hosting the dynamic graphic nodes.
+     */
     private void removeTemporaryCircleList(Pane mapPane) {
         if (temporaryCircleListSprinklers != null) {
             mapPane.getChildren().removeAll(temporaryCircleListSprinklers);

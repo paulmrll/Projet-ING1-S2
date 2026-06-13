@@ -12,8 +12,27 @@ import javafx.stage.Stage;
 
 import java.util.Map;
 
+/**
+ * The {@code NewGroundFormView} class handles the generation of JavaFX scenes
+ * dedicated to the multi-step creation of a new farm infrastructure.
+ * It gathers initial owner profile information, initializes a {@link Ground} instance,
+ * and provides embedded structural forms to add fields, water tanks, and sprinklers.
+ *
+ * @author SmartFarm Team
+ * @version 1.0
+ */
 public class NewGroundFormView {
 
+    /**
+     * Builds and returns the second-step layout scene where users configure components
+     * for their newly created terrain. It nests sub-forms built via {@link AddForm}
+     * and manages specific action buttons to explicitly parse inputs and insert instances into
+     * the active {@link Ground} dataset.
+     *
+     * @param stage  the primary window ({@link Stage}) used to adjust scenes upon navigation.
+     * @param ground the active {@link Ground} data instance currently being populated.
+     * @return a stylized {@link Scene} dedicated to component registration (fields, tanks, sprinklers).
+     */
     private Scene groundFormView(Stage stage, Ground ground) {
 
         AddForm addForm = new AddForm();
@@ -34,6 +53,7 @@ public class NewGroundFormView {
         vBoxField.getChildren().add(btnSaveField);
         vBoxTank.getChildren().add(btnSaveTank);
         vBoxSprinkler.getChildren().add(btnSaveSprinkler);
+
         btnSaveField.setOnAction(e -> {
             try {
                 double xStart = Double.parseDouble(((TextField) vBoxField.getChildren().get(1)).getText());
@@ -99,6 +119,15 @@ public class NewGroundFormView {
         return sceneStyle(root);
     }
 
+    /**
+     * Instantiates the primary setup form scene to initialize a new farm configuration.
+     * Collects farmer demographics (Name, Firstname, Email, Age) alongside the structural
+     * surface area. Once inputs are validated, it builds a {@link Ground} entity and routes
+     * the workflow towards the secondary configuration interface.
+     *
+     * @param stage the primary window ({@link Stage}) of the application required for view routing.
+     * @return a stylized JavaFX {@link Scene} holding the initial registration inputs.
+     */
     public Scene newGround(Stage stage) {
         BorderPane root = new BorderPane();
         VBox personForm = new VBox();
@@ -160,6 +189,13 @@ public class NewGroundFormView {
         return sceneStyle(root);
     }
 
+    /**
+     * Creates an empty user text field populated with a specific helper prompt text
+     * and structured CSS attributes.
+     *
+     * @param s the prompt text string displayed within the field boundaries.
+     * @return an customized instance of a JavaFX {@link TextField}.
+     */
     private TextField textFieldEnter(String s) {
         TextField textField = new TextField();
         textField.setStyle(
@@ -174,6 +210,13 @@ public class NewGroundFormView {
         return textField;
     }
 
+    /**
+     * Formats a fixed dimension JavaFX Scene layout by embedding an external
+     * night theme graphic asset onto its root layout nodes.
+     *
+     * @param parent the target parent node architecture acting as the scene's core layout.
+     * @return a customized {@link Scene} container with a scale responsive background image.
+     */
     private static Scene sceneStyle(Parent parent) {
         Scene scene = new Scene(parent, 1300, 800);
         scene.getRoot().setStyle(
@@ -183,6 +226,13 @@ public class NewGroundFormView {
         return scene;
     }
 
+    /**
+     * Generates a stylized ready-to-use action push button tailored to match the application theme rules.
+     * Sets dimensions, background hue, text alignment, paddings, and cursor mouse hand states.
+     *
+     * @param text the alphanumeric characters printed on the interactive button surface.
+     * @return a styled JavaFX {@link Button} reference.
+     */
     private static Button buttonStyle(String text) {
         Button btn = new Button(text);
         btn.setPrefWidth(192);

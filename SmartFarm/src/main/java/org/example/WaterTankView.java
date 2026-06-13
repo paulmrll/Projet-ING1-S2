@@ -5,16 +5,36 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
 import javafx.stage.Stage;
 
-
+/**
+ * The {@code WaterTankView} class handles the graphical user interface display
+ * for a specific water tank element within the application.
+ * It extends {@link ElementView} to display technical details such as
+ * coordinates, flow rate, capacity, and the flow-to-capacity ratio.
+ * * @author SmartFarm Team
+ * @version 1.0
+ */
 public class WaterTankView extends ElementView {
+
+    /**
+     * Constructs a new {@code WaterTankView} associated with the given terrain.
+     *
+     * @param g the {@link Ground} terrain object linked to this view.
+     */
     public WaterTankView(Ground g) {
         super(g);
     }
 
-
+    /**
+     * Generates a vertical layout container (VBox) populated with detailed information
+     * about a specific {@link WaterTank}. It calculates and displays the flow/capacity
+     * ratio and provides a navigation button to return to the main map layout.
+     *
+     * @param p     the {@link Point} object to display, which is safely cast to a {@link WaterTank}.
+     * @param stage the primary {@link Stage} of the application, used to handle scene switching.
+     * @return a {@link VBox} containing labels, metrics, and interaction controls for the water tank.
+     */
     protected VBox uploadInfo(Point p, Stage stage) {
         WaterTank w = (WaterTank) p;
         VBox vbox = new VBox();
