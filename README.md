@@ -90,7 +90,7 @@ Projet réalisé par le groupe **GI5-F**
 
 ## Compilation
 
-télécharger javafx 21
-sur le terminal, lancer la commande javac --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -d bin src/org/example/*.java
-copier le fichier des sauvergades dans le dossier créé par la commande précédente
-executer le projet avec la commande java --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -cp bin org.example.Main 
+- télécharger javafx 21
+- sur le terminal, lancer la commande javac --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -d bin src/org/example/*.java
+- copier le fichier des sauvergades dans le dossier créé par la commande précédente
+- executer le projet avec la commande java --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -cp bin org.example.Main 
