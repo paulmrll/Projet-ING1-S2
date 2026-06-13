@@ -111,7 +111,7 @@ public class Save {
 
             String[] element = line.split(";");
             if (element.length == 0 || line.trim().isEmpty()) continue;
-            if (count == 0) {
+            if (count == 0 && element.length > 4) {
                 try{
                     owner = createPerson(Integer.parseInt(element[4]), element[1], element[2], element[3]);
                     count = 1;
