@@ -33,6 +33,13 @@ public class VoronoiDiagram {
 
     private double minX, minY, maxX, maxY;
 
+
+    public VoronoiDiagram(List<WaterTank> tanks, double minX, double minY, double maxX, double maxY) {
+        this.tanks = tanks;
+        this.triangles = DelaunayTriangulation.triangulate(this.tanks);
+        this.cells = VoronoiBuilder.fromTriangulation(this.tanks, this.triangles, minX, minY, maxX, maxY);
+    }
+
     /**
      * Constructs a new {@code VoronoiDiagram} from a given list of water tanks.
      * <p>
@@ -43,9 +50,7 @@ public class VoronoiDiagram {
      * @param tanks the list of water tanks acting as the sites for the diagram
      */
     public VoronoiDiagram(List<WaterTank> tanks) {
-        this.tanks = tanks;
-        this.triangles = DelaunayTriangulation.triangulate(this.tanks);
-        this.cells = VoronoiBuilder.fromTriangulation(this.tanks, this.triangles);
+        this(tanks, -Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     /**

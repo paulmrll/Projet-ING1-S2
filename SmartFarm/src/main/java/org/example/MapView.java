@@ -129,7 +129,7 @@ public class MapView {
         }
 
         if (ground.getTanks() != null && ground.getTanks().size() >= 3) {
-            VoronoiDiagram diagram = new VoronoiDiagram(ground.getTanks());
+            VoronoiDiagram diagram = ground.getVoronoiDiagram();
 
             if (showVoronoi) {
                 for (VoronoiCell cell : diagram.getCells()) {
@@ -603,6 +603,12 @@ public class MapView {
             nodeDragOffsetX = e.getSceneX() - c.getLayoutX();
             nodeDragOffsetY = e.getSceneY() - c.getLayoutY();
             c.setStyle("-fx-cursor: move;");
+            e.consume();
+        });
+
+        c.setOnMouseReleased(e -> {
+            ground.computeVoronoi();
+            stage.setScene(getScene(stage));
             e.consume();
         });
 

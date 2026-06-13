@@ -37,7 +37,7 @@ public class VoronoiBuilder {
      * each containing its polygon vertices in counter-clockwise order
      * and its neighboring cells already populated
      */
-    public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles) {
+    public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles, double minX, double minY, double maxX, double maxY) {
 
         List<VoronoiCell> cells = new ArrayList<>();
 
@@ -69,8 +69,11 @@ public class VoronoiBuilder {
                 return Double.compare(angle1, angle2);
             });
 
+            // Clipping Sutherland-Hodgman sur les bounds des fields
+            List<Point> clipped = sutherlandHodgman(polygonVertices, minX, minY, maxX, maxY);
+
             // On construit la cellule avec ces sommets
-            VoronoiCell cell = new VoronoiCell(tank, polygonVertices);
+            VoronoiCell cell = new VoronoiCell(tank, clipped);
             cells.add(cell);
         }
 
@@ -101,6 +104,95 @@ public class VoronoiBuilder {
         }
 
         return cells;
+    }
+
+    private static List<Point> sutherlandHodgman(List<Point> polygon, double minX, double minY, double maxX, double maxY) {
+        List<Point> result = new ArrayList<>(polygon);
+        result = clipLeft(result, minX);
+        result = clipRight(result, maxX);
+        result = clipBottom(result, minY);
+        result = clipTop(result, maxY);
+        return result;
+    }
+
+    private static List<Point> clipLeft(List<Point> polygon, double minX) {
+        List<Point> output = new ArrayList<>();
+        int n = polygon.size();
+        for (int i = 0; i < n; i++) {
+            Point prev = polygon.get((i - 1 + n) % n);
+            Point curr = polygon.get(i);
+            boolean prevIn = prev.getX() >= minX;
+            boolean currIn = curr.getX() >= minX;
+            if (prevIn && currIn){
+                output.add(curr);
+            }else if (prevIn){
+                output.add(intersectVertical(prev, curr, minX));
+            }else if (currIn){
+                output.add(intersectVertical(prev, curr, minX));
+                output.add(curr);
+            }
+        }
+        return output;
+    }
+
+    private static List<Point> clipRight(List<Point> polygon, double maxX) {
+        List<Point> output = new ArrayList<>();
+        int n = polygon.size();
+        for (int i = 0; i < n; i++) {
+            Point prev = polygon.get((i - 1 + n) % n);
+            Point curr = polygon.get(i);
+            boolean prevIn = prev.getX() <= maxX;
+            boolean currIn = curr.getX() <= maxX;
+            if (prevIn && currIn){
+                output.add(curr);
+            }else if (prevIn){
+                output.add(intersectVertical(prev, curr, maxX));
+            }else if (currIn){
+                output.add(intersectVertical(prev, curr, maxX));
+                output.add(curr);
+            }
+        }
+        return output;
+    }
+
+    private static List<Point> clipBottom(List<Point> polygon, double minY) {
+        List<Point> output = new ArrayList<>();
+        int n = polygon.size();
+        for (int i = 0; i < n; i++) {
+            Point prev = polygon.get((i - 1 + n) % n);
+            Point curr = polygon.get(i);
+            boolean prevIn = prev.getY() >= minY;
+            boolean currIn = curr.getY() >= minY;
+            if (prevIn && currIn){
+                output.add(curr);
+            }else if (prevIn){
+                output.add(intersectHorizontal(prev, curr, minY));
+            }else if (currIn){
+                output.add(intersectHorizontal(prev, curr, minY));
+                output.add(curr);
+            }
+        }
+        return output;
+    }
+
+    private static List<Point> clipTop(List<Point> polygon, double maxY) {
+        List<Point> output = new ArrayList<>();
+        int n = polygon.size();
+        for (int i = 0; i < n; i++) {
+            Point prev = polygon.get((i - 1 + n) % n);
+            Point curr = polygon.get(i);
+            boolean prevIn = prev.getY() <= maxY;
+            boolean currIn = curr.getY() <= maxY;
+            if (prevIn && currIn){
+                output.add(curr);
+            }else if (prevIn){
+                output.add(intersectHorizontal(prev, curr, maxY));
+            }else if (currIn){
+                output.add(intersectHorizontal(prev, curr, maxY));
+                output.add(curr);
+            }
+        }
+        return output;
     }
 
     /**

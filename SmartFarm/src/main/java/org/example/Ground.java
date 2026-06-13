@@ -283,7 +283,17 @@ public class Ground {
      * Must be called after adding tanks.
      */
     public void computeVoronoi() {
-        this.voronoiDiagram = new VoronoiDiagram(tanks);
+        double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+        double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+
+        for (Field f : fields) {
+            if (f.getxStart() < minX) minX = f.getxStart();
+            if (f.getyStart() < minY) minY = f.getyStart();
+            if (f.getxStop()  > maxX) maxX = f.getxStop();
+            if (f.getyStop()  > maxY) maxY = f.getyStop();
+        }
+
+        this.voronoiDiagram = new VoronoiDiagram(tanks, minX, minY, maxX, maxY);
     }
 
     /**
