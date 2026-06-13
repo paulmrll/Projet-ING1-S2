@@ -42,7 +42,7 @@ public class SaveView {
         statusLabel = new Label("Initialisation...");
         statusLabel.setFont(Font.font("Arial", 12));
 
-        Path currentFolder = Paths.get("./SmartFarm/src/main/resources/Saves");
+        Path currentFolder = Paths.get("./src/main/resources/Saves");
         HBox topBar = SmartFarmUI.getTopBar(stage, "Load a Farm ");
         BorderPane mainLayout = new BorderPane();
         mainLayout.setStyle("-fx-background-color : #1c1c1e;");

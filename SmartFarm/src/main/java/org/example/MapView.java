@@ -934,7 +934,7 @@ public class MapView {
      */
     private void saveGround() {
         String name = ground.getOwner().getFirstname().toLowerCase() + "_" + ground.getOwner().getName().toLowerCase() + "_save";
-        Save save = new Save("./SmartFarm/src/main/resources/Saves/" + name);
+        Save save = new Save("./src/main/resources/Saves/" + name);
         try {
             save.writeSave(ground);
         } catch (FileNotFoundException e) {
