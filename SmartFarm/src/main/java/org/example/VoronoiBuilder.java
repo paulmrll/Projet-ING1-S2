@@ -14,7 +14,7 @@ import java.util.List;
  * </p>
  *
  * @author Oscar LUIGGI
- * @version 1.2
+ * @version 1.3
  */
 public class VoronoiBuilder {
 
@@ -26,13 +26,19 @@ public class VoronoiBuilder {
      * <ul>
      *   <li>Collects all adjacent Delaunay triangles (triangles that share this tank as a vertex)</li>
      *   <li>Extracts their circumcenters as polygon vertices</li>
+     *   <li>Injects bounding rectangle corners owned by this tank (nearest tank wins)</li>
      *   <li>Sorts them by angle around the tank to form a valid non-self-intersecting polygon</li>
+     *   <li>Clips the polygon against the bounding rectangle using Sutherland-Hodgman</li>
      *   <li>Links neighboring cells: two cells are neighbors if their tanks share a Delaunay triangle</li>
      * </ul>
      * </p>
      *
      * @param tanks     the list of water tanks used as Voronoi sites
      * @param triangles the list of Delaunay triangles computed from the same tanks
+     * @param minX      the left boundary of the ground
+     * @param minY      the bottom boundary of the ground
+     * @param maxX      the right boundary of the ground
+     * @param maxY      the top boundary of the ground
      * @return a list of {@link VoronoiCell}, one per water tank,
      * each containing its polygon vertices in counter-clockwise order
      * and its neighboring cells already populated
@@ -40,6 +46,13 @@ public class VoronoiBuilder {
     public static List<VoronoiCell> fromTriangulation(List<WaterTank> tanks, List<DelaunayTriangle> triangles, double minX, double minY, double maxX, double maxY) {
 
         List<VoronoiCell> cells = new ArrayList<>();
+
+        List<Point> corners = List.of(
+                new Point(minX, minY),
+                new Point(maxX, minY),
+                new Point(maxX, maxY),
+                new Point(minX, maxY)
+        );
 
         for (WaterTank tank : tanks) {
 
@@ -52,14 +65,18 @@ public class VoronoiBuilder {
                 }
             }
 
-            // On recupère les circumcenters, les sommets des arêtes du polygone
+            // On récupère les circumcenters, les sommets des arêtes du polygone
             List<Point> polygonVertices = new ArrayList<>();
             for (DelaunayTriangle triangle : adjacentTriangles) {
                 polygonVertices.add(triangle.getCircumcenter());
             }
 
-            // On trie les sommets par angle autour du tank
-            //           pour former un polygone valide (non croisé)
+            for (Point corner : corners) {
+                if (findNearestTank(corner, tanks) == tank) {
+                    polygonVertices.add(corner);
+                }
+            }
+
             double tankX = tank.getX();
             double tankY = tank.getY();
 
@@ -106,6 +123,37 @@ public class VoronoiBuilder {
         return cells;
     }
 
+    /**
+     * Finds the nearest water tank to a given point.
+     *
+     * @param point the point to search from
+     * @param tanks the list of water tanks to search in
+     * @return the nearest {@link WaterTank}, or null if the list is empty
+     */
+    private static WaterTank findNearestTank(Point point, List<WaterTank> tanks) {
+        WaterTank nearest = null;
+        double minDist = Double.MAX_VALUE;
+        for (WaterTank t : tanks) {
+            double d = point.distanceTo(t);
+            if (d < minDist) {
+                minDist = d;
+                nearest = t;
+            }
+        }
+        return nearest;
+    }
+
+    /**
+     * Clips a polygon against an axis-aligned bounding rectangle
+     * using the Sutherland-Hodgman algorithm.
+     *
+     * @param polygon the polygon to clip, as an ordered list of points
+     * @param minX    the left boundary
+     * @param minY    the bottom boundary
+     * @param maxX    the right boundary
+     * @param maxY    the top boundary
+     * @return the clipped polygon as an ordered list of points
+     */
     private static List<Point> sutherlandHodgman(List<Point> polygon, double minX, double minY, double maxX, double maxY) {
         List<Point> result = new ArrayList<>(polygon);
         result = clipLeft(result, minX);
@@ -115,6 +163,13 @@ public class VoronoiBuilder {
         return result;
     }
 
+    /**
+     * Clips a polygon against the left boundary (x >= minX).
+     *
+     * @param polygon the input polygon
+     * @param minX    the left boundary x coordinate
+     * @return the clipped polygon
+     */
     private static List<Point> clipLeft(List<Point> polygon, double minX) {
         List<Point> output = new ArrayList<>();
         int n = polygon.size();
@@ -123,11 +178,11 @@ public class VoronoiBuilder {
             Point curr = polygon.get(i);
             boolean prevIn = prev.getX() >= minX;
             boolean currIn = curr.getX() >= minX;
-            if (prevIn && currIn){
+            if (prevIn && currIn) {
                 output.add(curr);
-            }else if (prevIn){
+            } else if (prevIn) {
                 output.add(intersectVertical(prev, curr, minX));
-            }else if (currIn){
+            } else if (currIn) {
                 output.add(intersectVertical(prev, curr, minX));
                 output.add(curr);
             }
@@ -135,6 +190,13 @@ public class VoronoiBuilder {
         return output;
     }
 
+    /**
+     * Clips a polygon against the right boundary (x <= maxX).
+     *
+     * @param polygon the input polygon
+     * @param maxX    the right boundary x coordinate
+     * @return the clipped polygon
+     */
     private static List<Point> clipRight(List<Point> polygon, double maxX) {
         List<Point> output = new ArrayList<>();
         int n = polygon.size();
@@ -143,11 +205,11 @@ public class VoronoiBuilder {
             Point curr = polygon.get(i);
             boolean prevIn = prev.getX() <= maxX;
             boolean currIn = curr.getX() <= maxX;
-            if (prevIn && currIn){
+            if (prevIn && currIn) {
                 output.add(curr);
-            }else if (prevIn){
+            } else if (prevIn) {
                 output.add(intersectVertical(prev, curr, maxX));
-            }else if (currIn){
+            } else if (currIn) {
                 output.add(intersectVertical(prev, curr, maxX));
                 output.add(curr);
             }
@@ -155,6 +217,13 @@ public class VoronoiBuilder {
         return output;
     }
 
+    /**
+     * Clips a polygon against the bottom boundary (y >= minY).
+     *
+     * @param polygon the input polygon
+     * @param minY    the bottom boundary y coordinate
+     * @return the clipped polygon
+     */
     private static List<Point> clipBottom(List<Point> polygon, double minY) {
         List<Point> output = new ArrayList<>();
         int n = polygon.size();
@@ -163,11 +232,11 @@ public class VoronoiBuilder {
             Point curr = polygon.get(i);
             boolean prevIn = prev.getY() >= minY;
             boolean currIn = curr.getY() >= minY;
-            if (prevIn && currIn){
+            if (prevIn && currIn) {
                 output.add(curr);
-            }else if (prevIn){
+            } else if (prevIn) {
                 output.add(intersectHorizontal(prev, curr, minY));
-            }else if (currIn){
+            } else if (currIn) {
                 output.add(intersectHorizontal(prev, curr, minY));
                 output.add(curr);
             }
@@ -175,6 +244,13 @@ public class VoronoiBuilder {
         return output;
     }
 
+    /**
+     * Clips a polygon against the top boundary (y <= maxY).
+     *
+     * @param polygon the input polygon
+     * @param maxY    the top boundary y coordinate
+     * @return the clipped polygon
+     */
     private static List<Point> clipTop(List<Point> polygon, double maxY) {
         List<Point> output = new ArrayList<>();
         int n = polygon.size();
@@ -183,11 +259,11 @@ public class VoronoiBuilder {
             Point curr = polygon.get(i);
             boolean prevIn = prev.getY() <= maxY;
             boolean currIn = curr.getY() <= maxY;
-            if (prevIn && currIn){
+            if (prevIn && currIn) {
                 output.add(curr);
-            }else if (prevIn){
+            } else if (prevIn) {
                 output.add(intersectHorizontal(prev, curr, maxY));
-            }else if (currIn){
+            } else if (currIn) {
                 output.add(intersectHorizontal(prev, curr, maxY));
                 output.add(curr);
             }
@@ -197,16 +273,11 @@ public class VoronoiBuilder {
 
     /**
      * Computes the intersection point between a line segment and a vertical boundary line.
-     * <p>
-     * This method calculates the precise entry or exit intersection coordinate using
-     * linear interpolation (parametric equation of a line) based on the target vertical line's
-     * X coordinate.
-     * </p>
      *
      * @param a the starting point of the segment
      * @param b the ending point of the segment
      * @param x the fixed X coordinate of the vertical clipping boundary
-     * @return a new {@link Point} object representing the exact intersection coordinate
+     * @return a new {@link Point} representing the exact intersection coordinate
      */
     private static Point intersectVertical(Point a, Point b, double x) {
         double t = (x - a.getX()) / (b.getX() - a.getX());
@@ -216,16 +287,11 @@ public class VoronoiBuilder {
 
     /**
      * Computes the intersection point between a line segment and a horizontal boundary line.
-     * <p>
-     * This method calculates the precise entry or exit intersection coordinate using
-     * linear interpolation (parametric equation of a line) based on the target horizontal line's
-     * Y coordinate.
-     * </p>
      *
      * @param a the starting point of the segment
      * @param b the ending point of the segment
      * @param y the fixed Y coordinate of the horizontal clipping boundary
-     * @return a new {@link Point} object representing the exact intersection coordinate
+     * @return a new {@link Point} representing the exact intersection coordinate
      */
     private static Point intersectHorizontal(Point a, Point b, double y) {
         double t = (y - a.getY()) / (b.getY() - a.getY());

@@ -608,6 +608,7 @@ public class MapView {
 
         c.setOnMouseReleased(e -> {
             ground.computeVoronoi();
+            ground.getSprinklers().forEach(ground::findSource);
             stage.setScene(getScene(stage));
             e.consume();
         });
