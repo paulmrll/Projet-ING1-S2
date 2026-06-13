@@ -1,6 +1,6 @@
 # 🌾 SmartFarm
 
-Application de bureau JavaFX pour la gestion intelligente d'une exploitation agricole.  
+Application de bureau JavaFX pour la gestion intelligente d'une exploitation agricole.
 Visualisez vos champs, gérez vos réserves d'eau et asperseurs, et explorez la géométrie de Voronoï/Delaunay générée automatiquement.
 
 ---
@@ -23,13 +23,11 @@ Visualisez vos champs, gérez vos réserves d'eau et asperseurs, et explorez la 
 Les fichiers se trouvent dans `SmartFarm/src/main/resources/Saves/`.  
 Format texte délimité par des `;`, un élément par ligne :
 
-```
 name;Dupont;Jean;jean@email.com;42
 G;10000.0
 F;0.0;0.0;500.0;300.0;Champ Nord;150000.0
 W;250.0;150.0;1000.0;5.0
 S;300.0;200.0;2.0;30.0
-```
 
 | Préfixe | Élément      | Champs                                         |
 |---------|--------------|------------------------------------------------|
@@ -88,9 +86,35 @@ Projet réalisé par le groupe **GI5-F**
 - Jilani Mohamed
 - Illya Liganov
 
-## Compilation
+---
 
-- télécharger javafx 21
-- sur le terminal, lancer la commande javac --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -d bin src/org/example/*.java
-- copier le fichier des sauvergades dans le dossier créé par la commande précédente
-- executer le projet avec la commande java --module-path /chemin/vers/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml -cp bin org.example.SmartFarmUI 
+## 🚀 Compilation et Exécution (Ligne de commande)
+
+Ce projet utilise Maven pour la gestion des dépendances (notamment JavaFX) et la compilation. Il n'est pas nécessaire de télécharger ou de configurer le SDK JavaFX manuellement.
+
+Prérequis :
+- JDK 17 ou supérieur (le projet est configuré sous Java 21)
+- Maven installé et configuré dans les variables d'environnement
+
+Instructions pas à pas :
+
+1. Ouvrez un terminal.
+2. Déplacez-vous dans le sous-dossier SmartFarm (le dossier contenant le fichier pom.xml) :
+   ```
+   cd chemin/vers/le/dossier/Projet-ING1-S2/SmartFarm
+   ```
+
+3. Nettoyez et compilez le projet :
+   ```
+   mvn clean compile
+   ```
+
+4. Lancez l'application avec l'interface graphique JavaFX :
+   ```
+   mvn javafx:run
+   ```
+
+5. (Optionnel) Pour lancer la version en ligne de commande (mode Console) :
+   ```
+   mvn exec:java -Dexec.mainClass="org.example.Cli"
+   ```
